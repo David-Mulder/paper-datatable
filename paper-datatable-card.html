@@ -1,0 +1,201 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="paper-datatable-column.html">
+
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+
+<script src="weakCache.js"></script>
+<dom-module id="paper-datatable-card">
+	<template>
+		<style>
+			:host {
+				display: block;
+				background: white;
+			}
+			#selectionToolbar{
+				display: none;
+				background: var(--light-primary-color);
+			}
+			#selectionToolbar[data-visible]{
+				display: flex;
+			}
+		</style>
+		<paper-material elevation="1">
+			<div class="horizontal center layout" style="height:64px;padding:0px 6px 0px 24px;position:relative;">
+				<div class="flex" style="font-size:20px;font-family:Roboto">
+					<span>{{header}}</span>
+				</div>
+				<div class="toolbar">
+					<content select="*[toolbar-main]"></content>
+				</div>
+				<div id="selectionToolbar" class="horizontal center layout fit" data-visible$="[[_selectedToolbarVisible]]" style="padding:0px 6px 0px 24px;">
+					<div class="flex" style="font-size:16px;font-family:Roboto">
+						<span>[[_numberSelectedItems]]</span> item selected
+					</div>
+					<div class="toolbar">
+						<content select="*[toolbar-select]"></content>
+					</div>
+				</div>
+			</div>
+			<div style="">
+				<content select="paper-datatable"></content>
+			</div>
+			<div class="horizontal center layout" style="height:56px;padding:0px 6px;border-top:1px solid rgb(240,240,240);">
+				<div class="flex"></div>
+				<div>
+					Rows per page:
+					<paper-dropdown-menu no-label-float style="width: 68px;">
+						<paper-menu class="dropdown-content" selected="{{pageSize}}" attr-for-selected="value">
+							<paper-item value="5">5</paper-item>
+							<paper-item value="10">10</paper-item>
+							<paper-item value="25">25</paper-item>
+							<paper-item value="100">100</paper-item>
+						</paper-menu>
+					</paper-dropdown-menu>
+					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, dataSource.length)]]</span> of <span>[[dataSource.length]]</span>
+					<paper-icon-button icon="chevron-left" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
+					<paper-icon-button icon="chevron-right" on-tap="nextPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
+				</div>
+			</div>
+		</paper-material>
+	</template>
+
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+
+				is: 'paper-datatable-card',
+				properties: {
+					header: String,
+					dataSource: Object,
+					pageSize: {
+						type: Number,
+						value: 10
+					},
+					page: {
+						type: Number,
+						value: 1
+					},
+					_disableSave: {
+						type: Boolean,
+						value: false
+					},
+					_datatable: {
+						type: Object
+					}
+				},
+				ready: function(){
+					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
+					this._datatable.data = [];
+					this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
+					this._datatable.addEventListener("selected-item-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("selected-items-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("sort", this._handleSort.bind(this));
+				},
+				observers: [
+					'_getVisibleData(dataSource, pageSize, page, _datatable)'
+				],
+				_triggerSave: function(ev){
+					if(!this._disableSave && ev.detail.path){
+						console.log(ev.detail);
+						var path = ev.detail.path.split(".");
+						var item = path.shift();
+						var rowKey = path.shift();
+
+						var property = path.shift();
+						var value = ev.detail.value;
+						var data = this._datatable.get("data."+rowKey);
+						var id = data[this._datatable.idProperty];
+
+						//todo: complex objects 2+
+						if(path.length > 0){
+							value = data[property];
+							this.dataSource.set(id, property, data);
+						}else{
+							this.dataSource.set(id, property, value);
+						}
+
+					}
+				},
+				_handleSort: function(ev){
+					console.info(ev.detail);
+					ev.preventDefault();
+					this._getVisibleData();
+				},
+				_getVisibleData: function(){
+
+					this._disableSave = true;
+
+
+					var processItems = function(items){
+
+						var args = ["data"].concat(items);
+						this._datatable.push.apply(this._datatable,args);
+
+						this._disableSave = false;
+						/*items.forEach(function(item){
+
+						 }.bind(this));*/
+
+					}.bind(this);
+
+
+
+					this.async(function(){
+						var queryArgs = [{}, {property: this._datatable._sort.property, direction: this._datatable._sort.direction}, this.page, this.pageSize];
+
+						this._datatable.splice("data", 0, this._datatable.data.length);
+
+						if('queryForIds' in this.dataSource){
+							var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
+
+							//todo: do not retrieve items which we put in the cache
+							this.dataSource.getByIds(ids).then(processItems);
+						}else{
+							this.dataSource.get.apply(this.dataSource, queryArgs).then(processItems);
+						}
+					});
+
+
+				},
+				_getRangeStart: function(){
+					return (this.page-1)*this.pageSize;
+				},
+				_getRangeEnd: function(){
+					return Math.min((this.page)*this.pageSize, this.dataSource.length);
+				},
+				nextPage: function(){
+					console.log("nextPage clicked");
+					this.set("page", this.page+1);
+				},
+				prevPage: function(){
+					this.set("page", this.page-1);
+				},
+				_prevPageDisabled: function(){
+					return this.page == 1;
+				},
+				_nextPageDisabled: function(){
+					return this.page * this.pageSize > this.dataSource.length;
+				},
+				_setSelectedToolbarVisible: function(){
+					if(this._datatable.multiSelection){
+						this._selectedToolbarVisible = this._datatable.selectedItems.length > 0;
+						this._numberSelectedItems = this._datatable.selectedItems.length;
+					}else{
+						this._selectedToolbarVisible = this._datatable.selectedItem >= 0;
+						this._numberSelectedItems = this._datatable.selectedItem >= 0 ? 1 : 0;
+					}
+				}
+
+			});
+
+		})();
+	</script>
+
+</dom-module>

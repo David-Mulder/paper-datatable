@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-card/paper-card.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+	</head>
+	<body>
+
+
+		<template is="dom-bind" id="app">
+
+			<paper-card style="padding:20px;margin:20px;display:block;">
+				<paper-datatable data="{{data}}" id-property="aid" selectable>
+					<paper-datatable-column header="ID" property="aid" type="String" title="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" title="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" title="The total amount of..." sortable>
+						<template>
+							<paper-input value="{{value}}" no-label-float></paper-input>
+						</template>
+					</paper-datatable-column>
+				</paper-datatable>
+			</paper-card>
+			<paper-card style="padding:20px;margin:20px;display:block;">
+				<paper-datatable data="{{data}}" id-property="aid" selectable multi-selection>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" title="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" title="The total amount of..." sortable>
+						<template>
+							<paper-input value="{{value}}"></paper-input>
+							<paper-input value="{{item.calories}}"></paper-input>
+							<paper-input value="{{item.complexObj.a}}"></paper-input>
+						</template>
+					</paper-datatable-column>
+					<paper-datatable-column header="Object" property="complexObj" type="Object" title="The total amount of..." sortable>
+						<template>
+							<paper-input value="{{value.a}}"></paper-input>
+							<paper-input value="{{item.complexObj.a}}"></paper-input>
+							<paper-input value="{{item.complexObj.b}}"></paper-input>
+						</template>
+					</paper-datatable-column>
+					<paper-datatable-column header="Array" property="arr" type="Array" title="The total amount of..." sortable>
+						<template>
+							<template is="dom-repeat" items="{{value}}" as="valueItem">
+								<paper-input value="{{valueItem}}"></paper-input>
+							</template>
+						</template>
+					</paper-datatable-column>
+				</paper-datatable>
+			</paper-card>
+			Calories: <span>{{data.0.calories}}</span>
+			Array item: <span>{{data.0.arr.0}}</span>
+			<paper-input value="{{data.1.calories}}"></paper-input>
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+			app.data = [
+				{aid: "asdf", title: "Ice cream", calories: 2000, complexObj: {a:"b",b:"d"}, arr: [2,3,4]},
+				{aid: "sdfg", title: "Dessert", calories: 3000, complexObj: {a:"bb",b:"dd"}, arr: [5,6]}
+			];
+		</script>
+
+	</body>
+</html>

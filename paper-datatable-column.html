@@ -1,0 +1,126 @@
+<dom-module id="paper-datatable-column">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+	</template>
+
+	<script>
+		(function () {
+			'use strict';
+
+			Polymer({
+				is: 'paper-datatable-column',
+				properties: {
+					header: String,
+					property: String,
+					type: String,
+					title: String,
+					sortable: Boolean,
+					editable: Boolean,
+					default: Object,
+					align: {
+						type: String,
+						value: 'left'
+					}
+				},
+				ready: function() {
+					var template = Polymer.dom(this).querySelector('template');
+					if(template) {
+
+						this._instanceProps = {};
+						this._instanceProps.item = true;
+						this._instanceProps.value = true;
+
+						this.templatize(template);
+
+						this.template = true;
+
+					}
+				},
+				attached: function() {
+					Polymer.dom(this).parentNode.push('columns', this);
+					this.parentNodeRef = Polymer.dom(this).parentNode;
+				},
+				detached: function() {
+					this.parentNodeRef.splice('columns', this.parentNodeRef.columns.indexOf(this), 1);
+				},
+				update: function(){
+					var that = this;
+					Object.keys(this.properties).forEach(function(property){
+						if(property !== 'config'){
+							console.log(that.get('config'));
+							that.set('config.'+property, that.get(property));
+						}
+					});
+					console.log(this.config);
+				},
+				createCellInstance: function(model, notificationId, notificationProp){
+					if(typeof model[this.property] == "undefined" && this.default){
+						var instance = this.stamp({item: model, value: this.default, _dataId: notificationId});
+					}else{
+						var instance = this.stamp({item: model, value: model[this.property], _dataId: notificationId});
+					}
+
+					//console.log(instance, {id: notificationId, prop: notificationProp});
+					//this.map.set(instance, {id: notificationId, prop: notificationProp});
+					return instance;
+				},
+				behaviors: [
+					Polymer.Templatizer
+				],
+				_forwardParentProp: function(prop, value){
+					console.warn('_forwardParentProp',arguments);
+				},
+				_forwardParentPath: function(prop, value){
+					console.warn('_forwardParentPath',arguments);
+				},
+				_forwardInstanceProp: function(templateInstance, prop, value){
+					var path = prop.split(".");
+					var item = path.shift();
+					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
+					if(item == "value"){
+						var parentPath = ["data",dataRowI,this.property].join(".");
+						console.log('_forwardInstanceProp',arguments);
+						console.log("set", parentPath, "to", value);
+						this.parentNodeRef.set(parentPath, value);
+
+					}else if(item == "item"){
+						console.warn('_forwardInstanceProp',arguments);
+					}
+				},
+				_forwardInstancePath: function(templateInstance, prop, value){
+					//var path = this.map.get(templateInstance);
+					//todo: Re-Implement complex objects
+					//var notification = this.map.get(templateInstance);
+					//var path = ["data" , this.parentNodeRef._getDataRowIFromID(notification.id), notification.prop];
+
+					//if(prop.replace('item','').length > 0){
+					//	path.push(prop.replace('item',''));
+					//}
+					//console.log(path);
+					//this.parentNodeRef.set(path.join("."), value);
+
+
+					var path = prop.split(".");
+					var item = path.shift();
+					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
+					if(item == "value"){
+						var parentPath = ["data", 0, this.property].concat(path).join(".");
+						//console.log(parentPath, path.join("."), value)
+						console.log('_forwardInstancePath',arguments);
+					}else if(item == "item"){
+						var parentPath = ["data", dataRowI].concat(path).join(".");
+						//console.log(parentPath, value);
+						console.log('_forwardInstancePath',arguments);
+					}
+					console.log("set", parentPath, "to", value);
+					this.parentNodeRef.set(parentPath, value);
+				}
+			});
+		})();
+	</script>
+
+</dom-module>

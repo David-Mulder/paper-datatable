@@ -1,0 +1,374 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="paper-datatable-column.html">
+
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<script src="weakCache.js"></script>
+
+<dom-module id="paper-datatable">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+			table{
+				border-spacing: 0px;
+				width:100%;
+			}
+			th{
+				color: #6D6E70;
+				font-weight: normal;
+				text-align:left;
+			}
+			th iron-icon{
+				transition: transform .2s linear;
+			}
+			th[data-direction='desc'] iron-icon{
+				transform: rotate(180deg);
+			}
+			tr td, tr th{
+				border-bottom: 1px solid var(--divider-color);
+				padding: 6px;
+				height: 41px;
+			}
+			tr td:first-child, tr th:first-child{
+				padding-left: 24px;
+				width:20px;
+			}
+			td:last-child, th:last-child{
+				padding-right: 24px;
+			}
+			tr[data-selected] td{
+				background: rgba(0,0,0,.04);
+			}
+			tbody tr:last-of-type td{
+				border-bottom:none;
+			}
+		</style>
+		<div>
+			<content select="[header]"></content>
+			<table>
+				<thead>
+					<tr>
+						<template is="dom-if" if="{{selectable}}">
+							<th>
+								<template is="dom-if" if="{{multiSelection}}">
+									<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedItems.splices, data.splices)]]"></paper-checkbox>
+								</template>
+							</th>
+						</template>
+						<template is="dom-repeat" items="{{columns}}" as="column">
+							<th data-direction$="[[_sort.direction]]" data-column="[[column]]" on-tap="_handleSort">
+								<template is="dom-if" if="[[_isEqual(column.property, _sort.property)]]">
+									<iron-icon icon="arrow-drop-down"></iron-icon>
+								</template>
+								<span>{{column.header}}</span>
+							</th>
+						</template>
+					</tr>
+				</thead>
+				<tbody>
+					<template is="dom-repeat" items="[[_rowIds]]" on-dom-change="_restructureData">
+						<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, multiSelection, selectedItem, selectedItems.splices)]]">
+							<template is="dom-if" if="{{selectable}}">
+								<td>
+									<paper-checkbox checked="[[_isRowSelected(item, multiSelection, selectedItem, selectedItems.splices)]]" on-change="_setSelection"></paper-checkbox>
+								</td>
+							</template>
+							<template is="dom-repeat" items="{{columns}}" as="item" index-as="i" on-dom-change="_restructureData">
+								<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
+							</template>
+						</tr>
+					</template>
+				</tbody>
+			</table>
+		</div>
+	</template>
+
+	<script>
+
+		(function () {
+			'use strict';
+			/* jshint eqeqeq : false */
+			/*
+Documentation to be written...
+			 */
+
+
+			Polymer({
+
+				is: 'paper-datatable',
+
+				properties: {
+					columns: {
+						type: Array
+					},
+					data: {
+						type: Array,
+						notify: true
+					},
+					selectable: {
+						type: Boolean,
+						value: true
+					},
+					multiSelection: {
+						type: Boolean,
+						value: false
+					},
+					selectedItems: {
+						type: Array,
+						notify: true,
+						value: []
+					},
+					selectedItem: {
+						type: Number,
+						notify: true,
+						value: -1
+					},
+					idProperty: {
+						type: String,
+						value: 'id'
+					},
+					_sort: {
+						type: Object
+					},
+					_internalSortEnabled: {
+						type: Boolean,
+						value: false
+					},
+					_rowIds: {
+						type: Array
+					},
+					_cellInstances: {
+						type: Object
+					}
+				},
+
+				observers: [
+					/*'restructureData(data.*, columns.splices)',*/
+					'_notifyPathOnInstances(data.*)',
+					'_internalSort(_internalSortEnabled, _sort.property)',
+					'_setRowIds(data.splices)'
+				],
+
+				listeners: {
+				},
+
+				_setRowIds: function(){
+					var rowIds = [];
+					this.data.forEach(function(row){
+						rowIds.push(row[this.idProperty]);
+					}.bind(this));
+					this.set("_rowIds", rowIds);
+					this._internalSort();
+				},
+
+				_internalSort: function(){
+					if(this._internalSortEnabled) {
+						console.info("INTERNAL SORT on",this._sort.property);
+						this._rowIds.sort(function(a, b){
+							if(this._sort.direction == "asc"){
+								var c = a;
+								a = b;
+								b = c;
+							}
+							var aItem = this.data.find(function(item){
+								return item[this.idProperty] == a;
+							}.bind(this));
+							var bItem = this.data.find(function(item){
+								return item[this.idProperty] == b;
+							}.bind(this));
+
+							if(aItem[this._sort.property] < bItem[this._sort.property]) return -1;
+							if(aItem[this._sort.property] > bItem[this._sort.property]) return 1;
+							return 0;
+						}.bind(this));
+						this.set("_rowIds", JSON.parse(JSON.stringify(this._rowIds)));
+					}
+				},
+
+				_isEqual: function(a, b){
+					return a == b;
+				},
+
+				ready: function() {
+					this.set('columns', []);
+					this.set('selectedItems', []);
+					this.set('_sort', {
+						property: this.idProperty,
+						direction: 'asc'
+					});
+				},
+
+				_restructureData: function(datachange, columns){
+					console.info("restructureData");
+					if(Polymer.dom(this).querySelectorAll('paper-datatable-column').length === this.columns.length) {
+						console.info('process empty cells');
+						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
+
+						var findById = function(el){
+							return el[this.idProperty] == row.dataset.id;
+						}.bind(this);
+
+						// loop through the rows
+						for(var rowI=0; rowI<rows.length; rowI++){
+							var row = rows[rowI];
+							//find the data that belongs with the row
+							var rowData = this.data.find(findById);
+
+							//get all cells in the row
+							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
+							for(var cellI=0;cellI<cells.length;cellI++){
+								var cell = cells[cellI];
+								if(cell.hasAttribute('data-empty') || cell.getAttribute('data-row-id') !== row.dataset.id){
+									cell.removeAttribute('data-empty');
+
+									var prop = this.columns[cellI].property;
+									var data = rowData[prop];
+									cell.setAttribute('data-row-id', rowData[this.idProperty]);
+
+									cell.style['text-align'] = this.columns[cellI].align;
+
+									if(this.columns[cellI].template){
+										var instance = this.columns[cellI].createCellInstance(
+												rowData,
+												rowData[this.idProperty],
+												prop
+										);
+										cell.instance = instance;
+										cell.innerHTML = '';
+										cell.appendChild(instance.root);
+									}else{
+										cell.textContent = data;
+									}
+								}
+							}
+						}
+					}
+
+				},
+
+				_getDataRowIFromID: function(id){
+					return this.data.findIndex(function(el){
+						return el[this.idProperty] == id;
+					}.bind(this));
+				},
+
+				_notifyPathOnInstances: function(change){
+					console.warn("length of data", this.data.length);
+					var path = change.path.split('.');
+					if(path.length >= 3){
+						var object = path.shift();
+						var rowI = path.shift();
+						console.log(rowI, change.path, change, this.data);
+						var id = this.get("data."+rowI+"."+this.idProperty);
+						//var id = this.data[rowI][this.idProperty];
+
+						var row = Polymer.dom(this.root).querySelector('tbody tr[data-id=\''+id+'\']');
+						var cells = row.querySelectorAll('td.bound-cell');
+						for(var i=0; i<cells.length;i++){
+							var cell = cells[i];
+							var prop = cell.dataProp;
+
+							if(prop == path[0]){
+								if(cell.instance){
+									var localPath = path.slice();
+									localPath.shift();
+									var instanceValuePath = ["value"].concat(localPath).join(".");
+									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
+									cell.instance.notifyPath(instanceValuePath, change.value);
+								}else{
+									cell.textContent = change.value;
+								}
+							}
+							if(cell.instance){
+								var instancePath = ["item", path.join(".")].join(".");
+								console.info(cell, "column", instancePath, "to", change.value);
+								console.info(cell.instance);
+								console.log(JSON.stringify(cell.instance.__data__));
+								cell.instance.notifyPath(instancePath, change.value, true);
+							}
+
+						}
+					}
+				},
+
+				checkAll: function(){
+					// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
+					var allChecked = this._allChecked();
+					this.data.forEach(function(item){
+						var i = this.selectedItems.indexOf(item[this.idProperty]);
+						if(allChecked){
+							if(i > -1){
+								this.splice('selectedItems', i, 1);
+							}
+						}else{
+							if(i == -1){
+								this.push('selectedItems', item[this.idProperty]);
+							}
+						}
+					}.bind(this));
+				},
+
+				_allChecked: function(){
+					var allChecked = true;
+					this.data.forEach(function(item){
+						if(this.selectedItems.indexOf(item[this.idProperty]) == -1){
+							allChecked = false;
+						}
+					}.bind(this));
+					return allChecked;
+				},
+
+				_isRowSelected: function(id){
+					if(this.multiSelection){
+						return this.selectedItems.indexOf(id) > -1;
+					}else{
+						return this.selectedItem == id;
+					}
+				},
+
+				_setSelection: function(ev){
+					var id = ev.model.item;
+					if(ev.target.checked){
+						if(this.multiSelection){
+							this.push('selectedItems', id);
+						}else{
+							this.selectedItem = id;
+						}
+					}else{
+						if(this.multiSelection){
+							this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
+						}else{
+							this.selectedItem = -1;
+						}
+					}
+				},
+
+				_handleSort: function(ev){
+
+					var column = ev.model.column;
+					if(column.sortable){
+						this.set("_sort.direction", this._sort.direction == "asc" ? "desc" : "asc");
+						var triggeredEvent = this.fire("sort", {sort: this._sort, column: column}, {cancelable: true});
+						if(!triggeredEvent.defaultPrevented){
+							this._internalSortEnabled = false;
+							this.set("_sort.property", column.property);
+							this._internalSortEnabled = true;
+						}else{
+							this.set("_sort.property", column.property);
+							this._internalSortEnabled = false;
+						}
+					}
+
+				},
+
+				sort: function(property, sortType){
+
+				}
+
+			});
+		})();
+	</script>
+
+</dom-module>

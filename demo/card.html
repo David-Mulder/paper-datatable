@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+	</head>
+	<body>
+
+
+		<template is="dom-bind" id="app">
+
+			<paper-datatable-card header="Food" page-size="10" data-source="{{data}}">
+				<div toolbar-main>
+					<paper-icon-button icon="more-vert"></paper-icon-button>
+				</div>
+				<div toolbar-select>
+					<paper-icon-button icon="delete"></paper-icon-button>
+				</div>
+				<paper-datatable selectable multi-selection>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" title="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" title="The total amount of..." sortable>
+						<template>
+							<paper-input value="{{value}}" no-label-float></paper-input>
+						</template>
+					</paper-datatable-column>
+					<paper-datatable-column header="Author" property="author" title="The total amount of...">
+						<template>
+							<paper-input value="{{value.first}}" style="display:inline-block;"></paper-input>
+							<paper-input value="{{value.last}}" style="display:inline-block;"></paper-input>
+						</template>
+					</paper-datatable-column>
+				</paper-datatable>
+			</paper-datatable-card>
+
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+
+			var myData = [];
+			for (var i=0; i<142; i++) {
+				var id = i*10000+Math.round(Math.random() * 500);
+				var calories = Math.round(Math.random() * 2000)+1000;
+				myData.push({
+					id: id,
+					title: "title"+id,
+					calories: calories,
+					author: {
+						first: "David",
+						last: "Mulder "+ id
+					}
+				});
+			}
+
+
+			window.a = [];
+			app.data = {
+				getByIds: function(ids){
+					return new Promise(function(resolve, reject){
+						var data = [];
+						ids.forEach(function(id){
+							data.push(myData.find(function(item){
+								return item.id == id;
+							}));
+						});
+						resolve(data);
+					});
+				},
+				set: function(id, property, value){
+					var item = myData.find(function(item){
+						return item.id == id;
+					});
+					item[property] = value;
+				},
+				queryForIds: function(query, sort, page, limit){
+					// query = {search: "test"}
+					// sort = {property: "something", direction: "asc"}
+					// page = 1
+					// limit = 10
+					myData.sort(function(a,b){
+						if(sort.direction == "asc"){
+							var c = a;
+							a = b;
+							b = c;
+						}
+						if(a[sort.property] > b[sort.property]) return 1;
+						if(a[sort.property] < b[sort.property]) return -1;
+						return 0;
+					});
+					return myData.slice((page-1)*limit, page*limit).map(function(item){
+						return item.id;
+					});
+				},
+				length:myData.length
+			};
+
+		</script>
+
+	</body>
+</html>
