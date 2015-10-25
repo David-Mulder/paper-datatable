@@ -283,9 +283,6 @@ Documentation to be written...
 							}
 							if(cell.instance){
 								var instancePath = ["item", path.join(".")].join(".");
-								console.info(cell, "column", instancePath, "to", change.value);
-								console.info(cell.instance);
-								console.log(JSON.stringify(cell.instance.__data__));
 								cell.instance.notifyPath(instancePath, change.value, true);
 							}
 

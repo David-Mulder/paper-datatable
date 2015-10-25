@@ -32,6 +32,11 @@
 							<paper-input value="{{value.last}}" style="display:inline-block;"></paper-input>
 						</template>
 					</paper-datatable-column>
+					<paper-datatable-column property="isAdmin" header="Administrator" default="false">
+						<template>
+							<paper-checkbox checked="{{value}}"></paper-checkbox>
+						</template>
+					</paper-datatable-column>
 				</paper-datatable>
 			</paper-datatable-card>
 
@@ -51,7 +56,8 @@
 					author: {
 						first: "David",
 						last: "Mulder "+ id
-					}
+					},
+					isAdmin: (Math.random() > 0.9 ? true : undefined)
 				});
 			}
 
@@ -70,6 +76,7 @@
 					});
 				},
 				set: function(id, property, value){
+					console.info("a save was triggered");
 					var item = myData.find(function(item){
 						return item.id == id;
 					});

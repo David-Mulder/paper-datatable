@@ -58,7 +58,7 @@
 					console.log(this.config);
 				},
 				createCellInstance: function(model, notificationId, notificationProp){
-					if(typeof model[this.property] == "undefined" && this.default){
+					if(typeof model[this.property] == "undefined" && typeof this.default !== "undefined"){
 						var instance = this.stamp({item: model, value: this.default, _dataId: notificationId});
 					}else{
 						var instance = this.stamp({item: model, value: model[this.property], _dataId: notificationId});
