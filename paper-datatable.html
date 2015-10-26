@@ -255,7 +255,6 @@ Documentation to be written...
 				},
 
 				_notifyPathOnInstances: function(change){
-					console.warn("length of data", this.data.length);
 					var path = change.path.split('.');
 					if(path.length >= 3){
 						var object = path.shift();
@@ -318,7 +317,6 @@ Documentation to be written...
 				},
 
 				_isRowSelected: function(id){
-					console.log( "here");
 					if(this.multiSelection){
 						return this.selectedItems.indexOf(id) > -1;
 					}else{

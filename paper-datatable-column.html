@@ -83,8 +83,8 @@
 					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
 					if(item == "value"){
 						var parentPath = ["data",dataRowI,this.property].join(".");
-						console.log('_forwardInstanceProp',arguments);
-						console.log("set", parentPath, "to", value);
+						//console.log('_forwardInstanceProp',arguments);
+						//console.log("set", parentPath, "to", value);
 						this.parentNodeRef.set(parentPath, value);
 
 					}else if(item == "item"){
@@ -110,13 +110,13 @@
 					if(item == "value"){
 						var parentPath = ["data", 0, this.property].concat(path).join(".");
 						//console.log(parentPath, path.join("."), value)
-						console.log('_forwardInstancePath',arguments);
+						//console.log('_forwardInstancePath',arguments);
 					}else if(item == "item"){
 						var parentPath = ["data", dataRowI].concat(path).join(".");
 						//console.log(parentPath, value);
-						console.log('_forwardInstancePath',arguments);
+						//console.log('_forwardInstancePath',arguments);
 					}
-					console.log("set", parentPath, "to", value);
+					//console.log("set", parentPath, "to", value);
 					this.parentNodeRef.set(parentPath, value);
 				}
 			});
