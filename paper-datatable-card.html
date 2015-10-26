@@ -183,7 +183,7 @@
 					return this.page == 1;
 				},
 				_nextPageDisabled: function(){
-					return this.page * this.pageSize > this.dataSource.length;
+					return this.page * this.pageSize >= this.dataSource.length;
 				},
 				_setSelectedToolbarVisible: function(){
 					if(this._datatable.multiSelection){

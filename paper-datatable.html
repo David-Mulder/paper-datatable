@@ -318,9 +318,11 @@ Documentation to be written...
 				},
 
 				_isRowSelected: function(id){
+					console.log( "here");
 					if(this.multiSelection){
 						return this.selectedItems.indexOf(id) > -1;
 					}else{
+						console.log(id);
 						return this.selectedItem == id;
 					}
 				},
