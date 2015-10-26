@@ -313,7 +313,7 @@ Documentation to be written...
 							allChecked = false;
 						}
 					}.bind(this));
-					return allChecked;
+					return allChecked && this.data.length > 0;
 				},
 
 				_isRowSelected: function(id){
