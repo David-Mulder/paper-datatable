@@ -23,7 +23,7 @@
     "/demo/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#master",
+    "polymer": "Polymer/polymer#~1.2.0",
     "paper-material": "PolymerElements/paper-material#~1.0.3",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#~1.0.5",
     "paper-menu": "PolymerElements/paper-menu#~1.1.1",
