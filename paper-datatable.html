@@ -69,16 +69,33 @@
 				</thead>
 				<tbody>
 					<template is="dom-repeat" items="[[_rowIds]]" on-dom-change="_restructureData">
-						<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, multiSelection, selectedItem, selectedItems.splices)]]">
-							<template is="dom-if" if="{{selectable}}">
-								<td>
-									<paper-checkbox checked="[[_isRowSelected(item, multiSelection, selectedItem, selectedItems.splices)]]" on-change="_setSelection"></paper-checkbox>
-								</td>
-							</template>
-							<template is="dom-repeat" items="{{columns}}" as="item" index-as="i" on-dom-change="_restructureData">
-								<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
-							</template>
-						</tr>
+						<!--
+						 https://github.com/David-Mulder/paper-datatable/issues/3 ...
+						-->
+						<template is="dom-if" if="{{multiSelection}}">
+							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItems.splices)]]">
+								<template is="dom-if" if="{{selectable}}">
+									<td>
+										<paper-checkbox checked="[[_isRowSelected(item, selectedItems.splices)]]" on-change="_setSelection"></paper-checkbox>
+									</td>
+								</template>
+								<template is="dom-repeat" items="{{columns}}" as="item" index-as="i" on-dom-change="_restructureData">
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
+								</template>
+							</tr>
+						</template>
+						<template is="dom-if" if="{{!multiSelection}}">
+							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItem)]]">
+								<template is="dom-if" if="{{selectable}}">
+									<td>
+										<paper-checkbox checked="[[_isRowSelected(item, selectedItem)]]" on-change="_setSelection"></paper-checkbox>
+									</td>
+								</template>
+								<template is="dom-repeat" items="{{columns}}" as="item" index-as="i" on-dom-change="_restructureData">
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
+								</template>
+							</tr>
+						</template>
 					</template>
 				</tbody>
 			</table>
@@ -108,8 +125,7 @@ Documentation to be written...
 						notify: true
 					},
 					selectable: {
-						type: Boolean,
-						value: true
+						type: Boolean
 					},
 					multiSelection: {
 						type: Boolean,
