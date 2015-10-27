@@ -109,8 +109,10 @@
 				],
 				_triggerSave: function(ev){
 					if(!this._disableSave && ev.detail.path){
-						console.log(ev.detail);
 						var path = ev.detail.path.split(".");
+						if(path.length == 2){
+							return;
+						}
 						var item = path.shift();
 						var rowKey = path.shift();
 
@@ -120,6 +122,7 @@
 						var id = data[this._datatable.idProperty];
 
 						//todo: complex objects 2+
+						console.log(path);
 						if(path.length > 0){
 							value = data[property];
 							this.dataSource.set(id, property, data);
