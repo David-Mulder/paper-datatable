@@ -51,7 +51,7 @@
 				<thead>
 					<tr>
 						<template is="dom-if" if="{{selectable}}">
-							<th>
+							<th style="min-width:30px;">
 								<template is="dom-if" if="{{multiSelection}}">
 									<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedItems.splices, data.splices)]]"></paper-checkbox>
 								</template>
