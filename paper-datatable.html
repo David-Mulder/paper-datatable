@@ -391,7 +391,7 @@ Documentation to be written...
 
 				_rowTapped: function(ev){
 
-					var triggeredEvent = this.fire('rowTapped', {id: ev.model.item}, {cancelable: true})
+					var triggeredEvent = this.fire('row-tapped', {id: ev.model.item}, {cancelable: true})
 					if(!triggeredEvent.defaultPrevented){
 						if(ev.path[0].nodeName.toLowerCase() == 'td') {
 							this._toggleSelection(ev.model.item);
