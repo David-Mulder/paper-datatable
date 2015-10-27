@@ -73,7 +73,7 @@
 						 https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItems.splices)]]">
+							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItems.splices)]]" on-tap="_rowTapped">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
 										<paper-checkbox checked="[[_isRowSelected(item, selectedItems.splices)]]" on-change="_setSelection"></paper-checkbox>
@@ -85,7 +85,7 @@
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItem)]]">
+							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItem)]]" on-tap="_rowTapped">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
 										<paper-checkbox checked="[[_isRowSelected(item, selectedItem)]]" on-change="_setSelection"></paper-checkbox>
@@ -353,11 +353,29 @@ Documentation to be written...
 					}
 				},
 
+				_toggleSelection: function(id){
+					if(this.multiSelection){
+						var checked = this.selectedItems.indexOf(id) > -1;
+						if(checked){
+							this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
+						}else{
+							this.push('selectedItems', id);
+						}
+					}else{
+						var checked = this.selectedItem == id;
+						if(checked){
+							this.selectedItem = null;
+						}else{
+							this.selectedItem = id;
+						}
+					}
+				},
+
 				_handleSort: function(ev){
 
 					var column = ev.model.column;
 					if(column.sortable){
-						this.set("_sort.direction", this._sort.direction == "asc" ? "desc" : "asc");
+						this.set("_sort.direction", this._sort.direction == 'asc' ? 'desc' : 'asc');
 						var triggeredEvent = this.fire("sort", {sort: this._sort, column: column}, {cancelable: true});
 						if(!triggeredEvent.defaultPrevented){
 							this._internalSortEnabled = false;
@@ -371,8 +389,20 @@ Documentation to be written...
 
 				},
 
-				sort: function(property, sortType){
+				_rowTapped: function(ev){
 
+					var triggeredEvent = this.fire('rowTapped', {id: ev.model.item}, {cancelable: true})
+					if(!triggeredEvent.defaultPrevented){
+						if(ev.path[0].nodeName.toLowerCase() == 'td') {
+							this._toggleSelection(ev.model.item);
+						}
+						/*var paperCheckbox = ev.path.find(function(el){
+							return el.nodeName.toLowerCase() == "tr";
+						}).querySelector("paper-checkbox");
+						console.log("here", paperCheckbox);
+						this._setSelection(ev);*/
+
+					}
 				}
 
 			});
