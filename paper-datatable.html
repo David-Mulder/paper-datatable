@@ -58,7 +58,7 @@
 							</th>
 						</template>
 						<template is="dom-repeat" items="{{columns}}" as="column">
-							<th data-direction$="[[_sort.direction]]" data-column="[[column]]" on-tap="_handleSort">
+							<th data-direction$="[[_sort.direction]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
 								<template is="dom-if" if="[[_isEqual(column.property, _sort.property)]]">
 									<iron-icon icon="arrow-drop-down"></iron-icon>
 								</template>

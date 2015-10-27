@@ -20,6 +20,12 @@
 					title: String,
 					sortable: Boolean,
 					editable: Boolean,
+					_styleString: {
+						type: String,
+						value: function(){
+							return this.getAttribute('style');
+						}
+					},
 					default: Object,
 					align: {
 						type: String,
@@ -118,7 +124,11 @@
 					}
 					//console.log("set", parentPath, "to", value);
 					this.parentNodeRef.set(parentPath, value);
+				},
+				_getStyleString: function(){
+					return 'color: red'
 				}
+
 			});
 		})();
 	</script>
