@@ -201,9 +201,7 @@ Documentation to be written...
 				},
 
 				_restructureData: function(datachange, columns){
-					console.info("restructureData");
 					if(Polymer.dom(this).querySelectorAll('paper-datatable-column').length === this.columns.length) {
-						console.info('process empty cells');
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
 
 						var findById = function(el){
@@ -259,7 +257,6 @@ Documentation to be written...
 					if(path.length >= 3){
 						var object = path.shift();
 						var rowI = path.shift();
-						console.log(rowI, change.path, change, this.data);
 						var id = this.get("data."+rowI+"."+this.idProperty);
 						//var id = this.data[rowI][this.idProperty];
 
@@ -320,7 +317,6 @@ Documentation to be written...
 					if(this.multiSelection){
 						return this.selectedItems.indexOf(id) > -1;
 					}else{
-						console.log(id);
 						return this.selectedItem == id;
 					}
 				},
