@@ -141,6 +141,8 @@
 
 						var processItems = function(items){
 
+							this._datatable.splice("data", 0, this._datatable.data.length);
+
 							var args = ["data"].concat(items);
 							this._datatable.push.apply(this._datatable,args);
 
