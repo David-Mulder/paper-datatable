@@ -395,14 +395,12 @@ Documentation to be written...
 					if(!triggeredEvent.defaultPrevented){
 						if(ev.path[0].nodeName.toLowerCase() == 'td') {
 							this._toggleSelection(ev.model.item);
+							ev.preventDefault();
 						}
-						/*var paperCheckbox = ev.path.find(function(el){
-							return el.nodeName.toLowerCase() == "tr";
-						}).querySelector("paper-checkbox");
-						console.log("here", paperCheckbox);
-						this._setSelection(ev);*/
-
+					}else{
+						ev.preventDefault();
 					}
+
 				}
 
 			});
