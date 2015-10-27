@@ -14,9 +14,9 @@
 		<template is="dom-bind" id="app">
 			<paper-card style="padding:20px;margin:20px;display:block;">
 				<paper-datatable data="{{data}}" id-property="aid" selectable>
-					<paper-datatable-column header="ID" property="aid" type="String" title="Some title" sortable>	</paper-datatable-column>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" title="Some title" sortable>	</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" title="The total amount of..." sortable>
+					<paper-datatable-column header="ID" property="aid" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
 						<template>
 							<paper-input value="{{value}}" no-label-float></paper-input>
 						</template>
@@ -25,22 +25,22 @@
 			</paper-card>
 			<paper-card style="padding:20px;margin:20px;display:block;">
 				<paper-datatable data="{{data}}" id-property="aid" selectable multi-selection>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" title="Some title" sortable>	</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" title="The total amount of..." sortable>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
 						<template>
 							<paper-input value="{{value}}"></paper-input>
 							<paper-input value="{{item.calories}}"></paper-input>
 							<paper-input value="{{item.complexObj.a}}"></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Object" property="complexObj" type="Object" title="The total amount of..." sortable>
+					<paper-datatable-column header="Object" property="complexObj" type="Object" tooltip="The total amount of..." sortable>
 						<template>
 							<paper-input value="{{value.a}}"></paper-input>
 							<paper-input value="{{item.complexObj.a}}"></paper-input>
 							<paper-input value="{{item.complexObj.b}}"></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Array" property="arr" type="Array" title="The total amount of..." sortable>
+					<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." sortable>
 						<template>
 							<template is="dom-repeat" items="{{value}}" as="valueItem">
 								<paper-input value="{{valueItem}}"></paper-input>

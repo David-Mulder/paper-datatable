@@ -20,13 +20,13 @@
 					<paper-icon-button icon="delete"></paper-icon-button>
 				</div>
 				<paper-datatable selectable>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" title="Some title" sortable>	</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" title="The total amount of..." sortable>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
 						<template>
 							<paper-input value="{{value}}" no-label-float></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Author" property="author" title="The total amount of...">
+					<paper-datatable-column header="Author" property="author" tooltip="The total amount of...">
 						<template>
 							<paper-input value="{{value.first}}" style="display:inline-block;"></paper-input>
 							<paper-input value="{{value.last}}" style="display:inline-block;"></paper-input>

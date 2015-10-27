@@ -3,6 +3,7 @@
 <link rel="import" href="paper-datatable-column.html">
 
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <script src="weakCache.js"></script>
 
 <dom-module id="paper-datatable">
@@ -64,6 +65,9 @@
 									<iron-icon icon="arrow-drop-down"></iron-icon>
 								</template>
 								<span>{{column.header}}</span>
+								<template is="dom-if" if="[[column.tooltip]]">
+									<paper-tooltip>{{column.tooltip}}</paper-tooltip>
+								</template>
 							</th>
 						</template>
 					</tr>

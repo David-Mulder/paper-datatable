@@ -31,7 +31,8 @@
     "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
     "paper-toolbar": "PolymerElements/paper-toolbar#~1.0.4",
     "paper-card": "PolymerElements/paper-card#~1.0.7",
-    "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.13"
+    "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.13",
+    "paper-tooltip": "PolymerElements/paper-tooltip#~1.1.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
