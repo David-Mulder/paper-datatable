@@ -138,8 +138,7 @@ Documentation to be written...
 					},
 					selectedItem: {
 						type: Number,
-						notify: true,
-						value: -1
+						notify: true
 					},
 					idProperty: {
 						type: String,
@@ -349,7 +348,7 @@ Documentation to be written...
 						if(this.multiSelection){
 							this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
 						}else{
-							this.selectedItem = -1;
+							this.selectedItem = undefined;
 						}
 					}
 				},
