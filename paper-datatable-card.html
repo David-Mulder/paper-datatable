@@ -136,22 +136,21 @@
 				},
 				_getVisibleData: function(){
 
-					this._disableSave = true;
+					this.debounce("visibleData", function(){
+						this._disableSave = true;
 
+						var processItems = function(items){
 
-					var processItems = function(items){
+							var args = ["data"].concat(items);
+							this._datatable.push.apply(this._datatable,args);
 
-						var args = ["data"].concat(items);
-						this._datatable.push.apply(this._datatable,args);
+							this._disableSave = false;
+							/*items.forEach(function(item){
 
-						this._disableSave = false;
-						/*items.forEach(function(item){
+							 }.bind(this));*/
 
-						 }.bind(this));*/
+						}.bind(this);
 
-					}.bind(this);
-
-					this.async(function(){
 						var queryArgs = [{}, {property: this._datatable._sort.property, direction: this._datatable._sort.direction}, this.page, this.pageSize];
 
 						this._datatable.splice("data", 0, this._datatable.data.length);
@@ -164,9 +163,7 @@
 						}else{
 							this.dataSource.get.apply(this.dataSource, queryArgs).then(processItems);
 						}
-
-					});
-
+					}, 0);
 
 				},
 				_getRangeStart: function(){
