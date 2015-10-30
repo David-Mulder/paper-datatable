@@ -192,15 +192,15 @@ Documentation to be written...
 								a = b;
 								b = c;
 							}
-							var aItem = this.data.find(function(item){
+							var valA = this.data.find(function(item){
 								return item[this.idProperty] == a;
-							}.bind(this));
-							var bItem = this.data.find(function(item){
+							}.bind(this))[this._sort.property] || "";
+							var valB = this.data.find(function(item){
 								return item[this.idProperty] == b;
-							}.bind(this));
+							}.bind(this))[this._sort.property] || "";
 
-							if(aItem[this._sort.property] < bItem[this._sort.property]) return -1;
-							if(aItem[this._sort.property] > bItem[this._sort.property]) return 1;
+							if(valA < valB) return -1;
+							if(valA > valB) return 1;
 							return 0;
 						}.bind(this));
 						this.set("_rowIds", JSON.parse(JSON.stringify(this._rowIds)));
