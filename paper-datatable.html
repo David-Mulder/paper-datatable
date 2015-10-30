@@ -359,19 +359,21 @@ Documentation to be written...
 				},
 
 				_toggleSelection: function(id){
-					if(this.multiSelection){
-						var checked = this.selectedItems.indexOf(id) > -1;
-						if(checked){
-							this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
+					if(this.selectable){
+						if(this.multiSelection){
+							var checked = this.selectedItems.indexOf(id) > -1;
+							if(checked){
+								this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
+							}else{
+								this.push('selectedItems', id);
+							}
 						}else{
-							this.push('selectedItems', id);
-						}
-					}else{
-						var checked = this.selectedItem == id;
-						if(checked){
-							this.selectedItem = null;
-						}else{
-							this.selectedItem = id;
+							var checked = this.selectedItem == id;
+							if(checked){
+								this.selectedItem = null;
+							}else{
+								this.selectedItem = id;
+							}
 						}
 					}
 				},
