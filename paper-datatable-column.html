@@ -5,6 +5,23 @@
 				display: block;
 			}
 		</style>
+		<template id="arrayTemplate">
+			<template is="dom-repeat" items="{{value}}" as="arrayItem">
+				<div class="array-tag">{{_getArrayItemLabel(arrayItem)}}</div>
+			</template>
+			<!--
+			<template is="dom-if" if="{{column.arrayDisplayProp}}">
+				<template is="dom-repeat" items="{{value}}" as="arrayItem">
+					<div class="array-tag">{{_getProp(arrayItem, column.arrayDisplayProp)}}</div>
+				</template>
+			</template>
+			<template is="dom-if" if="{{!column.arrayDisplayProp}}">
+				<template is="dom-repeat" items="{{value}}" as="arrayItem">
+					<div class="array-tag">{{arrayItem}}</div>
+				</template>
+			</template>
+			-->
+		</template>
 	</template>
 
 	<script>
@@ -20,6 +37,15 @@
 					tooltip: String,
 					sortable: Boolean,
 					editable: Boolean,
+					/**
+					 * If `type` is an `Array` and the array consists of `Object`s it's a common need
+					 * to display a single property of every object (in non-editable mode).
+					 *
+					 * @attribute arrayDisplayProp
+					 * @type String
+					 * @default
+					 */
+					arrayDisplayProp: String,
 					_styleString: {
 						type: String,
 						value: function(){
@@ -34,11 +60,15 @@
 				},
 				ready: function() {
 					var template = Polymer.dom(this).querySelector('template');
+					if(!template && this.type.toLowerCase() == "array"){
+						var template = this.$.arrayTemplate;
+					}
 					if(template) {
 
 						this._instanceProps = {};
 						this._instanceProps.item = true;
 						this._instanceProps.value = true;
+						this._instanceProps.column = true;
 
 						this.templatize(template);
 
@@ -65,14 +95,44 @@
 				},
 				createCellInstance: function(model, notificationId, notificationProp){
 					if(typeof model[this.property] == "undefined" && typeof this.default !== "undefined"){
-						var instance = this.stamp({item: model, value: this.default, _dataId: notificationId});
+						var instance = this.stamp({item: model, column:this, value: this.default, _dataId: notificationId});
 					}else{
-						var instance = this.stamp({item: model, value: model[this.property], _dataId: notificationId});
+						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataId: notificationId});
 					}
+
+					instance._getProp = function(obj, prop){
+						return obj[prop];
+					};
 
 					//console.log(instance, {id: notificationId, prop: notificationProp});
 					//this.map.set(instance, {id: notificationId, prop: notificationProp});
 					return instance;
+				},
+				formatValue: function(data){
+					if(this.type.toLowerCase() == "string"){
+						return data;
+					}else if(this.type.toLowerCase() == "number"){
+						return data;
+					}else if(this.type.toLowerCase() == "boolean"){
+						return data ? "Yes" : "No";
+					}else if(this.type.toLowerCase() == "date"){
+						return data.getUTCFullYear() +"/"+ (data.getUTCMonth()+1) +"/"+ data.getUTCDate() + " " + data.getUTCHours() + ":" + data.getUTCMinutes() + ":" + data.getUTCSeconds();
+					}else{
+						return "?";
+					}
+				},
+				_cast: function(value){
+					if(this.type.toLowerCase() == "string"){
+						return value.toString();
+					}else if(this.type.toLowerCase() == "number"){
+						return parseFloat(value);
+					}else if(this.type.toLowerCase() == "boolean"){
+						return value ? true : false;
+					}else if(this.type.toLowerCase() == "date"){
+						return new Date(value);
+					}else{
+						return value;
+					}
 				},
 				behaviors: [
 					Polymer.Templatizer
@@ -88,7 +148,8 @@
 					var item = path.shift();
 					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
 					if(item == "value"){
-						var parentPath = ["data",dataRowI,this.property].join(".");
+						var parentPath = ["data", dataRowI, this.property].join(".");
+						value = this._cast(value);
 						//console.log('_forwardInstanceProp',arguments);
 						//console.log("set", parentPath, "to", value);
 						this.parentNodeRef.set(parentPath, value);
@@ -114,7 +175,10 @@
 					var item = path.shift();
 					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
 					if(item == "value"){
-						var parentPath = ["data", 0, this.property].concat(path).join(".");
+						var parentPath = ["data", dataRowI, this.property].concat(path).join(".");
+						if(path.length == 0){
+							value = this._cast(value);
+						}
 						//console.log(parentPath, path.join("."), value)
 						//console.log('_forwardInstancePath',arguments);
 					}else if(item == "item"){
@@ -125,9 +189,16 @@
 					//console.log("set", parentPath, "to", value);
 					this.parentNodeRef.set(parentPath, value);
 				},
-				_getStyleString: function(){
-					return 'color: red'
+				_getRootDataHost: function(){
+					return this;
+				},
+				_getArrayItemLabel: function(value){
+					return this.arrayDisplayProp ? value[this.arrayDisplayProp] : value;
+				},
+				_getProp: function(obj, prop){
+					return obj[prop];
 				}
+
 
 			});
 		})();

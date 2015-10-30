@@ -46,6 +46,10 @@
 			tbody tr:last-of-type td{
 				border-bottom:none;
 			}
+			.array-tag {
+				display: inline-block;
+				@apply(--paper-datatable-array-item);
+			}
 		</style>
 		<div>
 			<content select="paper-datatable-column"></content>
@@ -257,7 +261,8 @@ Documentation to be written...
 										cell.innerHTML = '';
 										cell.appendChild(instance.root);
 									}else{
-										cell.textContent = data;
+										cell.innerHTML = this.columns[cellI].formatValue(data)
+										//cell.textContent = data;
 									}
 								}
 							}
@@ -281,6 +286,7 @@ Documentation to be written...
 						//var id = this.data[rowI][this.idProperty];
 
 						var row = Polymer.dom(this.root).querySelector('tbody tr[data-id=\''+id+'\']');
+
 						var cells = row.querySelectorAll('td.bound-cell');
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
@@ -294,7 +300,7 @@ Documentation to be written...
 									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}else{
-									cell.textContent = change.value;
+									cell.innerHTML = this.columns[i].formatValue(change.value);
 								}
 							}
 							if(cell.instance){

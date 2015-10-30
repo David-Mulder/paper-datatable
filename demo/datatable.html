@@ -3,13 +3,30 @@
 	<head>
 		<title></title>
 		<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
 		<link rel="import" href="../../polymer/polymer.html">
 		<link rel="import" href="../../paper-card/paper-card.html">
 		<link rel="import" href="../paper-datatable-card.html">
 		<link rel="import" href="../paper-datatable.html">
+		<style is="custom-style">
+
+			:root{
+				--paper-datatable-array-item: {
+					min-width: 15px;
+					height: 17px;
+					text-align: center;
+					border-radius: 8px;
+					background: gray;
+					color: white;
+					padding: 0px 1px;
+				};
+			}
+		</style>
 	</head>
 	<body>
-
 
 		<template is="dom-bind" id="app">
 			<paper-card style="padding:20px;margin:20px;display:block;">
@@ -49,6 +66,16 @@
 					</paper-datatable-column>
 				</paper-datatable>
 			</paper-card>
+
+			<paper-card style="padding:20px;margin:20px;display:block;">
+				<paper-datatable data="{{data}}" id-property="aid" selectable multi-selection>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable></paper-datatable-column>
+					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" tooltip="Some title" sortable></paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable></paper-datatable-column>
+					<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." sortable></paper-datatable-column>
+					<paper-datatable-column header="Created" property="created" type="Date" tooltip="The total amount of..." sortable></paper-datatable-column>
+				</paper-datatable>
+			</paper-card>
 			Calories: <span>{{data.0.calories}}</span>
 			Array item: <span>{{data.0.arr.0}}</span>
 			<paper-input value="{{data.1.calories}}"></paper-input>
@@ -57,8 +84,9 @@
 		<script>
 			var app = document.querySelector('#app');
 			app.data = [
-				{aid: "asdf", title: "Ice cream", calories: 2000, complexObj: {a:"b",b:"d"}, arr: [2,3,4]},
-				{aid: "sdfg", title: "Dessert", calories: 3000, complexObj: {a:"bb",b:"dd"}, arr: [5,6]}
+				{aid: "asdf", title: "Ice cream", yummy: true, calories: 2000, complexObj: {a:"b",b:"d"}, arr: [2,3,4], created: new Date()},
+				{aid: "sdfg", title: "Dessert", yummy: true, calories: 3000, complexObj: {a:"bb",b:"dd"}, arr: [5,6], created: new Date()},
+				{aid: "sdas", title: "Cake", yummy: false, calories: 4000, complexObj: {a:"cc",b:"gg"}, arr: [7,8], created: new Date()}
 			];
 		</script>
 
