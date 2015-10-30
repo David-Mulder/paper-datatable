@@ -112,14 +112,15 @@
 					return instance;
 				},
 				formatValue: function(data){
+					var value = this._cast(data);
 					if(this.type.toLowerCase() == 'string'){
-						return data;
+						return value;
 					}else if(this.type.toLowerCase() == 'number'){
-						return data;
+						return value;
 					}else if(this.type.toLowerCase() == 'boolean'){
-						return data ? 'Yes' : 'No';
+						return value ? 'Yes' : 'No';
 					}else if(this.type.toLowerCase() == 'date'){
-						return data.getUTCFullYear() +'/'+ (data.getUTCMonth()+1) +'/'+ data.getUTCDate() + ' ' + data.getUTCHours() + ':' + data.getUTCMinutes() + ':' + data.getUTCSeconds();
+						return value.getUTCFullYear() +'/'+ (value.getUTCMonth()+1) +'/'+ value.getUTCDate() + ' ' + value.getUTCHours() + ':' + value.getUTCMinutes() + ':' + value.getUTCSeconds();
 					}else{
 						return '?';
 					}
