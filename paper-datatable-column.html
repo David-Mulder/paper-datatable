@@ -112,6 +112,9 @@
 					return instance;
 				},
 				formatValue: function(data){
+					if(typeof data == 'undefined'){
+						return '';
+					}
 					var value = this._cast(data);
 					if(this.type.toLowerCase() == 'string'){
 						return value;
