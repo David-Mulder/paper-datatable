@@ -64,9 +64,9 @@
 								<template is="dom-if" if="[[_isEqual(column.property, _sort.property)]]">
 									<iron-icon icon="arrow-drop-down"></iron-icon>
 								</template>
-								<span>{{column.header}}</span>
+								<span id="title">{{column.header}}</span>
 								<template is="dom-if" if="[[column.tooltip]]">
-									<paper-tooltip>{{column.tooltip}}</paper-tooltip>
+									<paper-tooltip offset="-3">{{column.tooltip}}</paper-tooltip>
 								</template>
 							</th>
 						</template>
