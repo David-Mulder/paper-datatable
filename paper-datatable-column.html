@@ -35,7 +35,7 @@
 					property: String,
 					type: {
 						type: String,
-						default: ""
+						value: ''
 					},
 					tooltip: String,
 					sortable: Boolean,
@@ -112,26 +112,26 @@
 					return instance;
 				},
 				formatValue: function(data){
-					if(this.type.toLowerCase() == "string"){
+					if(this.type.toLowerCase() == 'string'){
 						return data;
-					}else if(this.type.toLowerCase() == "number"){
+					}else if(this.type.toLowerCase() == 'number'){
 						return data;
-					}else if(this.type.toLowerCase() == "boolean"){
-						return data ? "Yes" : "No";
-					}else if(this.type.toLowerCase() == "date"){
-						return data.getUTCFullYear() +"/"+ (data.getUTCMonth()+1) +"/"+ data.getUTCDate() + " " + data.getUTCHours() + ":" + data.getUTCMinutes() + ":" + data.getUTCSeconds();
+					}else if(this.type.toLowerCase() == 'boolean'){
+						return data ? 'Yes' : 'No';
+					}else if(this.type.toLowerCase() == 'date'){
+						return data.getUTCFullYear() +'/'+ (data.getUTCMonth()+1) +'/'+ data.getUTCDate() + ' ' + data.getUTCHours() + ':' + data.getUTCMinutes() + ':' + data.getUTCSeconds();
 					}else{
-						return "?";
+						return '?';
 					}
 				},
 				_cast: function(value){
-					if(this.type.toLowerCase() == "string"){
+					if(this.type.toLowerCase() == 'string'){
 						return value.toString();
-					}else if(this.type.toLowerCase() == "number"){
+					}else if(this.type.toLowerCase() == 'number'){
 						return parseFloat(value);
-					}else if(this.type.toLowerCase() == "boolean"){
+					}else if(this.type.toLowerCase() == 'boolean'){
 						return value ? true : false;
-					}else if(this.type.toLowerCase() == "date"){
+					}else if(this.type.toLowerCase() == 'date'){
 						return new Date(value);
 					}else{
 						return value;
@@ -147,17 +147,17 @@
 					console.warn('_forwardParentPath',arguments);
 				},
 				_forwardInstanceProp: function(templateInstance, prop, value){
-					var path = prop.split(".");
+					var path = prop.split('.');
 					var item = path.shift();
 					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
-					if(item == "value"){
-						var parentPath = ["data", dataRowI, this.property].join(".");
+					if(item == 'value'){
+						var parentPath = ['data', dataRowI, this.property].join('.');
 						value = this._cast(value);
 						//console.log('_forwardInstanceProp',arguments);
-						//console.log("set", parentPath, "to", value);
+						//console.log('set', parentPath, 'to', value);
 						this.parentNodeRef.set(parentPath, value);
 
-					}else if(item == "item"){
+					}else if(item == 'item'){
 						console.warn('_forwardInstanceProp',arguments);
 					}
 				},
@@ -165,31 +165,31 @@
 					//var path = this.map.get(templateInstance);
 					//todo: Re-Implement complex objects
 					//var notification = this.map.get(templateInstance);
-					//var path = ["data" , this.parentNodeRef._getDataRowIFromID(notification.id), notification.prop];
+					//var path = ['data' , this.parentNodeRef._getDataRowIFromID(notification.id), notification.prop];
 
 					//if(prop.replace('item','').length > 0){
 					//	path.push(prop.replace('item',''));
 					//}
 					//console.log(path);
-					//this.parentNodeRef.set(path.join("."), value);
+					//this.parentNodeRef.set(path.join('.'), value);
 
 
-					var path = prop.split(".");
+					var path = prop.split('.');
 					var item = path.shift();
 					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
-					if(item == "value"){
-						var parentPath = ["data", dataRowI, this.property].concat(path).join(".");
+					if(item == 'value'){
+						var parentPath = ['data', dataRowI, this.property].concat(path).join('.');
 						if(path.length == 0){
 							value = this._cast(value);
 						}
-						//console.log(parentPath, path.join("."), value)
+						//console.log(parentPath, path.join('.'), value)
 						//console.log('_forwardInstancePath',arguments);
-					}else if(item == "item"){
-						var parentPath = ["data", dataRowI].concat(path).join(".");
+					}else if(item == 'item'){
+						var parentPath = ['data', dataRowI].concat(path).join('.');
 						//console.log(parentPath, value);
 						//console.log('_forwardInstancePath',arguments);
 					}
-					//console.log("set", parentPath, "to", value);
+					//console.log('set', parentPath, 'to', value);
 					this.parentNodeRef.set(parentPath, value);
 				},
 				_getRootDataHost: function(){
