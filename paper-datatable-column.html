@@ -7,7 +7,7 @@
 		</style>
 		<template id="arrayTemplate">
 			<template is="dom-repeat" items="{{value}}" as="arrayItem">
-				<div class="array-tag">{{_getArrayItemLabel(arrayItem)}}</div>
+				<div class="array-item">{{_getArrayItemLabel(arrayItem)}}</div>
 			</template>
 			<!--
 			<template is="dom-if" if="{{column.arrayDisplayProp}}">
