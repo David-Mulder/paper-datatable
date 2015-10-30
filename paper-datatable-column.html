@@ -33,7 +33,10 @@
 				properties: {
 					header: String,
 					property: String,
-					type: String,
+					type: {
+						type: String,
+						default: ""
+					},
 					tooltip: String,
 					sortable: Boolean,
 					editable: Boolean,
