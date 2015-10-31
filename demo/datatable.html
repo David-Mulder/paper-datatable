@@ -72,17 +72,23 @@
 					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable editable></paper-datatable-column>
 					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" tooltip="Some title" sortable editable align="center"></paper-datatable-column>
 					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable editable></paper-datatable-column>
-					<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." editable></paper-datatable-column>
-					<paper-datatable-column header="Created" property="created" type="Date" tooltip="The total amount of..." sortable editable></paper-datatable-column>
+					<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..."></paper-datatable-column>
+					<paper-datatable-column header="Created" property="created" type="Date" tooltip="The total amount of..." sortable cell-style="color:gray;"></paper-datatable-column>
 				</paper-datatable>
 			</paper-card>
-			Calories: <span>{{data.0.calories}}</span>
-			Array item: <span>{{data.0.arr.0}}</span>
+
+			Calories: <span>{{getItem(data.*, 'data.0.calories')}}</span>
+			Array item: <span>{{getItem(data.*, 'data.0.arr.0')}}</span>
 			<paper-input value="{{data.1.calories}}"></paper-input>
 		</template>
 
 		<script>
 			var app = document.querySelector('#app');
+			//this function is necessary, because since Polymer 1.2 paths with indexes aren't allowed in direct bindings
+			app.getItem = function(watcher, path){
+				console.log()
+				return this.get(path);
+			}
 			app.data = [
 				{aid: "asdf", title: "Ice cream", yummy: true, calories: 2000, complexObj: {a:"b",b:"d"}, arr: [2,3,4], created: new Date()},
 				{aid: "sdfg", title: "Dessert", yummy: true, calories: 3000, complexObj: {a:"bb",b:"dd"}, arr: [5,6], created: new Date()},
