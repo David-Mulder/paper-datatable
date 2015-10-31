@@ -21,6 +21,7 @@
 				color: #6D6E70;
 				font-weight: normal;
 				text-align:left;
+				white-space: nowrap;
 			}
 			th iron-icon{
 				transition: transform .2s linear;
@@ -70,7 +71,7 @@
 								</template>
 								<span id="title">{{column.header}}</span>
 								<template is="dom-if" if="[[column.tooltip]]">
-									<paper-tooltip offset="-3">{{column.tooltip}}</paper-tooltip>
+									<paper-tooltip offset="-10">{{column.tooltip}}</paper-tooltip>
 								</template>
 							</th>
 						</template>
