@@ -69,11 +69,11 @@
 
 			<paper-card style="padding:20px;margin:20px;display:block;">
 				<paper-datatable data="{{data}}" id-property="aid" selectable multi-selection>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable></paper-datatable-column>
-					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" tooltip="Some title" sortable></paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable></paper-datatable-column>
-					<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." sortable></paper-datatable-column>
-					<paper-datatable-column header="Created" property="created" type="Date" tooltip="The total amount of..." sortable></paper-datatable-column>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable editable></paper-datatable-column>
+					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" tooltip="Some title" sortable editable align="center"></paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable editable></paper-datatable-column>
+					<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." editable></paper-datatable-column>
+					<paper-datatable-column header="Created" property="created" type="Date" tooltip="The total amount of..." sortable editable></paper-datatable-column>
 				</paper-datatable>
 			</paper-card>
 			Calories: <span>{{data.0.calories}}</span>
