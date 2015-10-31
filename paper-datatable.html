@@ -412,7 +412,7 @@ Documentation to be written...
 
 					var triggeredEvent = this.fire('row-tap', {id: ev.model.item}, {cancelable: true})
 					if(!triggeredEvent.defaultPrevented){
-						if(ev.path[0].nodeName.toLowerCase() == 'td') {
+						if(ev.target.nodeName.toLowerCase() == 'td') {
 							this._toggleSelection(ev.model.item);
 							ev.preventDefault();
 						}
