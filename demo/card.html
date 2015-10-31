@@ -20,19 +20,19 @@
 					<paper-icon-button icon="delete"></paper-icon-button>
 				</div>
 				<paper-datatable selectable>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
+					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px">
+						<template>
+							<paper-input value="{{value.first}}" no-label-float style="display:inline-block;"></paper-input>
+							<paper-input value="{{value.last}}" no-label-float style="display:inline-block;"></paper-input>
+						</template>
+					</paper-datatable-column>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable style="width: 99%">	</paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px">
 						<template>
 							<paper-input value="{{value}}" no-label-float></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Author" property="author" tooltip="The total amount of...">
-						<template>
-							<paper-input value="{{value.first}}" style="display:inline-block;"></paper-input>
-							<paper-input value="{{value.last}}" style="display:inline-block;"></paper-input>
-						</template>
-					</paper-datatable-column>
-					<paper-datatable-column property="isAdmin" header="Administrator" default="false">
+					<paper-datatable-column property="isAdmin" header="Administrator" default="false" style="min-width: 150px" cell-style="padding-left:40px;">
 						<template>
 							<paper-checkbox checked="{{value}}"></paper-checkbox>
 						</template>
