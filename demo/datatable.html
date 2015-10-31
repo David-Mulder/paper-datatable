@@ -79,14 +79,12 @@
 
 			Calories: <span>{{getItem(data.*, 'data.0.calories')}}</span>
 			Array item: <span>{{getItem(data.*, 'data.0.arr.0')}}</span>
-			<paper-input value="{{data.1.calories}}"></paper-input>
 		</template>
 
 		<script>
 			var app = document.querySelector('#app');
 			//this function is necessary, because since Polymer 1.2 paths with indexes aren't allowed in direct bindings
 			app.getItem = function(watcher, path){
-				console.log()
 				return this.get(path);
 			}
 			app.data = [
