@@ -250,6 +250,11 @@ Documentation to be written...
 									var data = rowData[prop];
 									cell.setAttribute('data-row-id', rowData[this.idProperty]);
 
+									if(this.columns[cellI].cellStyle.length > 0){
+										cell.setAttribute('style', this.columns[cellI].cellStyle);
+									}else{
+										cell.setAttribute('style', '');
+									}
 									cell.style['text-align'] = this.columns[cellI].align;
 
 									if(this.columns[cellI].template){
