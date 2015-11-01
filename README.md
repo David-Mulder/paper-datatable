@@ -1,14 +1,41 @@
 # paper-datatable
 
-A material design implementation of a data table. Let's call this a ~~pre-~~alpha release. I will hopefully be fixing it more and more over time and since upgrading to Polymer 1.2 I have a problem with some of the bindings (Issue #1), but the `card.html` demo seems to be in working order. I will gladly accept pull requests and I think it's pretty solid basis, but stuff like documentation and custom styling is still quite lacking.
+A material design implementation of a data table. Let's call this a ~~pre-~~alpha release. I will hopefully be fixing it more and more over time, but figuring out why it isn't working in Microsoft Edge is a problem that keeps eluding me. To be honest I can only recommend usage in Chrome-heavy environments (although Firefox works as well, albeit a bit slower).
 
-Small update: At this point (release 0.1) I am starting to feel relatively comfortable about the basic functionality, but there is little to no cross-browser support (mostly chrome only and firefox is functional, will be working on this definitely, but this is currently used on a backend system it doesn't matter *that* much yet).
+**Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cell and listen for data changes)
 
 ## Installation
 
 The element can be installed using bower using
 
-    bower install --save David-Mulder/paper-datatable
+    bower install --save paper-datatable
+
+## Usage
+
+Honestly, the best thing you can do right now is simply check out the two examples. Either way, there are two main elements in this component:
+
+ - `<paper-datatable>` generates the basic datatable
+ - `<paper-datatable-card>` wraps the `<paper-datatable>` and simplifies the creation of features like pagination, etc.
+
+### `<paper-datatable>` example
+
+    <paper-datatable data="{{data}}">
+      <!-- a plaintext sortable column -->
+      <paper-datatable-column header="Title" property="title" sortable></paper-datatable-column>
+      <!-- an editable column -->
+      <paper-datatable-column header="Author" property="title" editable></paper-datatable-column>
+      <!-- a custom column -->
+      <paper-datatable-column header="Page" property="page">
+        <template>
+          <!--
+            this template is used for every cell in this column, you have access to:
+             - `{{value}}`: The value of the current property (`data.n.page`)
+             - `{{item}}`: The value of the current item (`data.n`)
+          -->
+          <paper-input value="{{value}}">
+        </template>
+      </paper-datatable-column>
+    </paper-datatable>
 
 ## Dependencies
 
