@@ -4,7 +4,7 @@ A [material design implementation of a data table](https://www.google.com/design
 
 Documentation can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
 
-**Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cell and listen for data changes), as far as I know this is pretty unique, but it's also the reason why it can be a bit slow on Firefox and is so hard to get working on Edge.
+**Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cells and listen for data changes), as far as I know this is pretty unique, but it's also the reason why it can be a bit slow on Firefox and is so hard to get working on Edge.
 
 ## Installation
 
