@@ -50,7 +50,9 @@
 					_styleString: {
 						type: String,
 						value: function(){
-							return this.getAttribute('style');
+							var alignment = this.align || this.getAttribute('align') || '';
+							var styleString = this.getAttribute('style') || '';
+							return 'text-align:'+alignment+';'+styleString;
 						}
 					},
 					default: Object,
