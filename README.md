@@ -19,23 +19,25 @@ Honestly, the best thing you can do right now is simply check out the two exampl
 
 ### `<paper-datatable>` example
 
-    <paper-datatable data="{{data}}">
-      <!-- a plaintext sortable column -->
-      <paper-datatable-column header="Title" property="title" sortable></paper-datatable-column>
-      <!-- an editable column -->
-      <paper-datatable-column header="Author" property="title" editable></paper-datatable-column>
-      <!-- a custom column -->
-      <paper-datatable-column header="Page" property="page">
-        <template>
-          <!--
-            this template is used for every cell in this column, you have access to:
-             - `{{value}}`: The value of the current property (`data.n.page`)
-             - `{{item}}`: The value of the current item (`data.n`)
-          -->
-          <paper-input value="{{value}}">
-        </template>
-      </paper-datatable-column>
-    </paper-datatable>
+```html
+<paper-datatable data="{{data}}">
+  <!-- a plaintext sortable column -->
+  <paper-datatable-column header="Title" property="title" sortable></paper-datatable-column>
+  <!-- an editable column -->
+  <paper-datatable-column header="Author" property="title" editable></paper-datatable-column>
+  <!-- a custom column -->
+  <paper-datatable-column header="Page" property="page">
+	<template>
+	  <!--
+		this template is used for every cell in this column, you have access to:
+		 - `{{value}}`: The value of the current property (`data.n.page`)
+		 - `{{item}}`: The value of the current item (`data.n`)
+	  -->
+	  <paper-input value="{{value}}">
+	</template>
+  </paper-datatable-column>
+</paper-datatable>
+```
 
 ## Dependencies
 
