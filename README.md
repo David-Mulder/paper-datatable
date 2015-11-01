@@ -43,13 +43,7 @@ And you can find the full documentation [here](http://david-mulder.github.io/pap
 </paper-datatable>
 ```
 
-## Dependencies
+##Ideas & Brainstorm
 
-Element dependencies are managed via [Bower](http://bower.io/). You can
-install that via:
-
-    npm install -g bower
-
-Then, go ahead and download the element's dependencies:
-
-    bower install
+ - Initialize template only `on-tap`, somewhat in line with the Material Design editable indicator
+ - Add option to add new items. The hard part is however that `<paper-datatable-card>` works with a `setProperty` save API, so we would need to add a dedicated function just for saving new documents :( .
