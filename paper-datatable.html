@@ -47,9 +47,24 @@
 			tbody tr:last-of-type td{
 				border-bottom:none;
 			}
-			.array-item {
+			tbody td .array-item {
 				display: inline-block;
 				@apply(--paper-datatable-array-item);
+			}
+			tbody td .class-1 {
+				@apply(--paper-datatable-class-1);
+			}
+			tbody td .class-2 {
+				@apply(--paper-datatable-class-2);
+			}
+			tbody td .class-3 {
+				@apply(--paper-datatable-class-3);
+			}
+			tbody td .class-4 {
+				@apply(--paper-datatable-class-4);
+			}
+			tbody td .class-5 {
+				@apply(--paper-datatable-class-5);
 			}
 		</style>
 		<div>
@@ -64,7 +79,7 @@
 								</template>
 							</th>
 						</template>
-						<template is="dom-repeat" items="{{columns}}" as="column">
+						<template is="dom-repeat" items="{{_columns}}" as="column">
 							<th data-direction$="[[_sort.direction]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
 								<template is="dom-if" if="[[_isEqual(column.property, _sort.property)]]">
 									<iron-icon icon="arrow-drop-down"></iron-icon>
@@ -89,7 +104,7 @@
 										<paper-checkbox checked="[[_isRowSelected(item, selectedItems.splices)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{columns}}" as="item" index-as="i" on-dom-change="_restructureData">
+								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
 									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
 								</template>
 							</tr>
@@ -101,7 +116,7 @@
 										<paper-checkbox checked="[[_isRowSelected(item, selectedItem)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{columns}}" as="item" index-as="i" on-dom-change="_restructureData">
+								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
 									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
 								</template>
 							</tr>
@@ -118,7 +133,33 @@
 			'use strict';
 			/* jshint eqeqeq : false */
 			/*
-Documentation to be written...
+The main element defining the data table. Data is provided to the `data` attribute as an array of objects and based on the `<paper-datatable-column>`'s cells will be generated for the respective properties.
+
+Styling
+===
+The biggest difficulty is styling, because the way Polymer and the shadow DOM works it's incredibly hard to style elements that are hidden in the shadow DOM, as is the case for the cells. Dynamically setting up mixins isn't possible either however, so in the end the following compromise was reached:
+
+Header cell and Row cell styling
+---
+It is possible to define a css string that will be applied to the header cell and all cells in a column like
+
+	<paper-datatable-column [...] style="color:green;" cell-style="color:red;"></paper-datatable-column>
+
+Which would make the header `green` and the content in each cell in the column `red`. This is especially useful to set a `min-width` on the header. There is also a convenience attribute `align='center'` to center columns (both the header and cells).
+
+
+Mixins
+---
+
+ - `--paper-datatable-array-item`: Only works when using the proper Shadow DOM and is applied to columns using the `array-display-prop` attribute.
+ - `--paper-datatable-class-1`: Applied to any content in cells with `class='class-1'`.
+ - `--paper-datatable-class-2`: Applied to any content in cells with `class='class-2'`.
+ - `--paper-datatable-class-3`: Applied to any content in cells with `class='class-3'`.
+ - `--paper-datatable-class-4`: Applied to any content in cells with `class='class-4'`.
+ - `--paper-datatable-class-5`: Applied to any content in cells with `class='class-5'`.
+
+@element paper-datatable
+@demo demo/paper-datatable.html
 			 */
 
 
@@ -127,29 +168,77 @@ Documentation to be written...
 				is: 'paper-datatable',
 
 				properties: {
-					columns: {
+					/**
+					 * Read only array of all the `paper-datatable-column`'s
+					 *
+					 * @attribute _columns
+					 * @type Array
+					 */
+					_columns: {
 						type: Array
 					},
+					/**
+					 * Array of objects containing the data to be shown in the table.
+					 *
+					 * @attribute data
+					 * @type Array
+					 * @required
+					 */
 					data: {
 						type: Array,
 						notify: true
 					},
+					/**
+					 * Whether to show checkboxes on the left to allow row selection.
+					 *
+					 * @attribute selectable
+					 * @type Boolean
+					 * @default false
+					 */
 					selectable: {
 						type: Boolean
 					},
+					/**
+					 * Whether to allow selection of more than one row.
+					 *
+					 * @attribute multiSelection
+					 * @type Boolean
+					 * @default false
+					 */
 					multiSelection: {
 						type: Boolean,
 						value: false
 					},
+					/**
+					 * If `multi-selection` then this contains an array of selected row id's.
+					 *
+					 * @attribute selectedItems
+					 * @type Array
+					 * @default []
+					 */
 					selectedItems: {
 						type: Array,
 						notify: true,
 						value: []
 					},
+					/**
+					 * If `multi-selection` is off then this contains the id of the selected row.
+					 *
+					 * @attribute selectedItem
+					 * @type String
+					 */
 					selectedItem: {
 						type: Number,
 						notify: true
 					},
+					/**
+					 * Property containing the `id` of every row. It is **important** this is available and set correctly for a lot of functionality.
+					 *
+					 * @attribute idProperty
+					 * @type String
+					 * @default 'id'
+					 * @required
+					 */
 					idProperty: {
 						type: String,
 						value: 'id'
@@ -170,7 +259,7 @@ Documentation to be written...
 				},
 
 				observers: [
-					/*'restructureData(data.*, columns.splices)',*/
+					/*'restructureData(data.*, _columns.splices)',*/
 					'_notifyPathOnInstances(data.*)',
 					'_internalSort(_internalSortEnabled, _sort.property)',
 					'_setRowIds(data.splices)'
@@ -217,7 +306,7 @@ Documentation to be written...
 				},
 
 				ready: function() {
-					this.set('columns', []);
+					this.set('_columns', []);
 					this.set('selectedItems', []);
 					this.set('_sort', {
 						property: this.idProperty,
@@ -225,8 +314,8 @@ Documentation to be written...
 					});
 				},
 
-				_restructureData: function(datachange, columns){
-					if(Polymer.dom(this).querySelectorAll('paper-datatable-column').length === this.columns.length) {
+				_restructureData: function(){
+					if(Polymer.dom(this).querySelectorAll('paper-datatable-column').length === this._columns.length) {
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
 
 						var findById = function(el){
@@ -246,19 +335,19 @@ Documentation to be written...
 								if(cell.hasAttribute('data-empty') || cell.getAttribute('data-row-id') !== row.dataset.id){
 									cell.removeAttribute('data-empty');
 
-									var prop = this.columns[cellI].property;
+									var prop = this._columns[cellI].property;
 									var data = rowData[prop];
 									cell.setAttribute('data-row-id', rowData[this.idProperty]);
 
-									if(this.columns[cellI].cellStyle.length > 0){
-										cell.setAttribute('style', this.columns[cellI].cellStyle);
+									if(this._columns[cellI].cellStyle.length > 0){
+										cell.setAttribute('style', this._columns[cellI].cellStyle);
 									}else{
 										cell.setAttribute('style', '');
 									}
-									cell.style['text-align'] = this.columns[cellI].align;
+									cell.style['text-align'] = this._columns[cellI].align;
 
-									if(this.columns[cellI].template){
-										var instance = this.columns[cellI].createCellInstance(
+									if(this._columns[cellI].template){
+										var instance = this._columns[cellI].createCellInstance(
 												rowData,
 												rowData[this.idProperty],
 												prop
@@ -267,7 +356,7 @@ Documentation to be written...
 										cell.innerHTML = '';
 										cell.appendChild(instance.root);
 									}else{
-										cell.innerHTML = this.columns[cellI].formatValue(data)
+										cell.innerHTML = this._columns[cellI].formatValue(data)
 										//cell.textContent = data;
 									}
 								}
@@ -306,7 +395,7 @@ Documentation to be written...
 									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}else{
-									cell.innerHTML = this.columns[i].formatValue(change.value);
+									cell.innerHTML = this._columns[i].formatValue(change.value);
 								}
 							}
 							if(cell.instance){

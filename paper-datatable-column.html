@@ -22,17 +22,87 @@
 		(function () {
 			'use strict';
 
+			/*
+This element is used inside of `<paper-datatable>` to declare the columns to be shown in the datatable.
+
+Editable columns
+---
+There are two ways to define editable columns, the easiest way is to just set the `editable` attribute like
+
+	<paper-datatable-column header="Author" property="title" type="String" editable></paper-datatable-column>
+
+which which is internally equal to
+
+	<paper-datatable-column header="Author" property="title">
+		<template>
+			 <paper-input value="{{value}}" no-label-float></paper-input>
+		</template>
+	</paper-datatable-column>
+
+Styling
+---
+&nbsp;*See the documentation for `<paper-datatable>`. *
+
+@element paper-datatable-column
+			*/
+
 			Polymer({
 				is: 'paper-datatable-column',
 				properties: {
+					/**
+					 * String displayed in `<th></th>`
+					 *
+					 * @attribute header
+					 * @type String
+					 * @required
+					 */
 					header: String,
+					/**
+					 * The property to be used from `data` for this column
+					 *
+					 * @attribute property
+					 * @type String
+					 * @required
+					 */
 					property: String,
+					/**
+					 * The type of the property (can be 'String', 'Number', 'Array', 'Date', etc.)
+					 * Used for sorting and default display
+					 *
+					 * @attribute type
+					 * @type String
+					 * @default 'String'
+					 */
 					type: {
 						type: String,
 						value: 'String'
 					},
+					/**
+					 * Tooltip shown when hovering the `<th>`
+					 *
+					 * @attribute tooltip
+					 * @type String
+					 */
 					tooltip: String,
+					/**
+					 * Whether to show sorting UI on the column. Sorting only works automagically
+					 * on simple data types.
+					 *
+					 * @attribute sortable
+					 * @type Boolean
+					 * @default false
+					 */
 					sortable: Boolean,
+					/**
+					 * If `type` is a simple type, then if this is true one of the default editable
+					 * templates is used. For example if `type` is `String` every cell will contain
+					 * a `<paper-input`. This is practically just a convenience method so that you
+					 * don't have to define every `<template>` on your own.
+					 *
+					 * @attribute editable
+					 * @type Boolean
+					 * @default false
+					 */
 					editable: Boolean,
 					/**
 					 * If `type` is an `Array` and the array consists of `Object`s it's a common need
@@ -40,13 +110,25 @@
 					 *
 					 * @attribute arrayDisplayProp
 					 * @type String
-					 * @default
 					 */
 					arrayDisplayProp: String,
+
+					/**
+					 * Style to be applied to every cell.
+					 *
+					 * @attribute cellStyle
+					 * @type String
+					 */
 					cellStyle: {
 						type: String,
 						value: ''
 					},
+					/**
+					 * Style to be applied to the header.
+					 *
+					 * @attribute style
+					 * @type String
+					 */
 					_styleString: {
 						type: String,
 						value: function(){
@@ -55,7 +137,21 @@
 							return 'text-align:'+alignment+';'+styleString;
 						}
 					},
+					/**
+					 * If you have `undefined`'s in your `data` this method can be used to
+					 * set a default, thus preventing auto-saves from triggering.
+					 *
+					 * @attribute default
+					 * @type Object
+					 */
 					default: Object,
+					/**
+					 * Convenience attribute to align the header and cell content (e.g. 'center')
+					 *
+					 * @attribute align
+					 * @type String
+					 * @default 'left'
+					 */
 					align: {
 						type: String,
 						value: 'left'
@@ -88,7 +184,7 @@
 					}
 				},
 				attached: function() {
-					Polymer.dom(this).parentNode.push('columns', this);
+					Polymer.dom(this).parentNode.push('_columns', this);
 					this.parentNodeRef = Polymer.dom(this).parentNode;
 				},
 				detached: function() {

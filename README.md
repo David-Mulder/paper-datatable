@@ -2,7 +2,7 @@
 
 A material design implementation of a data table. Let's call this a ~~pre-~~alpha release. I will hopefully be fixing it more and more over time, but figuring out why it isn't working in Microsoft Edge is a problem that keeps eluding me. To be honest I can only recommend usage in Chrome-heavy environments (although Firefox works as well, albeit a bit slower).
 
-**Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cell and listen for data changes)
+**Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cell and listen for data changes), as far as I know this is pretty unique, but it's also the reason why it can be a bit slow on Firefox and is so hard to get working on Edge.
 
 ## Installation
 
