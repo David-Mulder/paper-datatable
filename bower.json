@@ -15,7 +15,7 @@
     "paper-datatable.html",
     "paper-datatable-card.html"
   ],
-  "license": "http://polymer.github.io/LICENSE.txt",
+  "license": "http://www.gnu.org/licenses/gpl-3.0.en.html",
   "homepage": "https://github.com/David Mulder/paper-datatable/",
   "ignore": [
     "/.*",

@@ -92,11 +92,11 @@
 			//this function is necessary, because since Polymer 1.2 paths with indexes aren't allowed in direct bindings
 			app.getItem = function(watcher, path){
 				return this.get(path);
-			}
+			};
 			app.data = [
-				{aid: "asdf", title: "Ice cream", yummy: true, calories: 2000, complexObj: {a:"b",b:"d"}, arr: [2,3,4], created: new Date()},
-				{aid: "sdfg", title: "Dessert", yummy: true, calories: 3000, complexObj: {a:"bb",b:"dd"}, arr: [5,6], created: new Date()},
-				{aid: "sdas", title: "Cake", yummy: false, calories: 4000, complexObj: {a:"cc",b:"gg"}, arr: [7,8], created: new Date()}
+				{aid: 'asdf', title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], created: new Date()},
+				{aid: 'sdfg', title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], created: new Date()},
+				{aid: 'sdas', title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], created: new Date()}
 			];
 		</script>
 

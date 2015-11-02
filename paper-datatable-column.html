@@ -157,6 +157,9 @@ Styling
 						value: 'left'
 					}
 				},
+				behaviors: [
+					Polymer.Templatizer
+				],
 				ready: function() {
 					var template = Polymer.dom(this).querySelector('template');
 					if(!template && this.type.toLowerCase() == "array"){
@@ -245,9 +248,6 @@ Styling
 						return value;
 					}
 				},
-				behaviors: [
-					Polymer.Templatizer
-				],
 				_forwardParentProp: function(prop, value){
 					console.warn('_forwardParentProp',arguments);
 				},
@@ -271,7 +271,6 @@ Styling
 				},
 				_forwardInstancePath: function(templateInstance, prop, value){
 					//var path = this.map.get(templateInstance);
-					//todo: Re-Implement complex objects
 					//var notification = this.map.get(templateInstance);
 					//var path = ['data' , this.parentNodeRef._getDataRowIFromID(notification.id), notification.prop];
 
