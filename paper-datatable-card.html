@@ -166,7 +166,7 @@
 
 						}.bind(this);
 
-						var queryArgs = [{}, {property: this._datatable._sort.property, direction: this._datatable._sort.direction}, this.page, this.pageSize];
+						var queryArgs = [{}, {property: this._datatable.sortProperty, direction: this._datatable.sortDirection}, this.page, this.pageSize];
 
 						this._datatable.splice("data", 0, this._datatable.data.length);
 

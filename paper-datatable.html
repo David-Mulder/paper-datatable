@@ -80,8 +80,8 @@
 							</th>
 						</template>
 						<template is="dom-repeat" items="{{_columns}}" as="column">
-							<th data-direction$="[[_sort.direction]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
-								<template is="dom-if" if="[[_isEqual(column.property, _sort.property)]]">
+							<th data-direction$="[[sortDirection]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+								<template is="dom-if" if="[[_isEqual(column.property, sortProperty)]]">
 									<iron-icon icon="arrow-drop-down"></iron-icon>
 								</template>
 								<span id="title">{{column.header}}</span>
@@ -243,8 +243,13 @@ Mixins
 						type: String,
 						value: 'id'
 					},
-					_sort: {
-						type: Object
+					sortProperty: {
+						type: String,
+						value: ''
+					},
+					sortDirection: {
+						type: String,
+						value: 'asc'
 					},
 					_internalSortEnabled: {
 						type: Boolean,
@@ -261,7 +266,7 @@ Mixins
 				observers: [
 					/*'restructureData(data.*, _columns.splices)',*/
 					'_notifyPathOnInstances(data.*)',
-					'_internalSort(_internalSortEnabled, _sort.property)',
+					'_internalSort(_internalSortEnabled, sortProperty, sortDirection)',
 					'_setRowIds(data.splices)'
 				],
 
@@ -279,19 +284,19 @@ Mixins
 
 				_internalSort: function(){
 					if(this._internalSortEnabled) {
-						console.info("INTERNAL SORT on",this._sort.property);
+						console.info("INTERNAL SORT on",this.sortProperty);
 						this._rowIds.sort(function(a, b){
-							if(this._sort.direction == "asc"){
+							if(this.sortDirection == "asc"){
 								var c = a;
 								a = b;
 								b = c;
 							}
 							var valA = this.data.find(function(item){
 								return item[this.idProperty] == a;
-							}.bind(this))[this._sort.property] || "";
+							}.bind(this))[this.sortProperty] || "";
 							var valB = this.data.find(function(item){
 								return item[this.idProperty] == b;
-							}.bind(this))[this._sort.property] || "";
+							}.bind(this))[this.sortProperty] || "";
 
 							if(valA < valB) return -1;
 							if(valA > valB) return 1;
@@ -308,10 +313,10 @@ Mixins
 				ready: function() {
 					this.set('_columns', []);
 					this.set('selectedItems', []);
-					this.set('_sort', {
+					/*this.set('_sort', {
 						property: this.idProperty,
 						direction: 'asc'
-					});
+					});*/
 				},
 
 				_restructureData: function(){
@@ -493,14 +498,17 @@ Mixins
 
 					var column = ev.model.column;
 					if(column.sortable){
-						this.set("_sort.direction", this._sort.direction == 'asc' ? 'desc' : 'asc');
-						var triggeredEvent = this.fire("sort", {sort: this._sort, column: column}, {cancelable: true});
+						this.set("sortDirection", this.sortDirection == 'asc' ? 'desc' : 'asc');
+						var triggeredEvent = this.fire("sort", {sort: {
+							property: this.sortProperty,
+							direction: this.sortDirection
+						}, column: column}, {cancelable: true});
 						if(!triggeredEvent.defaultPrevented){
 							this._internalSortEnabled = false;
-							this.set("_sort.property", column.property);
+							this.set("sortProperty", column.property);
 							this._internalSortEnabled = true;
 						}else{
-							this.set("_sort.property", column.property);
+							this.set("sortProperty", column.property);
 							this._internalSortEnabled = false;
 						}
 					}
