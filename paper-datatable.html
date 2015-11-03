@@ -424,6 +424,16 @@ Mixins
 					}.bind(this));
 				},
 
+				deselectAll: function(){
+					if(this.multiSelection) {
+						this.selectedItems.forEach(function(selectedItem, i){
+							this.splice('selectedItems', i, 1);
+						}.bind(this));
+					}else{
+						this.set('selectedItem', undefined);
+					}
+				},
+
 				_allChecked: function(){
 					var allChecked = true;
 					this.data.forEach(function(item){
