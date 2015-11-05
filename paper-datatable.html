@@ -562,6 +562,9 @@ Mixins
 				},
 
 				_getById: function(id){
+					if(id === null){
+						return null;
+					}
 					if(typeof id === 'object'){
 						return id.map(this._getById.bind(this));
 					}else{
