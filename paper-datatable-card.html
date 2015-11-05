@@ -43,7 +43,7 @@
 				</div>
 				<div id="selectionToolbar" class="horizontal center layout fit" data-visible$="[[_selectedToolbarVisible]]">
 					<div class="flex" style="font-size:16px;font-family:Roboto">
-						<span>[[_numberSelectedItems]]</span> item selected
+						<span>[[_numberselectedIds]]</span> item selected
 					</div>
 					<div class="toolbar">
 						<content select="*[toolbar-select]"></content>
@@ -110,8 +110,8 @@
 					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
 					this._datatable.data = [];
 					this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
-					this._datatable.addEventListener("selected-item-changed", this._setSelectedToolbarVisible.bind(this));
-					this._datatable.addEventListener("selected-items-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("selected-id-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("selected-ids-changed", this._setSelectedToolbarVisible.bind(this));
 					this._datatable.addEventListener("sort", this._handleSort.bind(this));
 				},
 				observers: [
@@ -201,11 +201,11 @@
 				},
 				_setSelectedToolbarVisible: function(){
 					if(this._datatable.multiSelection){
-						this._selectedToolbarVisible = this._datatable.selectedItems.length > 0;
-						this._numberSelectedItems = this._datatable.selectedItems.length;
+						this._selectedToolbarVisible = this._datatable.selectedIds.length > 0;
+						this._numberselectedIds = this._datatable.selectedIds.length;
 					}else{
-						this._selectedToolbarVisible = this._datatable.selectedItem ? true : false;
-						this._numberSelectedItems = this._datatable.selectedItem ? 1 : 0;
+						this._selectedToolbarVisible = this._datatable.selectedId ? true : false;
+						this._numberselectedIds = this._datatable.selectedId ? 1 : 0;
 					}
 				}
 

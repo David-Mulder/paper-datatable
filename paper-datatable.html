@@ -75,7 +75,7 @@
 						<template is="dom-if" if="{{selectable}}">
 							<th style="min-width:30px;">
 								<template is="dom-if" if="{{multiSelection}}">
-									<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedItems.splices, data.splices)]]"></paper-checkbox>
+									<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedIds.splices, data.splices)]]"></paper-checkbox>
 								</template>
 							</th>
 						</template>
@@ -98,10 +98,10 @@
 						 https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItems.splices)]]" on-tap="_rowTapped">
+							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedIds.splices)]]" on-tap="_rowTapped">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
-										<paper-checkbox checked="[[_isRowSelected(item, selectedItems.splices)]]" on-change="_setSelection"></paper-checkbox>
+										<paper-checkbox checked="[[_isRowSelected(item, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
 								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
@@ -110,10 +110,10 @@
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedItem)]]" on-tap="_rowTapped">
+							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedId)]]" on-tap="_rowTapped">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
-										<paper-checkbox checked="[[_isRowSelected(item, selectedItem)]]" on-change="_setSelection"></paper-checkbox>
+										<paper-checkbox checked="[[_isRowSelected(item, selectedId)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
 								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
@@ -212,11 +212,11 @@ Mixins
 					/**
 					 * If `multi-selection` then this contains an array of selected row id's.
 					 *
-					 * @attribute selectedItems
+					 * @attribute selectedIds
 					 * @type Array
 					 * @default []
 					 */
-					selectedItems: {
+					selectedIds: {
 						type: Array,
 						notify: true,
 						value: []
@@ -224,12 +224,34 @@ Mixins
 					/**
 					 * If `multi-selection` is off then this contains the id of the selected row.
 					 *
-					 * @attribute selectedItem
-					 * @type String
+					 * @attribute selectedId
+					 * @type Object
+					 */
+					selectedId: {
+						type: Object,
+						notify: true
+					},
+					/**
+					 * If `multi-selection` is off then this contains the selected row.
+					 *
+					 * @attribute selectedId
+					 * @type Object
 					 */
 					selectedItem: {
-						type: Number,
-						notify: true
+						type: Object,
+						notify: true,
+						computed: '_getById(selectedId)'
+					},
+					/**
+					 * If `multi-selection` is on then this contains an array of the selected rows.
+					 *
+					 * @attribute selectedId
+					 * @type Object
+					 */
+					selectedItems: {
+						type: Array,
+						notify: true,
+						computed: '_getById(selectedIds)'
 					},
 					/**
 					 * Property containing the `id` of every row. It is **important** this is available and set correctly for a lot of functionality.
@@ -243,10 +265,24 @@ Mixins
 						type: String,
 						value: 'id'
 					},
+					/**
+					 * Property to sort on
+					 *
+					 * @attribute sortProperty
+					 * @type String
+					 * @default ''
+					 */
 					sortProperty: {
 						type: String,
 						value: ''
 					},
+					/**
+					 * Direction to sort in
+					 *
+					 * @attribute sortDirection
+					 * @type String
+					 * @default 'asc'
+					 */
 					sortDirection: {
 						type: String,
 						value: 'asc'
@@ -291,12 +327,8 @@ Mixins
 								a = b;
 								b = c;
 							}
-							var valA = this.data.find(function(item){
-								return item[this.idProperty] == a;
-							}.bind(this))[this.sortProperty] || "";
-							var valB = this.data.find(function(item){
-								return item[this.idProperty] == b;
-							}.bind(this))[this.sortProperty] || "";
+							var valA = this._getById(a)[this.sortProperty] || "";
+							var valB = this._getById(b)[this.sortProperty] || "";
 
 							if(valA < valB) return -1;
 							if(valA > valB) return 1;
@@ -312,7 +344,7 @@ Mixins
 
 				ready: function() {
 					this.set('_columns', []);
-					this.set('selectedItems', []);
+					this.set('selectedIds', []);
 					/*this.set('_sort', {
 						property: this.idProperty,
 						direction: 'asc'
@@ -416,14 +448,14 @@ Mixins
 					// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
 					var allChecked = this._allChecked();
 					this.data.forEach(function(item){
-						var i = this.selectedItems.indexOf(item[this.idProperty]);
+						var i = this.selectedIds.indexOf(item[this.idProperty]);
 						if(allChecked){
 							if(i > -1){
-								this.splice('selectedItems', i, 1);
+								this.splice('selectedIds', i, 1);
 							}
 						}else{
 							if(i == -1){
-								this.push('selectedItems', item[this.idProperty]);
+								this.push('selectedIds', item[this.idProperty]);
 							}
 						}
 					}.bind(this));
@@ -431,18 +463,18 @@ Mixins
 
 				deselectAll: function(){
 					if(this.multiSelection) {
-						this.selectedItems.forEach(function(selectedItem, i){
-							this.splice('selectedItems', i, 1);
+						this.selectedIds.forEach(function(selectedId, i){
+							this.splice('selectedIds', i, 1);
 						}.bind(this));
 					}else{
-						this.set('selectedItem', undefined);
+						this.set('selectedId', undefined);
 					}
 				},
 
 				_allChecked: function(){
 					var allChecked = true;
 					this.data.forEach(function(item){
-						if(this.selectedItems.indexOf(item[this.idProperty]) == -1){
+						if(this.selectedIds.indexOf(item[this.idProperty]) == -1){
 							allChecked = false;
 						}
 					}.bind(this));
@@ -451,9 +483,9 @@ Mixins
 
 				_isRowSelected: function(id){
 					if(this.multiSelection){
-						return this.selectedItems.indexOf(id) > -1;
+						return this.selectedIds.indexOf(id) > -1;
 					}else{
-						return this.selectedItem == id;
+						return this.selectedId == id;
 					}
 				},
 
@@ -461,15 +493,15 @@ Mixins
 					var id = ev.model.item;
 					if(ev.target.checked){
 						if(this.multiSelection){
-							this.push('selectedItems', id);
+							this.push('selectedIds', id);
 						}else{
-							this.selectedItem = id;
+							this.selectedId = id;
 						}
 					}else{
 						if(this.multiSelection){
-							this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
+							this.splice('selectedIds', this.selectedIds.indexOf(id), 1);
 						}else{
-							this.selectedItem = null;
+							this.selectedId = null;
 						}
 					}
 				},
@@ -477,18 +509,18 @@ Mixins
 				_toggleSelection: function(id){
 					if(this.selectable){
 						if(this.multiSelection){
-							var checked = this.selectedItems.indexOf(id) > -1;
+							var checked = this.selectedIds.indexOf(id) > -1;
 							if(checked){
-								this.splice('selectedItems', this.selectedItems.indexOf(id), 1);
+								this.splice('selectedIds', this.selectedIds.indexOf(id), 1);
 							}else{
-								this.push('selectedItems', id);
+								this.push('selectedIds', id);
 							}
 						}else{
-							var checked = this.selectedItem == id;
+							var checked = this.selectedId == id;
 							if(checked){
-								this.selectedItem = null;
+								this.selectedId = null;
 							}else{
-								this.selectedItem = id;
+								this.selectedId = id;
 							}
 						}
 					}
@@ -527,6 +559,16 @@ Mixins
 						ev.preventDefault();
 					}
 
+				},
+
+				_getById: function(id){
+					if(typeof id === 'object'){
+						return id.map(this._getById.bind(this));
+					}else{
+						return this.data.find(function(item){
+							return item[this.idProperty] == id;
+						}.bind(this));
+					}
 				}
 
 			});
