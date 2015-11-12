@@ -155,7 +155,15 @@ Styling
 					align: {
 						type: String,
 						value: 'left'
-					}
+					},
+					/**
+					 * Can be overwritten to manually format the value in a non-editable state
+					 *
+					 * @attribute relativeDate
+					 * @type Function
+					 * @default see code
+					 */
+					relativeDate: Function
 				},
 				behaviors: [
 					Polymer.Templatizer
@@ -232,6 +240,7 @@ Styling
 					}else if(this.type.toLowerCase() == 'date'){
 						return value.getUTCFullYear() +'/'+ (value.getUTCMonth()+1) +'/'+ value.getUTCDate() + ' ' + value.getUTCHours() + ':' + value.getUTCMinutes() + ':' + value.getUTCSeconds();
 					}else{
+						console.warn('Complex objects should implement their own template.', data);
 						return '?';
 					}
 				},
@@ -264,23 +273,11 @@ Styling
 						//console.log('_forwardInstanceProp',arguments);
 						//console.log('set', parentPath, 'to', value);
 						this.parentNodeRef.set(parentPath, value);
-
 					}else if(item == 'item'){
 						console.warn('_forwardInstanceProp',arguments);
 					}
 				},
 				_forwardInstancePath: function(templateInstance, prop, value){
-					//var path = this.map.get(templateInstance);
-					//var notification = this.map.get(templateInstance);
-					//var path = ['data' , this.parentNodeRef._getDataRowIFromID(notification.id), notification.prop];
-
-					//if(prop.replace('item','').length > 0){
-					//	path.push(prop.replace('item',''));
-					//}
-					//console.log(path);
-					//this.parentNodeRef.set(path.join('.'), value);
-
-
 					var path = prop.split('.');
 					var item = path.shift();
 					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));

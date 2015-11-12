@@ -5,6 +5,7 @@
 		<title></title>
 
 		<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="./relativeDate.js"></script>
 		<script>
 			window.Polymer = window.Polymer || {};
 			window.Polymer.dom = 'shadow';
@@ -84,7 +85,7 @@
 					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" sortable editable align="center"></paper-datatable-column>
 					<paper-datatable-column header="Calories" property="calories" type="Number" sortable editable></paper-datatable-column>
 					<paper-datatable-column header="Array" property="arr" type="Array"></paper-datatable-column>
-					<paper-datatable-column header="Created" property="created" type="Date" sortable cell-style="color:gray;"></paper-datatable-column>
+					<paper-datatable-column id="dateTest" header="Created" property="created" type="Date" sortable cell-style="color:gray;" format-value="{{formatDate}}"></paper-datatable-column>
 				</paper-datatable>
 			</paper-card>
 
@@ -99,10 +100,13 @@
 				return this.get(path);
 			};
 			app.data = [
-				{aid: 'asdf', title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], created: new Date()},
-				{aid: 'sdfg', title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], created: new Date()},
-				{aid: 'sdas', title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], created: new Date()}
+				{aid: 'asdf', title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], created: new Date(1447315235838)},
+				{aid: 'sdfg', title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], created: new Date(1447155235838)},
+				{aid: 'sdas', title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], created: new Date(1447355135838)}
 			];
+
+			/* relativeDate is defined in relativeDate.js */
+			app.formatDate = relativeDate;
 		</script>
 
 	</body>

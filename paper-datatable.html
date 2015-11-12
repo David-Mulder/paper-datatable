@@ -117,7 +117,7 @@
 									</td>
 								</template>
 								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}" on-tap="_cellTapped"></td>
 								</template>
 							</tr>
 						</template>
@@ -147,6 +147,9 @@ It is possible to define a css string that will be applied to the header cell an
 
 Which would make the header `green` and the content in each cell in the column `red`. This is especially useful to set a `min-width` on the header. There is also a convenience attribute `align='center'` to center columns (both the header and cells).
 
+Events
+===
+There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell.
 
 Mixins
 ---
@@ -548,8 +551,7 @@ Mixins
 				},
 
 				_rowTapped: function(ev){
-
-					var triggeredEvent = this.fire('row-tap', {id: ev.model.item}, {cancelable: true})
+					var triggeredEvent = this.fire('row-tap', {id: ev.model.item, originalEvent: ev}, {cancelable: true});
 					if(!triggeredEvent.defaultPrevented){
 						if(ev.target.nodeName.toLowerCase() == 'td') {
 							this._toggleSelection(ev.model.item);
@@ -559,6 +561,10 @@ Mixins
 						ev.preventDefault();
 					}
 
+				},
+
+				_cellTapped: function(ev){
+					this.fire('cell-tap', {column: ev.model.item, originalEvent: ev}, {});
 				},
 
 				_getById: function(id){
