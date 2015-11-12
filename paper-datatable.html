@@ -93,31 +93,31 @@
 					</tr>
 				</thead>
 				<tbody>
-					<template is="dom-repeat" items="[[_rowIds]]" on-dom-change="_restructureData">
+					<template id="rowRepeat" is="dom-repeat" items="[[_rowIds]]" as="rowId" on-dom-change="_restructureData">
 						<!--
 						 https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedIds.splices)]]" on-tap="_rowTapped">
+							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]" on-tap="_rowTapped">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
-										<paper-checkbox checked="[[_isRowSelected(item, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
+										<paper-checkbox checked="[[_isRowSelected(rowId, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}"></td>
+								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{column.property}}" on-tap="_cellTapped"></td>
 								</template>
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-id$="{{item}}" data-selected$="[[_isRowSelected(item, selectedId)]]" on-tap="_rowTapped">
+							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedId)]]" on-tap="_rowTapped">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
-										<paper-checkbox checked="[[_isRowSelected(item, selectedId)]]" on-change="_setSelection"></paper-checkbox>
+										<paper-checkbox checked="[[_isRowSelected(rowId, selectedId)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="item" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{item.property}}" on-tap="_cellTapped"></td>
+								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-row-i="{{row-i}}" data-prop="{{column.property}}" on-tap="_cellTapped"></td>
 								</template>
 							</tr>
 						</template>
@@ -149,7 +149,7 @@ Which would make the header `green` and the content in each cell in the column `
 
 Events
 ===
-There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell.
+There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell. `cell-tap` can be listened for both on `paper-datatable` and `paper-datatable-column`.
 
 Mixins
 ---
@@ -551,7 +551,7 @@ Mixins
 				},
 
 				_rowTapped: function(ev){
-					var triggeredEvent = this.fire('row-tap', {id: ev.model.item, originalEvent: ev}, {cancelable: true});
+					var triggeredEvent = this.fire('row-tap', {id: ev.model.rowId, originalEvent: ev}, {cancelable: true});
 					if(!triggeredEvent.defaultPrevented){
 						if(ev.target.nodeName.toLowerCase() == 'td') {
 							this._toggleSelection(ev.model.item);
@@ -564,7 +564,16 @@ Mixins
 				},
 
 				_cellTapped: function(ev){
-					this.fire('cell-tap', {column: ev.model.item, originalEvent: ev}, {});
+					var PolymerEvent = Polymer.dom(ev);
+					var path = PolymerEvent.path;
+					for(var i=0;i<path.length;i++){
+						if(path[i].nodeName.toLowerCase() == 'tr'){
+							break;
+						}
+					}
+					var rowModel = this.$.rowRepeat.modelForElement(path[i]);
+					ev.model.column.fire('cell-tap', {id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev});
+					this.fire('cell-tap', {column: ev.model.column, id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev}, {});
 				},
 
 				_getById: function(id){
