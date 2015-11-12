@@ -90,6 +90,16 @@
 
 			Calories: <span>{{getItem(data.*, 'data.0.calories')}}</span>
 			Array item: <span>{{getItem(data.*, 'data.0.arr.0')}}</span>
+
+			<paper-card>
+				<paper-datatable id="table_with_links" data="{{data}}" id-property="aid" selectable multi-selection>
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" sortable editable></paper-datatable-column>
+					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" sortable editable align="center"></paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" sortable editable></paper-datatable-column>
+					<paper-datatable-column header="Check out" property="weblinktext" type="Link" sortable></paper-datatable-column>
+				</paper-datatable>
+			</paper-card>
+			Check out: <span>{{urldescription}}</span> <a href="{{urlhref}}">{{urltitle}}</a>
 		</template>
 
 		<script>
@@ -99,10 +109,24 @@
 				return this.get(path);
 			};
 			app.data = [
-				{aid: 'asdf', title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], created: new Date()},
-				{aid: 'sdfg', title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], created: new Date()},
-				{aid: 'sdas', title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], created: new Date()}
+				{aid: 'asdf', title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], created: new Date(), weblink: 'https://www.google.com/search?tbm=isch&q=ice+cream', weblinktext: 'Google Picture Search'},
+				{aid: 'sdfg', title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], created: new Date(), weblink: 'https://www.google.com/search?tbm=isch&q=dessert', weblinktext: 'Google Picture Search'},
+				{aid: 'sdas', title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], created: new Date(), weblink: 'https://www.google.com/search?tbm=isch&q=cake', weblinktext: 'Google Picture Search'}
 			];
+			
+			// The dom-change event signifies when the template has stamped its DOM.
+			app.addEventListener('dom-change', function() {
+				console.log('auto-binding template is ready.');
+				var that = this;
+				this.$.table_with_links.addEventListener('link-clicked', function(e){
+					console.log(this); // we're in the context of the paper-datatable
+					var rowId = e.detail.cell.getAttribute('data-row-id');
+					var row = this.getDataRow(rowId);
+					that.urldescription = e.detail.originalEvent.target.innerText;
+					that.urltitle = row.title;
+					that.urlhref = row.weblink;
+				});
+			});
 		</script>
 
 	</body>
