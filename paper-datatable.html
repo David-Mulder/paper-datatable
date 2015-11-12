@@ -66,6 +66,10 @@
 			tbody td .class-5 {
 				@apply(--paper-datatable-class-5);
 			}
+			.link {
+				cursor: pointer;
+				@apply(--paper-datatable-class-link);
+			}
 		</style>
 		<div>
 			<content select="paper-datatable-column"></content>
@@ -157,6 +161,7 @@ Mixins
  - `--paper-datatable-class-3`: Applied to any content in cells with `class='class-3'`.
  - `--paper-datatable-class-4`: Applied to any content in cells with `class='class-4'`.
  - `--paper-datatable-class-5`: Applied to any content in cells with `class='class-5'`.
+ - `--paper-datatable-class-link`: Applied to any content of type Link.
 
 @element paper-datatable
 @demo demo/paper-datatable.html
@@ -166,6 +171,13 @@ Mixins
 			Polymer({
 
 				is: 'paper-datatable',
+
+				/**
+				 * Fired when the user makes a selection in the chart.
+				 *
+				 * @event link-clicked
+				 * @param {object} detail The details about the clicked table item link.
+				 */
 
 				properties: {
 					/**
@@ -393,7 +405,8 @@ Mixins
 										cell.innerHTML = '';
 										cell.appendChild(instance.root);
 									}else{
-										cell.innerHTML = this._columns[cellI].formatValue(data)
+										//cell.innerHTML = this._columns[cellI].formatValue(data)
+										this._injectBoundHTML(this._columns[cellI].formatValue(data), cell);
 										//cell.textContent = data;
 									}
 								}
@@ -432,7 +445,8 @@ Mixins
 									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}else{
-									cell.innerHTML = this._columns[i].formatValue(change.value);
+									//cell.innerHTML = this._columns[i].formatValue(change.value);
+									this._injectBoundHTML(this._columns[i].formatValue(change.value), cell);
 								}
 							}
 							if(cell.instance){
@@ -572,6 +586,35 @@ Mixins
 							return item[this.idProperty] == id;
 						}.bind(this));
 					}
+				},
+
+				_linkClicked: function(ev){
+					var cell = ev.target.parentElement.parentElement;
+					var details = {
+						originalEvent: ev,
+						cell: cell
+					}
+					this.fire('link-clicked', details, {cancelable: true})
+					ev.preventDefault();
+				},
+
+				// http://stackoverflow.com/questions/30836412/polymer-1-0-injectboundhtml-alternative
+				_injectBoundHTML: function(html, element){
+					var that = this;
+					var template = document.createElement('template', 'dom-bind');
+					template._linkClicked = that._linkClicked;
+					var doc = template.content.ownerDocument;
+					var div = doc.createElement('div');
+					div.innerHTML = html;
+					template.content.appendChild(div);
+					while (element.firstChild) {
+							element.removeChild(element.firstChild);
+					}
+					element.appendChild(template);
+				},
+
+				getDataRow: function(rowId){
+					return this.data[this._getDataRowIFromID(rowId)];
 				}
 
 			});

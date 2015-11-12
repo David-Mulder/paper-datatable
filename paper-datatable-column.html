@@ -225,24 +225,28 @@ Styling
 					var value = this._cast(data);
 					if(this.type.toLowerCase() == 'string'){
 						return value;
+					}else if(this.type.toLowerCase() == 'link'){
+						return '<span on-click="_linkClicked" class="link">' + value + '</span>';
 					}else if(this.type.toLowerCase() == 'number'){
-						return value;
+						return value.toLocaleString();
 					}else if(this.type.toLowerCase() == 'boolean'){
 						return value ? 'Yes' : 'No';
 					}else if(this.type.toLowerCase() == 'date'){
+						return value.getUTCFullYear() +'/'+ (value.getUTCMonth()+1) +'/'+ value.getUTCDate();
+					}else if(this.type.toLowerCase() == 'datetime'){
 						return value.getUTCFullYear() +'/'+ (value.getUTCMonth()+1) +'/'+ value.getUTCDate() + ' ' + value.getUTCHours() + ':' + value.getUTCMinutes() + ':' + value.getUTCSeconds();
 					}else{
-						return '?';
+						return value;
 					}
 				},
 				_cast: function(value){
-					if(this.type.toLowerCase() == 'string'){
+					if(this.type.toLowerCase() == 'string' || this.type.toLowerCase() == 'link'){
 						return value.toString();
 					}else if(this.type.toLowerCase() == 'number'){
 						return parseFloat(value);
 					}else if(this.type.toLowerCase() == 'boolean'){
 						return value ? true : false;
-					}else if(this.type.toLowerCase() == 'date'){
+					}else if(this.type.toLowerCase() == 'date' || this.type.toLowerCase() == 'datetime'){
 						return new Date(value);
 					}else{
 						return value;
