@@ -493,7 +493,7 @@ Mixins
 				},
 
 				_setSelection: function(ev){
-					var id = ev.model.item;
+					var id = ev.model.rowId;
 					if(ev.target.checked){
 						if(this.multiSelection){
 							this.push('selectedIds', id);
