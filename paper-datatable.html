@@ -554,7 +554,7 @@ Mixins
 					var triggeredEvent = this.fire('row-tap', {id: ev.model.rowId, originalEvent: ev}, {cancelable: true});
 					if(!triggeredEvent.defaultPrevented){
 						if(ev.target.nodeName.toLowerCase() == 'td') {
-							this._toggleSelection(ev.model.item);
+							this._toggleSelection(ev.model.rowId);
 							ev.preventDefault();
 						}
 					}else{
