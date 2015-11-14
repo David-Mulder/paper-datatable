@@ -159,7 +159,7 @@
 						 https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]" on-tap="_rowTapped">
+							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
 										<paper-checkbox checked="[[_isRowSelected(rowId, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
@@ -171,7 +171,7 @@
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedId)]]" on-tap="_rowTapped">
+							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedId)]]">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
 										<paper-checkbox checked="[[_isRowSelected(rowId, selectedId)]]" on-change="_setSelection"></paper-checkbox>
@@ -616,20 +616,8 @@ Mixins
 
 				},
 
-				_rowTapped: function(ev){
-					var triggeredEvent = this.fire('row-tap', {id: ev.model.rowId, originalEvent: ev}, {cancelable: true});
-					if(!triggeredEvent.defaultPrevented){
-						if(ev.target.nodeName.toLowerCase() == 'td') {
-							this._toggleSelection(ev.model.rowId);
-							ev.preventDefault();
-						}
-					}else{
-						ev.preventDefault();
-					}
-
-				},
-
 				_cellTapped: function(ev){
+
 					var PolymerEvent = Polymer.dom(ev);
 					var path = PolymerEvent.path;
 					for(var i=0;i<path.length;i++){
@@ -638,8 +626,20 @@ Mixins
 						}
 					}
 					var rowModel = this.$.rowRepeat.modelForElement(path[i]);
+
 					ev.model.column.fire('cell-tap', {id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev});
 					this.fire('cell-tap', {column: ev.model.column, id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev}, {});
+
+					var triggeredEvent = this.fire('row-tap', {id: rowModel.rowId, originalEvent: ev}, {cancelable: true});
+					if(!triggeredEvent.defaultPrevented){
+						if(path[0].nodeName.toLowerCase() == 'td' || !ev.model.column.editable) {
+							this._toggleSelection(rowModel.rowId);
+							ev.preventDefault();
+						}
+					}else{
+						ev.preventDefault();
+					}
+
 				},
 
 				_getById: function(id){

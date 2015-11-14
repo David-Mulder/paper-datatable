@@ -96,8 +96,11 @@ Styling
 					/**
 					 * If `type` is a simple type, then if this is true one of the default editable
 					 * templates is used. For example if `type` is `String` every cell will contain
-					 * a `<paper-input`. This is practically just a convenience method so that you
+					 * a `<paper-input>`. This is practically just a convenience method so that you
 					 * don't have to define every `<template>` on your own.
+					 *
+					 * If you do use a custom `<template>` this will prevent a `row-tap` from triggering
+					 * a selection. So if you click in a `<paper-input>` it won't select the row.
 					 *
 					 * @attribute editable
 					 * @type Boolean

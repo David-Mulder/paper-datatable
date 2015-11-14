@@ -22,7 +22,7 @@
 					<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
 				</div>
 				<paper-datatable id="datatable" id-property="sha1" selectable>
-					<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 300px">
+					<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
 						<template>
 							<div>
 								<img src="[[item.picture.thumbnail]]" style="width:32px;height:32px;border-radius:16px;vertical-align: middle;">
@@ -32,11 +32,11 @@
 							</div>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="E-mail" property="email"></paper-datatable-column>
-					<paper-datatable-column header="SSN" property="SSN"></paper-datatable-column>
-					<paper-datatable-column header="Phone" property="phone"></paper-datatable-column>
-					<paper-datatable-column header="Cell" property="cell"></paper-datatable-column>
-					<paper-datatable-column header="Address" property="location" capitalize="[[capitalize]]">
+					<paper-datatable-column header="E-mail" property="email" style="min-width: 200px;" sortable></paper-datatable-column>
+					<paper-datatable-column header="SSN" property="SSN" style="min-width: 90px;" sortable></paper-datatable-column>
+					<paper-datatable-column header="Phone" property="phone" style="min-width: 110px;" sortable></paper-datatable-column>
+					<paper-datatable-column header="Cell" property="cell" style="min-width: 110px;" sortable></paper-datatable-column>
+					<paper-datatable-column header="Address" property="location" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
 						<template>
 							<div>[[capitalize(value.street)]]</div>
 							<div><span>[[capitalize(value.state)]]</span> <span>[[capitalize(value.zip)]]</span></div>
@@ -44,6 +44,12 @@
 					</paper-datatable-column>
 				</paper-datatable>
 			</paper-datatable-card>
+
+			<div style="padding:20px; text-align:center;">
+				Note: This demo uses random data from <a href="randomuser.me">randomuser.me</a>, so because of this
+				browsing through the data is fake, sorting doesn't work and selections are not preserved, etc. The other
+				demo of the `&lt;paper-datatable-card&gt;` does support those things.
+			</div>
 
 		</template>
 
@@ -69,12 +75,10 @@
 						httpRequest.send();
 					});
 				},
+				// none of the <templates> bind in an editable way right now, but if they would this is the function
+				// that's triggered after an edit
 				set: function(id, property, value){
-					console.info("a save was triggered");
-					var item = myData.find(function(item){
-						return item.id == id;
-					});
-					item[property] = value;
+					console.info("a save was triggered", arguments);
 				},
 				length:100
 			};
@@ -86,7 +90,7 @@
 			};
 
 			app.delete = function(){
-				//do your delete first
+				// do your delete first
 				app.set('dataSource.length', app.dataSource.length - 1);
 				// and then call:
 				app.$.datatable.deselectAll();

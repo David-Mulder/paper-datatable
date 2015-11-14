@@ -50,4 +50,3 @@ And you can find the full documentation [here](http://david-mulder.github.io/pap
  - Implement weakCache.js again
  - Add a `<paper-datatable-light>` element with the same syntax, but without support for `<template>` and `editable`, but importantly with support for Edge/IE.
  - Make id's optional (through the user of the Polymer Collection API)
- - Make all elements click-through if non-editable, consequence: [EDITABLE] NEEDS TO BE DEFINED
