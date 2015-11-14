@@ -23,20 +23,34 @@
 				text-align:left;
 				white-space: nowrap;
 			}
-			th iron-icon{
-				transition: transform .2s linear;
+			th:not([data-sortable]) iron-icon.sort{
+				display: none;
 			}
-			th[data-direction='desc'] iron-icon{
+			th[data-sortable] iron-icon.sort {
+				transition: transform .2s linear, width .2s linear;
+				width: 0px;
+			}
+			th[data-sortable]{
+				/*padding-left: 0px;*/
+			}
+			th[data-sortable][data-sorted] iron-icon{
+				width: 24px;
+			}
+			th[data-sortable][data-sorted] iron-icon[data-direction='desc']{
 				transform: rotate(180deg);
 			}
 			tr td, tr th{
 				border-bottom: 1px solid var(--divider-color);
-				padding: 6px;
+				padding: 6px 28px 6px 28px;
 				height: 41px;
 			}
 			tr td:first-child, tr th:first-child{
 				padding-left: 24px;
+				padding-right: 0px;
 				width:20px;
+			}
+			tr td:nth-of-type(2), tr th:nth-of-type(2){
+				padding-left: 10px;
 			}
 			td:last-of-type, th:last-of-type{
 				padding-right: 24px;
@@ -83,10 +97,8 @@
 							</th>
 						</template>
 						<template is="dom-repeat" items="{{_columns}}" as="column">
-							<th data-direction$="[[sortDirection]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
-								<template is="dom-if" if="[[_isEqual(column.property, sortProperty)]]">
-									<iron-icon icon="arrow-drop-down"></iron-icon>
-								</template>
+							<th data-sortable$="[[column.sortable]]" data-sorted$="[[_isEqual(column.property, sortProperty)]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+								<iron-icon icon="arrow-drop-down" class="sort" data-direction$="[[sortDirection]]"></iron-icon>
 								<span id="title">{{column.header}}</span>
 								<template is="dom-if" if="[[column.tooltip]]">
 									<paper-tooltip offset="-10">{{column.tooltip}}</paper-tooltip>

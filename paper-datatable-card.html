@@ -135,9 +135,9 @@
 						console.log(path);
 						if(path.length > 0){
 							value = data[property];
-							this.dataSource.set(id, property, data);
+							this.dataSource.set(data, property, data);
 						}else{
-							this.dataSource.set(id, property, value);
+							this.dataSource.set(data, property, value);
 						}
 
 					}
