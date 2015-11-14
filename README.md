@@ -14,7 +14,7 @@ The element can be installed using bower using
 
 ## Usage
 
-Honestly, the best thing you can do right now is simply check out the two examples. Either way, there are two main elements in this component:
+Honestly, the best thing you can do right now is simply check out [the demos](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/). Either way, there are two main elements in this component:
 
  - `<paper-datatable>` generates the basic datatable
  - `<paper-datatable-card>` wraps the `<paper-datatable>` and simplifies the creation of features like pagination, etc.
