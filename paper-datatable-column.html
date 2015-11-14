@@ -241,7 +241,10 @@ Styling
 					}else if(this.type.toLowerCase() == 'boolean'){
 						return value ? 'Yes' : 'No';
 					}else if(this.type.toLowerCase() == 'date'){
-						return value.getUTCFullYear() +'/'+ (value.getUTCMonth()+1) +'/'+ value.getUTCDate() + ' ' + value.getUTCHours() + ':' + value.getUTCMinutes() + ':' + value.getUTCSeconds();
+						var prependZero = function(val){
+							return val < 10 ? '0' + val : val;
+						}
+						return value.getUTCFullYear() +'/'+ prependZero(value.getUTCMonth()+1) +'/'+ prependZero(value.getUTCDate()) + '&nbsp;' + prependZero(value.getUTCHours()) + ':' + prependZero(value.getUTCMinutes()) + ':' + prependZero(value.getUTCSeconds());
 					}else{
 						console.warn('Complex objects should implement their own template.', data);
 						return '?';

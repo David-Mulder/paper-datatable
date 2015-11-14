@@ -156,7 +156,7 @@
 				<tbody>
 					<template id="rowRepeat" is="dom-repeat" items="[[_rowIds]]" as="rowId" on-dom-change="_restructureData">
 						<!--
-						 https://github.com/David-Mulder/paper-datatable/issues/3 ...
+						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
 							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]">
