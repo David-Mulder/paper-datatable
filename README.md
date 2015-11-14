@@ -2,7 +2,7 @@
 
 A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty solid alpha release, but not yet even beta. I will hopefully be fixing it more and more over time, but figuring out why it isn't working in Microsoft Edge is a problem that keeps eluding me. To be honest I can only recommend usage in Chrome-heavy environments (although Firefox works as well, albeit a bit slower).
 
-Documentation **and demos* can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
+Documentation **and demos** can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
 
 **Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cells and listen for data changes), as far as I know this is pretty unique, but it's also the reason why it can be a bit slow on Firefox and is so hard to get working on Edge.
 
