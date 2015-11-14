@@ -31,7 +31,10 @@
 				width: 0px;
 			}
 			th[data-sortable]{
-				/*padding-left: 0px;*/
+				transition: padding-left .2s linear;
+			}
+			th[data-sortable][data-sorted]{
+				padding-left: 4px;
 			}
 			th[data-sortable][data-sorted] iron-icon{
 				width: 24px;
