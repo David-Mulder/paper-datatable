@@ -86,6 +86,26 @@
 			tbody td .class-5 {
 				@apply(--paper-datatable-class-5);
 			}
+			.partialSelectionContainer{
+				width:18px;
+				height:19px;
+				position:relative;
+				display:flex;
+				align-items:center;
+				justify-content:center;
+			}
+			.partialSelection{
+				width:6px;
+				height:2px;
+				background:rgba(0,0,0,.8);
+				border-radius:1px;
+				transition: transform .1s linear;
+				transform: scale(0) rotate(-45deg);
+			}
+			.partialSelection[data-checked]{
+				transform: scale(1) rotate(0deg);
+			}
+
 		</style>
 		<div>
 			<content select="paper-datatable-column"></content>
@@ -95,7 +115,10 @@
 						<template is="dom-if" if="{{selectable}}">
 							<th style="min-width:30px;">
 								<template is="dom-if" if="{{multiSelection}}">
-									<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedIds.splices, data.splices)]]"></paper-checkbox>
+									<div class="partialSelectionContainer" style="">
+										<div class="partialSelection" data-checked$="[[_someChecked(selectedIds.splices, data.*)]]"></div>
+										<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedIds.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
+									</div>
 								</template>
 							</th>
 						</template>
@@ -104,7 +127,7 @@
 								<iron-icon icon="arrow-drop-down" class="sort" data-direction$="[[sortDirection]]"></iron-icon>
 								<span id="title">{{column.header}}</span>
 								<template is="dom-if" if="[[column.tooltip]]">
-									<paper-tooltip offset="-10">{{column.tooltip}}</paper-tooltip>
+									<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
 								</template>
 							</th>
 						</template>
@@ -500,6 +523,10 @@ Mixins
 						}
 					}.bind(this));
 					return allChecked && this.data.length > 0;
+				},
+
+				_someChecked: function(){
+					return this.selectedIds.length > 0 && !this._allChecked();
 				},
 
 				_isRowSelected: function(id){
