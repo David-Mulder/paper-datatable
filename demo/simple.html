@@ -43,6 +43,17 @@
 		</div>
 
 		<template is="dom-bind" id="app">
+
+			<style is="custom-style">
+				paper-card {
+					--paper-card-header-text: {
+						font-family: 'Roboto', 'Noto', sans-serif;
+						font-weight: normal;
+						font-size: 20px;
+					}
+				}
+			</style>
+
 			<paper-card heading="Just a normal data table">
 				<paper-datatable data="{{data}}" selectable multi-selection>
 					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable></paper-datatable-column>
@@ -68,6 +79,7 @@
 					<paper-datatable-column header="Iron (%)" property="iron" type="String" align="right" editable sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
 				</paper-datatable>
 			</paper-card>
+
 		</template>
 
 		<script>
