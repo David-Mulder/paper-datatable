@@ -9,32 +9,37 @@
 	</head>
 	<body>
 
+		<div style="text-align:center; margin: 10px;">
+			<a href="index.html">See all other demo's</a>
+		</div>
 
 		<template is="dom-bind" id="app">
 
-			<paper-datatable-card header="Food" page-size="10" data-source="{{data}}">
+			<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{dataSource}}" progress>
 				<div toolbar-main>
-					<paper-icon-button icon="more-vert"></paper-icon-button>
 				</div>
 				<div toolbar-select>
-					<paper-icon-button icon="delete"></paper-icon-button>
+					<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
 				</div>
-				<paper-datatable selectable>
-					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px">
+				<paper-datatable id="datatable" id-property="sha1" selectable>
+					<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 300px">
 						<template>
-							<paper-input value="{{value.first}}" no-label-float style="display:inline-block;"></paper-input>
-							<paper-input value="{{value.last}}" no-label-float style="display:inline-block;"></paper-input>
+							<div>
+								<img src="[[item.picture.thumbnail]]" style="width:32px;height:32px;border-radius:16px;vertical-align: middle;">
+								<span>[[capitalize(value.title)]]</span>
+								<span>[[capitalize(value.first)]]</span>
+								<span>[[capitalize(value.last)]]</span>
+							</div>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable style="width: 99%">	</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px">
+					<paper-datatable-column header="E-mail" property="email"></paper-datatable-column>
+					<paper-datatable-column header="SSN" property="SSN"></paper-datatable-column>
+					<paper-datatable-column header="Phone" property="phone"></paper-datatable-column>
+					<paper-datatable-column header="Cell" property="cell"></paper-datatable-column>
+					<paper-datatable-column header="Address" property="location" capitalize="[[capitalize]]">
 						<template>
-							<paper-input value="{{value}}" no-label-float></paper-input>
-						</template>
-					</paper-datatable-column>
-					<paper-datatable-column property="isAdmin" header="Administrator" default="false" style="min-width: 150px" cell-style="padding-left:40px;">
-						<template>
-							<paper-checkbox checked="{{value}}"></paper-checkbox>
+							<div>[[capitalize(value.street)]]</div>
+							<div><span>[[capitalize(value.state)]]</span> <span>[[capitalize(value.zip)]]</span></div>
 						</template>
 					</paper-datatable-column>
 				</paper-datatable>
@@ -45,35 +50,23 @@
 		<script>
 			var app = document.querySelector('#app');
 
-			var myData = [];
-			for (var i=0; i<142; i++) {
-				var id = i*10000+Math.round(Math.random() * 500);
-				var calories = Math.round(Math.random() * 2000)+1000;
-				myData.push({
-					id: id,
-					title: "title"+id,
-					calories: calories,
-					author: {
-						first: "David",
-						last: "Mulder "+ id
-					},
-					isAdmin: (Math.random() > 0.9 ? true : undefined)
-				});
-			}
-
-
-			window.a = [];
-			app.data = {
-				get: function(){
-					console.log(arguments);
+			app.dataSource = {
+				get: function(sort, page, pageSize){
 					return new Promise(function(resolve, reject){
-						var data = [];
-						ids.forEach(function(id){
-							data.push(myData.find(function(item){
-								return item.id == id;
-							}));
-						});
-						resolve(data);
+						var httpRequest = new XMLHttpRequest();
+						httpRequest.onreadystatechange = function() {
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+								if (httpRequest.status === 200) {
+									var result = JSON.parse(httpRequest.responseText);
+									var users = result.results.map(function(resultItem){
+										return resultItem.user;
+									});
+									resolve(users);
+								}
+							}
+						};
+						httpRequest.open('GET', 'http://api.randomuser.me/?nat=US&results='+pageSize);
+						httpRequest.send();
 					});
 				},
 				set: function(id, property, value){
@@ -83,7 +76,21 @@
 					});
 					item[property] = value;
 				},
-				length:myData.length
+				length:100
+			};
+
+			app.capitalize = function(str){
+				return str.toString().split(' ').map(function(str){
+					return str.substr(0,1).toUpperCase() + str.substr(1, str.length - 1);
+				}).join(' ');
+			};
+
+			app.delete = function(){
+				//do your delete first
+				app.set('dataSource.length', app.dataSource.length - 1);
+				// and then call:
+				app.$.datatable.deselectAll();
+				app.$.datatableCard.retrieveVisibleData();
 			};
 
 		</script>

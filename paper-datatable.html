@@ -106,6 +106,21 @@
 				transform: scale(1) rotate(0deg);
 			}
 
+			/* progress: */
+			table tr.progress {
+				display: none;
+			}
+			table tr.progress[data-progress]{
+				display: table-row;
+			}
+			table tr.progress th{
+				padding: 0px;
+				height: 1px;
+				border-bottom:0px;
+			}
+			table tr.progress th paper-progress{
+				width: 100%;
+			}
 		</style>
 		<div>
 			<content select="paper-datatable-column"></content>
@@ -131,6 +146,11 @@
 								</template>
 							</th>
 						</template>
+					</tr>
+					<tr class="progress" data-progress$="[[progress]]">
+						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
+							<paper-progress indeterminate></paper-progress>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -633,6 +653,10 @@ Mixins
 							return item[this.idProperty] == id;
 						}.bind(this));
 					}
+				},
+
+				_numberOfColumnsPlusOne: function(){
+					return this._columns.length + 1;
 				}
 
 			});

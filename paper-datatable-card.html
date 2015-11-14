@@ -82,7 +82,8 @@
  Still to be written, but in the meantime, check the `paper-datatable-card` demo.
 
  @element paper-datatable-card
- @demo demo/paper-datatable-card.html
+ @demo demo/users-card.html Polished demo
+ @demo demo/paper-datatable-card.html Complex demo
 */
 
 			Polymer({
@@ -116,7 +117,7 @@
 					this._datatable.addEventListener("sort", this._handleSort.bind(this));
 				},
 				observers: [
-					'_getVisibleData(dataSource, pageSize, page, _datatable)'
+					'retrieveVisibleData(dataSource, pageSize, page, _datatable)'
 				],
 				_triggerSave: function(ev){
 					if(!this._disableSave && ev.detail.path){
@@ -146,9 +147,12 @@
 				_handleSort: function(ev){
 					console.info(ev.detail);
 					ev.preventDefault();
-					this._getVisibleData();
+					this.retrieveVisibleData();
 				},
-				_getVisibleData: function(){
+				/*
+					Call this function to trigger reloading of the current page
+				 */
+				retrieveVisibleData: function(){
 
 					this.debounce("visibleData", function(){
 						this._disableSave = true;
@@ -157,19 +161,18 @@
 
 							this._datatable.splice("data", 0, this._datatable.data.length);
 
-							var args = ["data"].concat(items);
+							var args = ['data'].concat(items);
 							this._datatable.push.apply(this._datatable,args);
+							this._datatable.set('progress', false);
 
 							this._disableSave = false;
-							/*items.forEach(function(item){
-
-							 }.bind(this));*/
 
 						}.bind(this);
 
 						var queryArgs = [{property: this._datatable.sortProperty, direction: this._datatable.sortDirection}, this.page, this.pageSize];
 
 						this._datatable.splice("data", 0, this._datatable.data.length);
+						this._datatable.set('progress', true);
 
 						if('queryForIds' in this.dataSource){
 							var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
