@@ -33,17 +33,35 @@
 			paper-dropdown-menu{
 				vertical-align: middle;
 			}
+			#topBlock{
+				height:64px;
+				padding:0px 6px 0px 24px;
+				position:relative;
+			}
+			#topBlock .header{
+				font-size:20px;
+				font-family: 'Roboto', 'Noto', sans-serif;
+			}
+			#topBlock .selectionHeader{
+				font-size:16px;
+				font-family: 'Roboto', 'Noto', sans-serif;
+			}
+			#bottomBlock{
+				height:56px;
+				padding:0px 6px;
+				border-top:1px solid rgb(240,240,240);
+			}
 		</style>
 		<paper-material elevation="1">
-			<div class="horizontal center layout" style="height:64px;padding:0px 6px 0px 24px;position:relative;">
-				<div class="flex" style="font-size:20px;font-family: 'Roboto', 'Noto', sans-serif;">
+			<div class="horizontal center layout" id="topBlock">
+				<div class="flex header">
 					<span>{{header}}</span>
 				</div>
 				<div id="toolbar-main" class="toolbar">
 					<content select="*[toolbar-main]"></content>
 				</div>
 				<div id="selectionToolbar" class="horizontal center layout fit" data-visible$="[[_selectedToolbarVisible]]">
-					<div class="flex" style="font-size:16px;font-family: 'Roboto', 'Noto', sans-serif;">
+					<div class="flex selectionHeader">
 						<span>[[_numberselectedIds]]</span> item selected
 					</div>
 					<div class="toolbar">
@@ -51,10 +69,10 @@
 					</div>
 				</div>
 			</div>
-			<div style="">
+			<div>
 				<content select="paper-datatable"></content>
 			</div>
-			<div class="horizontal center layout" style="height:56px;padding:0px 6px;border-top:1px solid rgb(240,240,240);">
+			<div class="horizontal center layout" id="bottomBlock">
 				<div class="flex"></div>
 				<div>
 					Rows per page:
@@ -106,6 +124,10 @@
 					},
 					_datatable: {
 						type: Object
+					},
+					/* used as the default when .addNew() is called */
+					default: {
+						type: Object
 					}
 				},
 				ready: function(){
@@ -132,15 +154,39 @@
 						var value = ev.detail.value;
 						var data = this._datatable.get("data."+rowKey);
 						var id = data[this._datatable.idProperty];
+						// setting properties in the `set` functions causes trouble, so it's more sensible for that
+						// to simply have no effect rather than make the entire element break, especially
+						// as the 'no effect' version can be useful (see paper-datatable-card.html demo)
+						var dataClone = JSON.parse(JSON.stringify(data));
 
 						//todo: complex objects 2+
 						console.log(path);
 						if(path.length > 0){
-							value = data[property];
-							this.dataSource.set(data, property, data);
+							value = dataClone[property];
+							var setPromise = this.dataSource.set(dataClone, property, value);
 						}else{
-							this.dataSource.set(data, property, value);
+							var setPromise = this.dataSource.set(dataClone, property, value);
 						}
+
+						this._datatable.set('progress', true);
+						setPromise.then(function(successOrId){
+							console.info(successOrId);
+							if(typeof successOrId === 'boolean'){
+								if(successOrId === true){
+
+								}else{
+									console.log('indicate explicit failure');
+								}
+							}else{
+								//alert();
+								var index = this._datatable._getIndexById('__new__');
+								this._datatable.set('data.'+index+'.id', successOrId);
+							}
+							this._datatable.set('progress', false);
+						}.bind(this), function(err){
+							console.log('indicate failure', err);
+							this._datatable.set('progress', false);
+						}.bind(this));
 
 					}
 				},
@@ -196,6 +242,29 @@
 				},
 				prevPage: function(){
 					this.set("page", this.page-1);
+				},
+				addNew: function(){
+					//0. check we ain't adding one already
+					if(this._datatable._getIndexById('__new__') > -1){
+						console.warn('It\'s only possible to add one item at a time.');
+						return;
+					}
+					//1. goto last page
+					//this.page = Math.floor(this.dataSource.length / this.pageSize) + 1;
+					//2. wait for data to load
+					//... :/
+					//3. generate default
+					var item = {};
+					this._datatable._columns.forEach(function(column){
+						if(column.default){
+							item[column.property] = JSON.parse(JSON.stringify(column.default));
+						}else{
+							item[column.property] = undefined;
+						}
+					});
+					item['id'] = '__new__';
+					//4. push default to visible data
+					this._datatable.push('data', item);
 				},
 				_prevPageDisabled: function(){
 					return this.page == 1;

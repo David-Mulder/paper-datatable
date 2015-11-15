@@ -159,10 +159,13 @@
 						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]">
+							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]" style$="{{_customRowStyle(rowId)}}">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
-										<paper-checkbox checked="[[_isRowSelected(rowId, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
+										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
+										<template is="dom-if" if="{{!_isEqual(rowId, '__new__')}}">
+											<paper-checkbox checked="[[_isRowSelected(rowId, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
+										</template>
 									</td>
 								</template>
 								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
@@ -171,10 +174,13 @@
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedId)]]">
+							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedId)]]" style$="{{_customRowStyle(rowId)}}">
 								<template is="dom-if" if="{{selectable}}">
 									<td>
-										<paper-checkbox checked="[[_isRowSelected(rowId, selectedId)]]" on-change="_setSelection"></paper-checkbox>
+										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
+										<template is="dom-if" if="{{!_isEqual(rowId, '__new__')}}">
+											<paper-checkbox checked="[[_isRowSelected(rowId, selectedId)]]" on-change="_setSelection"></paper-checkbox>
+										</template>
 									</td>
 								</template>
 								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
@@ -211,6 +217,10 @@ Which would make the header `green` and the content in each cell in the column `
 Events
 ===
 There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell. `cell-tap` can be listened for both on `paper-datatable` and `paper-datatable-column`.
+
+ID: '__new__'
+---
+Note: the id value of `__new__` is reserved and can not be normally used. It's used by for example `<paper-datatable-card>` to support adding of new items.
 
 Mixins
 ---
@@ -366,15 +376,18 @@ Mixins
 
 				observers: [
 					/*'restructureData(data.*, _columns.splices)',*/
+					'_setRowIds(data.splices)',
+					'_setRowIds(data.*)',
 					'_notifyPathOnInstances(data.*)',
-					'_internalSort(_internalSortEnabled, sortProperty, sortDirection)',
-					'_setRowIds(data.splices)'
+					'_internalSort(_internalSortEnabled, sortProperty, sortDirection)'
+
 				],
 
 				listeners: {
 				},
 
 				_setRowIds: function(){
+					console.info('SET ROW IDS');
 					var rowIds = [];
 					this.data.forEach(function(row){
 						rowIds.push(row[this.idProperty]);
@@ -476,13 +489,35 @@ Mixins
 
 				_notifyPathOnInstances: function(change){
 					var path = change.path.split('.');
+					console.log('_notifyPathOnInstances', path, change);
 					if(path.length >= 3){
 						var object = path.shift();
 						var rowI = path.shift();
-						var id = this.get("data."+rowI+"."+this.idProperty);
+						if(path[0] == this.idProperty){
+							// more `<paper-datatable-card>` specific hacks :/
+							console.info('id property changed, new id is', change.value);
+							var cells = Polymer.dom(this.root).querySelectorAll('tbody tr[data-id=\'__new__\'] td.bound-cell');
+							console.log(cells);
+							for(var i=0; i<cells.length;i++) {
+								var cell = cells[i];
+								if(cell.instance){
+									cell.instance.set('_dataId', change.value);
+								}else{
+									//?
+								}
+							}
+							return;
+						}
+						var id = this.get('data.'+rowI+'.'+this.idProperty);
 						//var id = this.data[rowI][this.idProperty];
 
 						var row = Polymer.dom(this.root).querySelector('tbody tr[data-id=\''+id+'\']');
+
+						if(!row){
+							console.error('critical failture');
+							console.log('id', id);
+							return false;
+						}
 
 						var cells = row.querySelectorAll('td.bound-cell');
 						for(var i=0; i<cells.length;i++){
@@ -577,6 +612,9 @@ Mixins
 
 				_toggleSelection: function(id){
 					if(this.selectable){
+						if(id == '__new__'){
+							return false;
+						}
 						if(this.multiSelection){
 							var checked = this.selectedIds.indexOf(id) > -1;
 							if(checked){
@@ -655,8 +693,25 @@ Mixins
 					}
 				},
 
+				_getIndexById: function(id){
+					return this.data.findIndex(function(item){
+						return item[this.idProperty] == id;
+					}.bind(this));
+				},
+
 				_numberOfColumnsPlusOne: function(){
 					return this._columns.length + 1;
+				},
+
+				/*
+				 Method that can be overwritten to apply a custom style to specific rows.
+				 */
+				customRowStyle: function(rowItem){
+
+				},
+
+				_customRowStyle: function(rowId){
+					return this.customRowStyle(this._getById(rowId));
 				}
 
 			});

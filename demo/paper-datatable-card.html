@@ -12,27 +12,27 @@
 
 		<template is="dom-bind" id="app">
 
-			<paper-datatable-card header="Food" page-size="10" data-source="{{data}}">
+			<paper-datatable-card id="datatableCard" header="Food" page-size="10" data-source="{{data}}">
 				<div toolbar-main>
-					<paper-icon-button icon="more-vert"></paper-icon-button>
+					<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
 				</div>
 				<div toolbar-select>
 					<paper-icon-button icon="delete"></paper-icon-button>
 				</div>
 				<paper-datatable selectable>
-					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px">
+					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px" default='{"first": "", "last": ""}' editable>
 						<template>
 							<paper-input value="{{value.first}}" no-label-float style="display:inline-block;"></paper-input>
 							<paper-input value="{{value.last}}" no-label-float style="display:inline-block;"></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable style="width: 99%">	</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px">
+					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable style="width: 99%"></paper-datatable-column>
+					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px" editable>
 						<template>
 							<paper-input value="{{value}}" no-label-float></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column property="isAdmin" header="Administrator" default="false" style="min-width: 150px" cell-style="padding-left:40px;">
+					<paper-datatable-column property="isAdmin" header="Administrator" default="false" style="min-width: 150px" cell-style="padding-left:40px;" editable>
 						<template>
 							<paper-checkbox checked="{{value}}"></paper-checkbox>
 						</template>
@@ -60,9 +60,8 @@
 					isAdmin: (Math.random() > 0.9 ? true : undefined)
 				});
 			}
+			window.myData = myData;
 
-
-			window.a = [];
 			app.data = {
 				getByIds: function(ids){
 					return new Promise(function(resolve, reject){
@@ -75,12 +74,32 @@
 						resolve(data);
 					});
 				},
-				set: function(id, property, value){
-					console.info("a save was triggered");
-					var item = myData.find(function(item){
-						return item.id == id;
+				set: function(item, property, value){
+					return new Promise(function(resolve, reject){
+						console.info("a save was triggered", [item, property, value]);
+						if(item.id === '__new__'){
+							//validate item, if invalid (and thus not savable yet) reject, otherwise return it's new id
+							if(item.author.first.length > 0 && item.author.last.length > 0){
+								console.log('trigger save');
+								var id = Math.round(Math.random() * 10000);
+
+								item.id = id;
+								myData.push(item);
+								app.set('data.length', myData.length);
+								resolve(id);
+							}else{
+								console.log('no luck yet');
+								reject();
+							}
+						}else{
+							var myItem = myData.find(function(thisItem){
+								return thisItem.id == item.id;
+							});
+							myItem[property] = value;
+							resolve(true);
+						}
 					});
-					item[property] = value;
+
 				},
 				queryForIds: function(sort, page, limit){
 					// query = {search: "test"}
@@ -102,6 +121,10 @@
 					});
 				},
 				length:myData.length
+			};
+
+			app.addNew = function(){
+				this.$.datatableCard.addNew();
 			};
 
 		</script>

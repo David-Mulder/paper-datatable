@@ -47,6 +47,5 @@ And you can find the full documentation [here](http://david-mulder.github.io/pap
 
  - Initialize template only `on-tap`, somewhat in line with the Material Design editable indicator
  - Add option to add new items. The hard part is however that `<paper-datatable-card>` works with a `setProperty` save API, so we would need to add a dedicated function just for saving new documents :( .
- - Implement weakCache.js again
  - Add a `<paper-datatable-light>` element with the same syntax, but without support for `<template>` and `editable`, but importantly with support for Edge/IE.
- - Make id's optional (through the user of the Polymer Collection API)
+ - fix __new__ to use id-property
