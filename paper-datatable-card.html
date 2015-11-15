@@ -151,11 +151,11 @@
 				},
 				ready: function(){
 					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
-					if(this.dataSource) {
+					//if(this.dataSource) {
 						this._datatable.data = [];
 						this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
 						this._datatable.addEventListener("sort", this._handleSort.bind(this));
-					}
+					//}
 					this._datatable.addEventListener("selected-id-changed", this._setSelectedToolbarVisible.bind(this));
 					this._datatable.addEventListener("selected-ids-changed", this._setSelectedToolbarVisible.bind(this));
 				},
