@@ -25,10 +25,10 @@
 					<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
 						<template>
 							<div>
-								<img src="[[item.picture.thumbnail]]" style="width:32px;height:32px;border-radius:16px;vertical-align: middle;">
-								<span>[[capitalize(value.title)]]</span>
-								<span>[[capitalize(value.first)]]</span>
-								<span>[[capitalize(value.last)]]</span>
+								<img src="[[item.picture.thumbnail]]" style="width:32px;height:32px;border-radius:16px;vertical-align: middle;margin-right:4px;">
+								<span style="vertical-align:middle;">[[capitalize(value.title)]]</span>
+								<span style="vertical-align:middle;">[[capitalize(value.first)]]</span>
+								<span style="vertical-align:middle;">[[capitalize(value.last)]]</span>
 							</div>
 						</template>
 					</paper-datatable-column>

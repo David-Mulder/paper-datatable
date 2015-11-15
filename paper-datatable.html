@@ -20,8 +20,7 @@
 				width:100%;
 			}
 			th{
-				color: #6D6E70;
-				font-weight: normal;
+				font-weight: 500;
 				text-align:left;
 				white-space: nowrap;
 				@apply(--paper-font-common-base);
@@ -29,6 +28,8 @@
 				-ms-user-select: none;
 				-moz-user-select: none;
 				user-select: none;
+				color: rgba(0,0,0, .54);
+				font-size:12px;
 			}
 			th:not([data-sortable]) iron-icon.sort{
 				display: none;
@@ -62,6 +63,8 @@
 				vertical-align: middle;
 			}
 			td.bound-cell{
+				font-size: 13px;
+				color: rgba(0,0,0,.87);
 				@apply(--paper-datatable-cell);
 			}
 			tr td:first-child, tr th:first-child{
