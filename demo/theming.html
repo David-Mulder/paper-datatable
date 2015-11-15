@@ -62,7 +62,7 @@
 
 				paper-datatable-card{
 					max-width: 1000px;
-					margin: 10px auto;
+					margin: 30px auto;
 					--paper-datatable-selection-toolbar-color: var(--paper-grey-900);
 					--paper-datatable-card: {
 						background: var(--paper-grey-800);
@@ -78,12 +78,15 @@
 						color: inherit;
 						padding-left: 5px;
 						padding-right: 5px;
+						min-width: 73px;
 					};
 
 					--paper-datatable-header-checkbox-color: rgba(255, 255, 255, var(--dark-primary-opacity));
 
 					--paper-datatable-cell: {
 						color: black;
+						padding-left: 5px;
+						padding-right: 5px;
 					};
 				}
 			</style>
@@ -118,8 +121,8 @@
 				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
 				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},
 				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
-				{id: 6, title: 'Lollipop', calories: 392, fat: 0.2, carbs: 98, protein: 0, sodium: 38, calcium:0, iron: 2},
-				{id: 7, title: 'Honeycomb', calories: 408, fat: 3.2, carbs: 87, protein: 6.5, sodium: 562, calcium:0, iron: 45}
+				{id: 6, title: 'Lollipop', calories: 392, fat: 0.2, carbs: 98, protein: 0, sodium: 38, calcium:0, iron: .02},
+				{id: 7, title: 'Honeycomb', calories: 408, fat: 3.2, carbs: 87, protein: 6.5, sodium: 562, calcium:0, iron: .45}
 			];
 			app.toFixedOne = function(value){
 				return value.toFixed(1);
