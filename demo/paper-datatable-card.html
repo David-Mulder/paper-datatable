@@ -12,7 +12,7 @@
 
 		<template is="dom-bind" id="app">
 
-			<paper-datatable-card id="datatableCard" header="Food" page-size="10" data-source="{{data}}">
+			<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}">
 				<div toolbar-main>
 					<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
 				</div>
@@ -26,13 +26,13 @@
 							<paper-input value="{{value.last}}" no-label-float style="display:inline-block;width:182px;"></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable style="width: 99%"></paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px" editable>
+					<paper-datatable-column header="Document title" property="title" type="String" tooltip="Some title" sortable style="width: 99%"></paper-datatable-column>
+					<paper-datatable-column header="Rating" property="rating" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px" editable>
 						<template>
 							<paper-input value="{{value}}" no-label-float></paper-input>
 						</template>
 					</paper-datatable-column>
-					<paper-datatable-column property="isAdmin" header="Administrator" default="false" style="min-width: 150px" cell-style="padding-left:40px;" editable>
+					<paper-datatable-column property="reserved" header="Reserved" type="boolean" default="false" style="min-width: 100px" cell-style="padding-left:40px;" align="center" editable>
 						<template>
 							<paper-checkbox checked="{{value}}"></paper-checkbox>
 						</template>
@@ -48,16 +48,16 @@
 			var myData = [];
 			for (var i=0; i<142; i++) {
 				var id = i*10000+Math.round(Math.random() * 500);
-				var calories = Math.round(Math.random() * 2000)+1000;
+				var rating = Math.round(Math.random() * 2000)+1000;
 				myData.push({
 					id: id,
 					title: "title"+id,
-					calories: calories,
+					rating: rating,
 					author: {
 						first: "David",
 						last: "Mulder "+ id
 					},
-					isAdmin: (Math.random() > 0.9 ? true : undefined)
+					reserved: (Math.random() > 0.9 ? true : undefined)
 				});
 			}
 			window.myData = myData;

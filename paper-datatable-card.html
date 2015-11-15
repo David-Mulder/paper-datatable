@@ -190,21 +190,21 @@
 
 						this._datatable.set('progress', true);
 						setPromise.then(function(successOrId){
-							console.info(successOrId);
 							if(typeof successOrId === 'boolean'){
-								if(successOrId === true){
-
-								}else{
-									console.log('indicate explicit failure');
+								if(successOrId !== true){
+									throw new Error('failure');
 								}
 							}else{
 								//alert();
 								var index = this._datatable._getIndexById('__new__');
-								this._datatable.set('data.'+index+'.id', successOrId);
+								this._datatable.set('data.'+index+'.'+this._datatable.idProperty, successOrId);
 							}
 							this._datatable.set('progress', false);
 						}.bind(this), function(err){
-							console.log('indicate failure', err);
+							throw new Error('failure');
+							this._datatable.set('progress', false);
+						}.bind(this)).catch(function(){
+							console.warn('saving failed');
 							this._datatable.set('progress', false);
 						}.bind(this));
 
@@ -282,7 +282,7 @@
 							item[column.property] = undefined;
 						}
 					});
-					item['id'] = '__new__';
+					item[this._datatable.idProperty] = '__new__';
 					//4. push default to visible data
 					this._datatable.push('data', item);
 				},
