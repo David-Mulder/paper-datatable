@@ -67,6 +67,11 @@
 				color: rgba(0,0,0,.87);
 				@apply(--paper-datatable-cell);
 			}
+			td.bound-cell paper-input{
+				--paper-input-container-input: {
+					font-size: 13px;
+				};
+			}
 			tr td:first-child, tr th:first-child{
 				padding-left: 24px;
 				padding-right: 0px;
@@ -141,7 +146,7 @@
 			}
 			.partialSelectionContainer{
 				width:18px;
-				height:19px;
+				height:18px;
 				position:relative;
 				display:flex;
 				align-items:center;
