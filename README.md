@@ -9,15 +9,13 @@ Documentation **and demos** can be found here: http://david-mulder.github.io/pap
 ## Features
 
  - Custom `<template>`ing of every cell.
-
-        <paper-datatable-column header="Page" property="page">
-          <template>
-   	        <span>{{value}}</span>
-   	      </template>
-        </paper-datatable-column>
+   ```<paper-datatable-column header="Page" property="page">
+      <template>
+   	    <span>{{value}}</span>
+   	  </template>
+    </paper-datatable-column>```
 
  - Two way binding directly into the `paper-datatable`
-
    ```<paper-datatable-column header="Page" property="page">
      <template>
    	   <paper-input value="{{value}}">
