@@ -120,7 +120,7 @@
 			}
 			th paper-checkbox{
 				@apply(--paper-datatable-header-checkbox);
-				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, black);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, --primary-text-color);
 			}
 			.partialSelectionContainer{
 				width:18px;
@@ -133,7 +133,7 @@
 			.partialSelection{
 				width:6px;
 				height:2px;
-				background: var(--paper-datatable-header-checkbox-color);
+				background: var(--paper-datatable-header-checkbox-color, --primary-text-color);
 				border-radius:1px;
 				transition: transform .1s linear;
 				transform: scale(0) rotate(-45deg);
@@ -417,7 +417,6 @@ Mixins
 				},
 
 				_setRowIds: function(){
-					console.info('SET ROW IDS');
 					var rowIds = [];
 					this.data.forEach(function(row){
 						rowIds.push(row[this.idProperty]);
@@ -527,13 +526,10 @@ Mixins
 							// more `<paper-datatable-card>` specific hacks :/
 							console.info('id property changed, new id is', change.value);
 							var cells = Polymer.dom(this.root).querySelectorAll('tbody tr[data-id=\'__new__\'] td.bound-cell');
-							console.log(cells);
 							for(var i=0; i<cells.length;i++) {
 								var cell = cells[i];
 								if(cell.instance){
 									cell.instance.set('_dataId', change.value);
-								}else{
-									//?
 								}
 							}
 							return;

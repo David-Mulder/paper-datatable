@@ -24,8 +24,10 @@ Documentation **and demos** can be found here: http://david-mulder.github.io/pap
    	     </template>
        </paper-datatable-column>
 
- - Good enough styling support: http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/theming.html
- - Add new items on the fly:
+ - Extremely simple to set up ([simple demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/simple.html))
+ - Pretty good styling support ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/theming.html))
+ - Add new items on the fly ([unpolished demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card.html))
+ - [Delightful details](https://www.google.com/design/spec/animation/delightful-details.html) in sorting and partial selections. If you have ideas for more: let me know.
 
 ## Installation
 
