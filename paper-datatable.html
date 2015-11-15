@@ -13,6 +13,7 @@
 			:host {
 				display: block;
 				overflow: auto;
+				@apply(--paper-font-common-base);
 			}
 			table{
 				border-spacing: 0px;
@@ -23,6 +24,11 @@
 				font-weight: normal;
 				text-align:left;
 				white-space: nowrap;
+				@apply(--paper-font-common-base);
+				-webkit-user-select: none;
+				-ms-user-select: none;
+				-moz-user-select: none;
+				user-select: none;
 			}
 			th:not([data-sortable]) iron-icon.sort{
 				display: none;
@@ -49,19 +55,13 @@
 				padding: 6px 28px 6px 28px;
 				height: 41px;
 			}
-			tr th{
-				-webkit-user-select: none;
-				-ms-user-select: none;
-				-moz-user-select: none;
-				user-select: none;
-			}
-			tr th:not(:first-of-type){
+			th:not(:first-of-type){
 				@apply(--paper-datatable-column-header);
 			}
 			tr th span{
 				vertical-align: middle;
 			}
-			tr td.bound-cell{
+			td.bound-cell{
 				@apply(--paper-datatable-cell);
 			}
 			tr td:first-child, tr th:first-child{
@@ -74,6 +74,12 @@
 			}
 			td:last-of-type, th:last-of-type{
 				padding-right: 24px;
+			}
+			td:last-of-type{
+				@apply(--paper-datatable-cell-last);
+			}
+			th:last-of-type{
+				@apply(--paper-datatable-column-header-last);
 			}
 			tr[data-selected] td{
 				background: var(--paper-datatable-row-selection-color, --paper-grey-100);
