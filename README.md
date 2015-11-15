@@ -18,11 +18,11 @@ Documentation **and demos** can be found here: http://david-mulder.github.io/pap
 
  - Two way binding directly into the `paper-datatable`
 
-	   <paper-datatable-column header="Page" property="page">
-		 <template>
-		   <paper-input value="{{value}}">
-		 </template>
-	   </paper-datatable-column>
+		<paper-datatable-column header="Page" property="page">
+			<template>
+				<paper-input value="{{value}}">
+			</template>
+		</paper-datatable-column>
 
  - Extremely simple to set up ([simple demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/simple.html))
  - Pretty good styling support ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/theming.html))
