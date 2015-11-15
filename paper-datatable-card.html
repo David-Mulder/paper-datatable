@@ -32,6 +32,12 @@
 			#selectionToolbar[data-visible]{
 				display: flex;
 			}
+			#selectionToolbar .toolbar{
+				display: none;
+			}
+			#selectionToolbar .toolbar[data-visible]{
+				display: flex;
+			}
 			#toolbar-main{
 				padding-right: 12px;
 			}
@@ -70,7 +76,13 @@
 					<div class="flex selectionHeader">
 						<span>[[_numberselectedIds]]</span> item selected
 					</div>
-					<div class="toolbar">
+					<div class="toolbar" data-visible$="{{_singleSelectToolbarVisible}}">
+						<content select="*[toolbar-select-single]"></content>
+					</div>
+					<div class="toolbar" data-visible$="{{_multiSelectToolbarVisible}}">
+						<content select="*[toolbar-select-multi]"></content>
+					</div>
+					<div class="toolbar" data-visible>
 						<content select="*[toolbar-select]"></content>
 					</div>
 				</div>
@@ -103,7 +115,30 @@
 			'use strict';
 
 /*
- Still to be written, but in the meantime, check the `paper-datatable-card` demo.
+ Still to be written, but in the meantime, check the `paper-datatable-card` demo's.
+
+ Main toolbar
+ ---
+ The main toolbar is located to the right of the heading and can be filled by specifying an element with `[toolbar-main]`.
+
+	 <div toolbar-main>
+	 	<paper-input value="{{searchQuery}}">
+		<paper-icon-button icon="search" on-tap="search"></paper-icon-button>
+	 </div>
+
+ Selection toolbar
+ ---
+ The selection toolbar is shown when any items are selected and shows the number of selected items. Items in the toolbar
+ can be specified by adding an element with `[toolbar-select]`. Additionally it's often required to show different icons
+ when a single item is selected from when multiple items are selected. For this there exists `[toolbar-select-single]`
+ and `[toolbar-select-multi]`
+
+	 <div toolbar-select-single>
+	 	<paper-icon-button icon="info" on-tap="info"></paper-icon-button>
+	 </div>
+	 <div toolbar-select>
+	 	<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+	 </div>
 
  Theming
  ===
@@ -296,9 +331,13 @@
 				_setSelectedToolbarVisible: function(){
 					if(this._datatable.multiSelection){
 						this._selectedToolbarVisible = this._datatable.selectedIds.length > 0;
+						this._singleSelectToolbarVisible = this._datatable.selectedIds.length == 1;
+						this._multiSelectToolbarVisible = this._datatable.selectedIds.length > 1;
 						this._numberselectedIds = this._datatable.selectedIds.length;
 					}else{
 						this._selectedToolbarVisible = this._datatable.selectedId ? true : false;
+						this._singleSelectToolbarVisible = this._datatable.selectedId ? true : false;
+						this._multiSelectToolbarVisible = false;
 						this._numberselectedIds = this._datatable.selectedId ? 1 : 0;
 					}
 				}
