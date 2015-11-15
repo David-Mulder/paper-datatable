@@ -53,6 +53,8 @@
 				-webkit-user-select: none;
 				-ms-user-select: none;
 				user-select: none;
+			}
+			tr th:not(:first-of-type){
 				@apply(--paper-datatable-column-header);
 			}
 			tr th span{
@@ -258,7 +260,7 @@ Variables
 
 Mixins
 ---
- - `--paper-datatable-column-header`: Column header style applied to all headers
+ - `--paper-datatable-column-header`: Column header style applied to text headers
  - `--paper-datatable-cell`: Applied to all data cells
  - `--paper-datatable-array-item`: Only works when using the proper Shadow DOM and is applied to columns using the `array-display-prop` attribute.
  - `--paper-datatable-class-1`: Applied to any content in cells with `class='class-1'`.
@@ -432,7 +434,6 @@ Mixins
 
 				_internalSort: function(){
 					if(this._internalSortEnabled) {
-						console.info("INTERNAL SORT on",this.sortProperty);
 						this._rowIds.sort(function(a, b){
 							if(this.sortDirection == "desc"){
 								var c = a;
