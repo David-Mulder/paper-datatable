@@ -99,25 +99,6 @@
 			tbody td .class-5 {
 				@apply(--paper-datatable-class-5);
 			}
-			.partialSelectionContainer{
-				width:18px;
-				height:19px;
-				position:relative;
-				display:flex;
-				align-items:center;
-				justify-content:center;
-			}
-			.partialSelection{
-				width:6px;
-				height:2px;
-				background:rgba(0,0,0,.8);
-				border-radius:1px;
-				transition: transform .1s linear;
-				transform: scale(0) rotate(-45deg);
-			}
-			.partialSelection[data-checked]{
-				transform: scale(1) rotate(0deg);
-			}
 
 			/* progress: */
 			table tr.progress {
@@ -139,7 +120,26 @@
 			}
 			th paper-checkbox{
 				@apply(--paper-datatable-header-checkbox);
-				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, black);
+			}
+			.partialSelectionContainer{
+				width:18px;
+				height:19px;
+				position:relative;
+				display:flex;
+				align-items:center;
+				justify-content:center;
+			}
+			.partialSelection{
+				width:6px;
+				height:2px;
+				background: var(--paper-datatable-header-checkbox-color);
+				border-radius:1px;
+				transition: transform .1s linear;
+				transform: scale(0) rotate(-45deg);
+			}
+			.partialSelection[data-checked]{
+				transform: scale(1) rotate(0deg);
 			}
 		</style>
 		<div>

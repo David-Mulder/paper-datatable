@@ -6,6 +6,27 @@ Documentation **and demos** can be found here: http://david-mulder.github.io/pap
 
 **Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cells and listen for data changes), as far as I know this is pretty unique, but it's also the reason why it can be a bit slow on Firefox and Edge.
 
+## Features
+
+ - Custom `<template>`ing of every cell.
+
+       <paper-datatable-column header="Page" property="page">
+         <template>
+   	       <span>{{value}}</span>
+   	     </template>
+       </paper-datatable-column>
+
+ - Two way binding directly into the `paper-datatable`
+
+       <paper-datatable-column header="Page" property="page">
+         <template>
+   	       <paper-input value="{{value}}">
+   	     </template>
+       </paper-datatable-column>
+
+ - Good enough styling support: http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/theming.html
+ - Add new items on the fly:
+
 ## Installation
 
 The element can be installed using bower using
