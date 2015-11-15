@@ -21,7 +21,7 @@
 				<div toolbar-select>
 					<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
 				</div>
-				<paper-datatable id="datatable" id-property="sha1" selectable>
+				<paper-datatable id="datatable" id-property="sha1" selectable multi-selection>
 					<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
 						<template>
 							<div>
