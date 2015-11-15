@@ -12,7 +12,7 @@ The element can be installed using bower using
 
     bower install --save paper-datatable
 
-
+**Important:** If you wish to use `<paper-datatable-card>` you need the paper elements listed in `devDependencies` as well. They are not listed as normal dependencies to prevent them from being pulled in on production if you do not need them.
 
 ## Usage
 
