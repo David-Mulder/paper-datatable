@@ -186,7 +186,7 @@
 						<template is="dom-if" if="{{multiSelection}}">
 							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedIds.splices)]]" style$="{{_customRowStyle(rowId)}}">
 								<template is="dom-if" if="{{selectable}}">
-									<td>
+									<td on-tap="_cellTapped">
 										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
 										<template is="dom-if" if="{{!_isEqual(rowId, '__new__')}}">
 											<paper-checkbox checked="[[_isRowSelected(rowId, selectedIds.splices)]]" on-change="_setSelection"></paper-checkbox>
@@ -201,7 +201,7 @@
 						<template is="dom-if" if="{{!multiSelection}}">
 							<tr data-id$="{{rowId}}" data-selected$="[[_isRowSelected(rowId, selectedId)]]" style$="{{_customRowStyle(rowId)}}">
 								<template is="dom-if" if="{{selectable}}">
-									<td>
+									<td on-tap="_cellTapped">
 										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
 										<template is="dom-if" if="{{!_isEqual(rowId, '__new__')}}">
 											<paper-checkbox checked="[[_isRowSelected(rowId, selectedId)]]" on-change="_setSelection"></paper-checkbox>
@@ -696,8 +696,10 @@ Mixins
 					}
 					var rowModel = this.$.rowRepeat.modelForElement(path[i]);
 
-					ev.model.column.fire('cell-tap', {id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev});
-					this.fire('cell-tap', {column: ev.model.column, id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev}, {});
+					if(ev.model.column){
+						ev.model.column.fire('cell-tap', {id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev});
+						this.fire('cell-tap', {column: ev.model.column, id:rowModel.rowId, target:PolymerEvent.path[0], originalEvent: ev}, {});
+					}
 
 					var triggeredEvent = this.fire('row-tap', {id: rowModel.rowId, originalEvent: ev}, {cancelable: true});
 					if(!triggeredEvent.defaultPrevented){
