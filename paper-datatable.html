@@ -41,7 +41,7 @@
 			th[data-sortable][data-sorted] iron-icon{
 				width: 24px;
 			}
-			th[data-sortable][data-sorted] iron-icon[data-direction='desc']{
+			th[data-sortable][data-sorted] iron-icon[data-direction='asc']{
 				transform: rotate(180deg);
 			}
 			tr td, tr th{
@@ -434,7 +434,7 @@ Mixins
 					if(this._internalSortEnabled) {
 						console.info("INTERNAL SORT on",this.sortProperty);
 						this._rowIds.sort(function(a, b){
-							if(this.sortDirection == "asc"){
+							if(this.sortDirection == "desc"){
 								var c = a;
 								a = b;
 								b = c;
@@ -457,10 +457,6 @@ Mixins
 				ready: function() {
 					this.set('_columns', []);
 					this.set('selectedIds', []);
-					/*this.set('_sort', {
-						property: this.idProperty,
-						direction: 'asc'
-					});*/
 				},
 
 				_restructureData: function(){
