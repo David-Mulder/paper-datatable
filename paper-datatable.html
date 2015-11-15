@@ -42,8 +42,14 @@
 			th[data-sortable][data-sorted] iron-icon[data-direction='desc']{
 				transform: rotate(180deg);
 			}
+			tr th{
+				@apply(--paper-datatable-column-header);
+			}
+			tr td.bound-cell{
+				@apply(--paper-datatable-cell);
+			}
 			tr td, tr th{
-				border-bottom: 1px solid var(--divider-color);
+				border-bottom: 1px solid var(--paper-datatable-divider-color, --divider-color);
 				padding: 6px 28px 6px 28px;
 				height: 41px;
 			}
@@ -59,10 +65,10 @@
 				padding-right: 24px;
 			}
 			tr[data-selected] td{
-				background: #F5F5F5;
+				background: var(--paper-datatable-row-selection-color, --paper-grey-100);
 			}
 			tr:hover td{
-				background: #EEEEEE;
+				background: var(--paper-datatable-row-hover-color, --paper-grey-200);
 			}
 			tbody tr:last-of-type td{
 				border-bottom:none;
@@ -222,9 +228,19 @@ ID: '__new__'
 ---
 Note: the id value of `__new__` is reserved and can not be normally used. It's used by for example `<paper-datatable-card>` to support adding of new items.
 
-Mixins
+Theming
+===
+Variables
 ---
 
+ - `--paper-datatable-divider-color`: Divider color, defaults to `--divider-color`
+ - `--paper-datatable-row-selection-color`: Color of selected row
+ - `--paper-datatable-row-hover-color`: Color of hovered row
+
+Mixins
+---
+ - `--paper-datatable-column-header`: Column header style applied to all headers
+ - `--paper-datatable-cell`: Applied to all data cells
  - `--paper-datatable-array-item`: Only works when using the proper Shadow DOM and is applied to columns using the `array-display-prop` attribute.
  - `--paper-datatable-class-1`: Applied to any content in cells with `class='class-1'`.
  - `--paper-datatable-class-2`: Applied to any content in cells with `class='class-2'`.

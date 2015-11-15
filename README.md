@@ -1,6 +1,6 @@
 # paper-datatable
 
-A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty solid alpha release, but not yet even beta. I will hopefully be fixing it more and more over time, but figuring out why it isn't working in Microsoft Edge is a problem that keeps eluding me. To be honest I can only recommend usage in Chrome-heavy environments (although Firefox works as well, albeit a bit slower).
+A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty solid alpha release, but not yet even beta. I will hopefully be fixing it more and more over time, but figuring out why it isn't working in Microsoft Edge is a problem that ~~keeps eluding me~~ kept eluding me till Edge fixed some internal bugs and now it mostly works.
 
 Documentation **and demos** can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
 

@@ -10,6 +10,8 @@
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+
 
 <script src="weakCache.js"></script>
 <dom-module id="paper-datatable-card">
@@ -17,11 +19,15 @@
 		<style>
 			:host {
 				display: block;
+			}
+			paper-material{
+				border-radius: 2px;
 				background: white;
+				@apply(--paper-datatable-card);
 			}
 			#selectionToolbar{
 				display: none;
-				background: var(--light-primary-color);
+				background: var(--paper-datatable-selection-toolbar-color, --paper-pink-50);
 				padding:0px 12px 0px 24px;
 			}
 			#selectionToolbar[data-visible]{
@@ -49,7 +55,8 @@
 			#bottomBlock{
 				height:56px;
 				padding:0px 6px;
-				border-top:1px solid rgb(240,240,240);
+				top: 1px solid var(--paper-datatable-divider-color, --divider-color);
+
 			}
 		</style>
 		<paper-material elevation="1">
@@ -98,6 +105,19 @@
 
 /*
  Still to be written, but in the meantime, check the `paper-datatable-card` demo.
+
+ Theming
+ ===
+ Variables
+ ---
+
+  - `--paper-datatable-divider-color` divider color is used to draw the bottom line
+  - `--paper-datatable-selection-toolbar-color` color of selected toolbar, should be 50 of the secondary color
+
+ Mixins
+ ---
+
+  - `--paper-datatable-card` applied to the main card
 
  @element paper-datatable-card
  @demo demo/users-card.html Polished demo

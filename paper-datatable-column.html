@@ -135,7 +135,7 @@ Styling
 					_styleString: {
 						type: String,
 						value: function(){
-							var alignment = this.align || this.getAttribute('align') || '';
+							var alignment = this.align || this.getAttribute('align') || 'left';
 							var styleString = this.getAttribute('style') || '';
 							return 'text-align:'+alignment+';'+styleString;
 						}
