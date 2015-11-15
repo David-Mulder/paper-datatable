@@ -238,7 +238,7 @@
 
 						var queryArgs = [{property: this._datatable.sortProperty, direction: this._datatable.sortDirection}, this.page, this.pageSize];
 
-						this._datatable.splice("data", 0, this._datatable.data.length);
+						//this._datatable.splice("data", 0, this._datatable.data.length);
 						this._datatable.set('progress', true);
 
 						if('queryForIds' in this.dataSource){
