@@ -52,8 +52,8 @@
 					--disabled-text-color:      #BDBDBD;
 					--divider-color:            rgba(0,0,0,.3);
 
-					--paper-progress-active-color: black;
-					--paper-progress-container-color: var(--paper-grey-500);
+					--paper-progress-active-color: #EC407A;
+					--paper-progress-container-color: var(--paper-grey-800);
 				}
 
 				body{
@@ -80,6 +80,7 @@
 						padding-left: 5px;
 						padding-right: 5px;
 						min-width: 73px;
+						border-bottom: 0px;
 					};
 
 					--paper-datatable-header-checkbox-color: rgba(255, 255, 255, var(--dark-primary-opacity));
@@ -99,7 +100,7 @@
 				<div toolbar-select>
 					<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
 				</div>
-				<paper-datatable data="{{data}}" selectable multi-selection custom-row-style="{{generateRowCss}}" progress>
+				<paper-datatable data="{{data}}" selectable multi-selection custom-row-style="{{generateRowCss}}" progress="{{progressBarVisble}}" sort-property="calories">
 					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable editable></paper-datatable-column>
 					<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
 					<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
@@ -132,12 +133,17 @@
 				return Math.round(value * 10000)/100 + '%';
 			};
 			app.generateRowCss = function(item){
-				var levels = ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373'];
-				var min = 159;
-				var max = 490;
+				var levels = ['#FFFFFF', '#FFEBEE', '#FFCDD2', '#EF9A9A'];
+				var min = 150;
+				var max = 450;
 				var level = Math.floor((item.calories - min)/(max-min)*levels.length);
 				return 'background:'+levels[level]+';';
 			};
+
+			app.progressBarVisble = true;
+			setTimeout(function(){
+				app.progressBarVisble = false;
+			}.bind(this), 5000)
 		</script>
 
 	</body>

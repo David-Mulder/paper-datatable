@@ -44,6 +44,11 @@
 			th[data-sortable][data-sorted] iron-icon[data-direction='desc']{
 				transform: rotate(180deg);
 			}
+			tr td, tr th{
+				border-bottom: 1px solid var(--paper-datatable-divider-color, --divider-color);
+				padding: 6px 28px 6px 28px;
+				height: 41px;
+			}
 			tr th{
 				-webkit-user-select: none;
 				-ms-user-select: none;
@@ -55,11 +60,6 @@
 			}
 			tr td.bound-cell{
 				@apply(--paper-datatable-cell);
-			}
-			tr td, tr th{
-				border-bottom: 1px solid var(--paper-datatable-divider-color, --divider-color);
-				padding: 6px 28px 6px 28px;
-				height: 41px;
 			}
 			tr td:first-child, tr th:first-child{
 				padding-left: 24px;
@@ -103,10 +103,14 @@
 
 			/* progress: */
 			table tr.progress {
-				display: none;
+
 			}
-			table tr.progress[data-progress]{
-				display: table-row;
+			table tr.progress th paper-progress{
+				height: 0px;
+				transition: linear .5s height;
+			}
+			table tr.progress[data-progress] th paper-progress{
+				height: 3px;
 			}
 			table tr.progress th{
 				padding: 0px;
