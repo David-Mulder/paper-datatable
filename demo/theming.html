@@ -53,6 +53,7 @@
 					--divider-color:            rgba(0,0,0,.3);
 
 					--paper-progress-active-color: black;
+					--paper-progress-container-color: var(--paper-grey-500);
 				}
 
 				body{
@@ -78,6 +79,12 @@
 						padding-left: 5px;
 						padding-right: 5px;
 					};
+
+					--paper-datatable-header-checkbox-color: color: rgba(255, 255, 255, var(--dark-primary-opacity));;
+					--paper-datatable-header-checkbox:{
+						--paper-checkbox-unchecked-color: color: rgba(255, 255, 255, var(--dark-primary-opacity));;
+					};
+
 					--paper-datatable-cell: {
 						color: black;
 					};
@@ -113,7 +120,9 @@
 				{id: 2, title: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6, sodium: 337, calcium:.06, iron: .07},
 				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
 				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},
-				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0}
+				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0},
+				{id: 6, title: 'Lollipop', calories: 392, fat: 0.2, carbs: 98, protein: 0, sodium: 38, calcium:0, iron: 2},
+				{id: 7, title: 'Honeycomb', calories: 408, fat: 3.2, carbs: 87, protein: 6.5, sodium: 562, calcium:0, iron: 45}
 			];
 			app.toFixedOne = function(value){
 				return value.toFixed(1);
@@ -123,9 +132,9 @@
 			};
 			app.generateRowCss = function(item){
 				var levels = ['#FFEBEE', '#FFCDD2', '#EF9A9A', '#E57373'];
-				var min = 150;
-				var max = 400;
-				var level = Math.floor((item.calories - min)/(max-min)/levels.length*10);
+				var min = 159;
+				var max = 490;
+				var level = Math.floor((item.calories - min)/(max-min)*levels.length);
 				return 'background:'+levels[level]+';';
 			};
 		</script>

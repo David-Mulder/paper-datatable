@@ -49,6 +49,9 @@
 				user-select: none;
 				@apply(--paper-datatable-column-header);
 			}
+			tr th span{
+				vertical-align: middle;
+			}
 			tr td.bound-cell{
 				@apply(--paper-datatable-cell);
 			}
@@ -130,6 +133,13 @@
 			}
 			table tr.progress th paper-progress{
 				width: 100%;
+			}
+			paper-checkbox{
+				@apply(--paper-datatable-checkbox);
+			}
+			th paper-checkbox{
+				@apply(--paper-datatable-header-checkbox);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color);
 			}
 		</style>
 		<div>
