@@ -198,58 +198,61 @@ Mixins
 					'retrieveVisibleData(dataSource, pageSize, page, _datatable)'
 				],
 				_triggerSave: function(ev){
-					if(!this._disableSave && ev.detail.path){
-						var path = ev.detail.path.split(".");
-						if(path.length == 2){
-							return;
-						}
-						var item = path.shift();
-						var rowKey = path.shift();
-
-						var property = path.shift();
-						var value = ev.detail.value;
-						var data = this._datatable.get("data."+rowKey);
-						var id = data[this._datatable.idProperty];
-						// setting properties in the `set` functions causes trouble, so it's more sensible for that
-						// to simply have no effect rather than make the entire element break, especially
-						// as the 'no effect' version can be useful (see paper-datatable-card.html demo)
-						var dataClone = JSON.parse(JSON.stringify(data));
-
-						//todo: complex objects 2+
-						console.log(path);
-						if(path.length > 0){
-							value = dataClone[property];
-							var setPromise = this.dataSource.set(dataClone, property, value);
-						}else{
-							var setPromise = this.dataSource.set(dataClone, property, value);
-						}
-
-						this._datatable.set('progress', true);
-						setPromise.then(function(successOrId){
-							if(typeof successOrId === 'boolean'){
-								if(successOrId !== true){
-									throw new Error('failure');
-								}
-							}else{
-								//alert();
-								var index = this._datatable._getIndexById('__new__');
-								this._datatable.set('data.'+index+'.'+this._datatable.idProperty, successOrId);
+					if(this.dataSource) {
+						if (!this._disableSave && ev.detail.path) {
+							var path = ev.detail.path.split(".");
+							if (path.length == 2) {
+								return;
 							}
-							this._datatable.set('progress', false);
-						}.bind(this), function(err){
-							throw new Error('failure');
-							this._datatable.set('progress', false);
-						}.bind(this)).catch(function(){
-							console.warn('saving failed');
-							this._datatable.set('progress', false);
-						}.bind(this));
+							var item = path.shift();
+							var rowKey = path.shift();
 
+							var property = path.shift();
+							var value = ev.detail.value;
+							var data = this._datatable.get("data." + rowKey);
+							var id = data[this._datatable.idProperty];
+							// setting properties in the `set` functions causes trouble, so it's more sensible for that
+							// to simply have no effect rather than make the entire element break, especially
+							// as the 'no effect' version can be useful (see paper-datatable-card.html demo)
+							var dataClone = JSON.parse(JSON.stringify(data));
+
+							//todo: complex objects 2+
+							console.log(path);
+							if (path.length > 0) {
+								value = dataClone[property];
+								var setPromise = this.dataSource.set(dataClone, property, value);
+							} else {
+								var setPromise = this.dataSource.set(dataClone, property, value);
+							}
+
+							this._datatable.set('progress', true);
+							setPromise.then(function (successOrId) {
+								if (typeof successOrId === 'boolean') {
+									if (successOrId !== true) {
+										throw new Error('failure');
+									}
+								} else {
+									//alert();
+									var index = this._datatable._getIndexById('__new__');
+									this._datatable.set('data.' + index + '.' + this._datatable.idProperty, successOrId);
+								}
+								this._datatable.set('progress', false);
+							}.bind(this), function (err) {
+								throw new Error('failure');
+								this._datatable.set('progress', false);
+							}.bind(this)).catch(function () {
+								console.warn('saving failed');
+								this._datatable.set('progress', false);
+							}.bind(this));
+
+						}
 					}
 				},
 				_handleSort: function(ev){
-					console.info(ev.detail);
-					ev.preventDefault();
-					this.retrieveVisibleData();
+					if(this.dataSource) {
+						ev.preventDefault();
+						this.retrieveVisibleData();
+					}
 				},
 				/*
 					Call this function to trigger reloading of the current page
