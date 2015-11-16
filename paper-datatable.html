@@ -378,7 +378,7 @@ Mixins
 					selectedItems: {
 						type: Array,
 						notify: true,
-						computed: '_getById(selectedIds)'
+						computed: '_getSelectedItems(selectedIds.splices)'
 					},
 					/**
 					 * Property containing the `id` of every row. It is **important** this is available and set correctly for a lot of functionality.
@@ -736,6 +736,10 @@ Mixins
 							return item[this.idProperty] == id;
 						}.bind(this));
 					}
+				},
+
+				_getSelectedItems: function(){
+					return this._getById(this.selectedIds);
 				},
 
 				_getIndexById: function(id){
