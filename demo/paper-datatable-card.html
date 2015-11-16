@@ -12,6 +12,12 @@
 
 		<template is="dom-bind" id="app">
 
+			<style is="custom-style">
+				body{
+					background: #f5f5f5;
+				}
+			</style>
+
 			<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}">
 				<div toolbar-main>
 					<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
