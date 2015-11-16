@@ -85,7 +85,7 @@
 			</paper-card>
 
 			<paper-card>
-				<paper-datatable data="{{data}}" id-property="aid" selectable multi-selection on-row-tap="log">
+				<paper-datatable id="lastDataTable" data="{{data}}" id-property="aid" selectable multi-selection on-row-tap="log">
 					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" sortable editable></paper-datatable-column>
 					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" sortable editable align="center"></paper-datatable-column>
 					<paper-datatable-column header="Calories" property="calories" type="Number" sortable editable></paper-datatable-column>
@@ -97,6 +97,7 @@
 
 			Calories: <span>{{getItem(data.*, 'data.0.calories')}}</span>
 			Array item: <span>{{getItem(data.*, 'data.0.arr.0')}}</span>
+			<paper-button on-tap="deselectAll">Deselect all</paper-button>
 		</template>
 
 		<script>
@@ -112,6 +113,9 @@
 			];
 			app.log = function(ev){
 				console.info('event', ev.type, 'on', ev.target, 'with detail', ev.detail);
+			};
+			app.deselectAll = function(){
+				app.$.lastDataTable.deselectAll();
 			};
 
 			/* relativeDate is defined in relativeDate.js */

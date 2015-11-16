@@ -606,9 +606,9 @@ Mixins
 
 				deselectAll: function(){
 					if(this.multiSelection) {
-						this.selectedIds.forEach(function(selectedId, i){
+						for(var i=this.selectedIds.length-1;i>=0;i--){
 							this.splice('selectedIds', i, 1);
-						}.bind(this));
+						}
 					}else{
 						this.set('selectedId', undefined);
 					}
@@ -715,7 +715,7 @@ Mixins
 
 					var triggeredEvent = this.fire('row-tap', {id: rowModel.rowId, originalEvent: ev}, {cancelable: true});
 					if(!triggeredEvent.defaultPrevented){
-						if(path[0].nodeName.toLowerCase() == 'td' || !ev.model.column.editable) {
+						if(path[0].nodeName.toLowerCase() == 'td' || (ev.model.column && !ev.model.column.editable)){
 							this._toggleSelection(rowModel.rowId);
 							ev.preventDefault();
 						}
