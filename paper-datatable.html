@@ -174,7 +174,7 @@
 								<template is="dom-if" if="{{multiSelection}}">
 									<div class="partialSelectionContainer" style="">
 										<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
-										<paper-checkbox on-tap="checkAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
+										<paper-checkbox on-tap="toggleAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
 									</div>
 								</template>
 							</th>
@@ -428,9 +428,9 @@ Mixins
 
 				_setRowKeys: function(){
 					var rowKeys = [];
-					var collection = Polymer.Collection.get(this.data);
+					this._dataKeyCollection = Polymer.Collection.get(this.data);
 					this.data.forEach(function(row){
-						rowKeys.push(collection.getKey(row));
+						rowKeys.push(this._dataKeyCollection.getKey(row));
 					}.bind(this));
 					this.set("_rowKeys", rowKeys);
 					this._internalSort();
@@ -566,40 +566,62 @@ Mixins
 					}
 				},
 
-				checkAll: function(){
+				toggleAll: function(){
 					// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
 					var allChecked = this._allChecked();
-					var collection = Polymer.Collection.get(this.data);
 					this.data.forEach(function(item){
-						var key = collection.getKey(item);
-						var i = this.selectedKeys.indexOf(key);
 						if(allChecked){
-							if(i > -1){
-								this.splice('selectedKeys', i, 1);
-							}
+							this.deselect(item);
 						}else{
-							if(i == -1){
-								this.push('selectedKeys', key);
-							}
+							this.select(item);
 						}
+
 					}.bind(this));
 				},
 
-				deselectAll: function(){
-					if(this.multiSelection) {
-						for(var i=this.selectedKeys.length-1;i>=0;i--){
-							this.splice('selectedKeys', i, 1);
+				select: function(item, notify){
+					notify = typeof notify === 'undefined' ? true : notify;
+
+					var key = this._getKeyByItem(item);
+					if(this.multiSelection){
+						if(this.selectedKeys.indexOf(key) == -1){
+							this.push('selectedKeys', key);
+							if(notify) this.fire('selection-changed', {selected: [key]});
 						}
 					}else{
+						this.set('selectedKey', key);
+						if(notify) this.fire('selection-changed', {selected: [key]});
+					}
+				},
+
+				deselect: function(item, notify){
+					notify = typeof notify === 'undefined' ? true : notify;
+
+					var key = this._getKeyByItem(item);
+					if(this.multiSelection){
+						var i = this.selectedKeys.indexOf(key);
+						this.splice('selectedKeys', i, 1);
+						if(notify) this.fire('selection-changed', {deselected: [key]});
+					}else{
+						if(notify) this.fire('selection-changed', {deselected: [key]});
 						this.set('selectedKey', undefined);
+					}
+				},
+
+				deselectAll: function(notify){
+					if(this.multiSelection) {
+						this.selectedItems.forEach(function(item){
+							this.deselect(item, notify);
+						}.bind(this))
+					}else{
+						this.deselect(this.selectedItem, notify);
 					}
 				},
 
 				_allChecked: function(){
 					var allChecked = true;
-					var collection = Polymer.Collection.get(this.data);
 					this.data.forEach(function(item){
-						var key = collection.getKey(item);
+						var key = this._dataKeyCollection.getKey(item);
 						if(this.selectedKeys.indexOf(key) == -1){
 							allChecked = false;
 						}
@@ -624,13 +646,21 @@ Mixins
 					if(ev.target.checked){
 						if(this.multiSelection){
 							this.push('selectedKeys', key);
+							this.fire('selection-changed', {selected: [key]});
 						}else{
+							if(this.selectedKey){
+								this.fire('selection-changed', {selected: [key], deselected: [this.selectedKey]});
+							}else{
+								this.fire('selection-changed', {selected: [key]});
+							}
 							this.selectedKey = key;
 						}
 					}else{
 						if(this.multiSelection){
 							this.splice('selectedKeys', this.selectedKeys.indexOf(key), 1);
+							this.fire('selection-changed', {deselected: [key]});
 						}else{
+							this.fire('selection-changed', {deselected: [key]});
 							this.selectedKey = null;
 						}
 					}
@@ -645,14 +675,22 @@ Mixins
 							var checked = this.selectedKeys.indexOf(key) > -1;
 							if(checked){
 								this.splice('selectedKeys', this.selectedKeys.indexOf(key), 1);
+								this.fire('selection-changed', {deselected: [key]});
 							}else{
 								this.push('selectedKeys', key);
+								this.fire('selection-changed', {selected: [key]});
 							}
 						}else{
 							var checked = this.selectedKey == key;
 							if(checked){
 								this.selectedKey = null;
+								this.fire('selection-changed', {deselected: [key]});
 							}else{
+								if(this.selectedKey){
+									this.fire('selection-changed', {selected: [key], deselected: [this.selectedKey]});
+								}else{
+									this.fire('selection-changed', {selected: [key]});
+								}
 								this.selectedKey = key;
 							}
 						}
@@ -706,6 +744,10 @@ Mixins
 						ev.preventDefault();
 					}
 
+				},
+
+				_getKeyByItem: function(item){
+					return this._dataKeyCollection.getKey(item);
 				},
 
 				_getByKey: function(key){

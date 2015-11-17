@@ -182,6 +182,30 @@ Mixins
 					/* used as the default when .addNew() is called */
 					default: {
 						type: Object
+					},
+					/**
+					 * Property containing the `id` of every row. It is **important** this is available for multi-page selection to work
+					 *
+					 * @attribute idProperty
+					 * @type String
+					 * @default 'id'
+					 * @required
+					 */
+					idProperty: {
+						type: String,
+						value: 'id'
+					},
+					/**
+					 * An array of selected row id's.
+					 *
+					 * @attribute selectedIds
+					 * @type Array
+					 * @default []
+					 */
+					selectedIds: {
+						type: Array,
+						notify: true,
+						value: []
 					}
 				},
 				ready: function(){
@@ -191,8 +215,10 @@ Mixins
 						this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
 						this._datatable.addEventListener("sort", this._handleSort.bind(this));
 					//}
-					this._datatable.addEventListener("selected-key-changed", this._setSelectedToolbarVisible.bind(this));
-					this._datatable.addEventListener("selected-keys-changed", this._setSelectedToolbarVisible.bind(this));
+					//this._datatable.addEventListener("selected-key-changed", this._setSelectedId.bind(this));
+					this._datatable.addEventListener("selection-changed", this._setSelectedIds.bind(this));
+					this._datatable.addEventListener("selection-changed", this._setSelectedToolbarVisible.bind(this));
+					this.set('selectedIds', []);
 				},
 				observers: [
 					'retrieveVisibleData(dataSource, pageSize, page, _datatable)'
@@ -264,10 +290,12 @@ Mixins
 
 						var processItems = function(items){
 
+							this._datatable.deselectAll(false);
 							this._datatable.splice("data", 0, this._datatable.data.length);
 
 							var args = ['data'].concat(items);
 							this._datatable.push.apply(this._datatable,args);
+							this._setSelectedKeysOnDatatable();
 							this._datatable.set('progress', false);
 
 							this._disableSave = false;
@@ -281,10 +309,12 @@ Mixins
 
 						if('queryForIds' in this.dataSource){
 							console.warn('I am sorry, this functionality has been deprecated for the time being, please use `get` directly till I get to implement a good solid cache again.');
-							//var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
+							/*
+								var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
 
-							//todo: do not retrieve items which we put in the cache
-							//this.dataSource.getByIds(ids).then(processItems);
+								//todo: do not retrieve items which we put in the cache
+								this.dataSource.getByIds(ids).then(processItems);
+							*/
 						}else{
 							this.dataSource.get.apply(this.dataSource, queryArgs).then(processItems);
 						}
@@ -333,17 +363,39 @@ Mixins
 					return this.page * this.pageSize >= this.dataSource.length;
 				},
 				_setSelectedToolbarVisible: function(){
-					if(this._datatable.multiSelection){
-						this._selectedToolbarVisible = this._datatable.selectedKeys.length > 0;
-						this._singleSelectToolbarVisible = this._datatable.selectedKeys.length == 1;
-						this._multiSelectToolbarVisible = this._datatable.selectedKeys.length > 1;
-						this._numberselectedIds = this._datatable.selectedKeys.length;
-					}else{
-						this._selectedToolbarVisible = this._datatable.selectedKey ? true : false;
-						this._singleSelectToolbarVisible = this._datatable.selectedKey ? true : false;
-						this._multiSelectToolbarVisible = false;
-						this._numberselectedIds = this._datatable.selectedKey ? 1 : 0;
+					this._selectedToolbarVisible = this.selectedIds.length > 0;
+					this._singleSelectToolbarVisible = this.selectedIds.length == 1;
+					this._multiSelectToolbarVisible = this.selectedIds.length > 1;
+					this._numberselectedIds = this.selectedIds.length;
+				},
+				_setSelectedIds: function(ev){
+					if(ev.detail.selected){
+						if(!this._datatable.multiSelection){
+							this.splice('selectedIds', 0, 1);
+						}
+						ev.detail.selected.forEach(function(key){
+							var id = this._datatable._getByKey(key)[this.idProperty];
+							if(this.selectedIds.indexOf(id) == -1){
+								this.push('selectedIds', id);
+							}
+						}.bind(this));
 					}
+					if(ev.detail.deselected){
+						ev.detail.deselected.forEach(function(key){
+							var id = this._datatable._getByKey(key)[this.idProperty];
+							if(this.selectedIds.indexOf(id) > -1){
+								this.splice('selectedIds', this.selectedIds.indexOf(id), 1);
+							}
+						}.bind(this));
+					}
+				},
+				_setSelectedKeysOnDatatable: function(){
+					this._datatable.data.forEach(function(item){
+						var id = item[this.idProperty];
+						if(this.selectedIds.indexOf(id) > -1){
+							this._datatable.select(item, false);
+						}
+					}.bind(this));
 				}
 
 			});

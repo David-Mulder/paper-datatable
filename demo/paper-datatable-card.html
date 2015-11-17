@@ -18,14 +18,14 @@
 				}
 			</style>
 
-			<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}">
+			<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}" id-property="i" selected-ids="{{selectedIds}}">
 				<div toolbar-main>
 					<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
 				</div>
 				<div toolbar-select>
 					<paper-icon-button icon="delete"></paper-icon-button>
 				</div>
-				<paper-datatable selectable sort-property="i">
+				<paper-datatable selectable sort-property="i" multi-selection>
 					<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px"></paper-datatable-column>
 					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px" default='{"first": "", "last": ""}' editable>
 						<template>
@@ -46,6 +46,10 @@
 					</paper-datatable-column>
 				</paper-datatable>
 			</paper-datatable-card>
+
+			<div>
+				Selected IDs: {{outputSelectedIds(selectedIds.splices)}}
+			</div>
 
 		</template>
 
@@ -120,6 +124,10 @@
 			app.addNew = function(){
 				this.$.datatableCard.addNew();
 			};
+
+			app.outputSelectedIds = function(){
+				return app.selectedIds.join(', ');
+			}
 
 		</script>
 
