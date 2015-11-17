@@ -305,11 +305,12 @@ Mixins
 						}.bind(this);
 
 						var sortedColumn = Polymer.dom(this).querySelector('paper-datatable-column[sorted]');
-						var opts = {};
+						var sort = {};
 						if(sortedColumn){
-							var opts = {property: sortedColumn.property, direction: sortedColumn.sortDirection};
+							sort.property = sortedColumn.property;
+							sort.direction = sortedColumn.sortDirection;
 						}
-						var queryArgs = [opts, this.page, this.pageSize];
+						var queryArgs = [sort, this.page, this.pageSize];
 
 						//this._datatable.splice("data", 0, this._datatable.data.length);
 						this._datatable.set('progress', true);

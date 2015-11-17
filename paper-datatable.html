@@ -800,7 +800,7 @@ Mixins
 						this.fire('cell-tap', {column: ev.model.column, key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {});
 					}
 
-					var triggeredEvent = this.fire('row-tap', {key: rowModel.rowKey, originalEvent: ev}, {cancelable: true});
+					var triggeredEvent = this.fire('row-tap', {key: rowModel.rowKey, item: this._getByKey(rowModel.rowKey), originalEvent: ev}, {cancelable: true});
 					if(!triggeredEvent.defaultPrevented){
 						if(path[0].nodeName.toLowerCase() == 'td' || (ev.model.column && !ev.model.column.editable)){
 							this._toggleSelection(rowModel.rowKey);
