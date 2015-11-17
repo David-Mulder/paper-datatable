@@ -103,7 +103,8 @@ Styling
 					sorted: {
 						type: Boolean,
 						notify: true,
-						observer: '_sortChanged'
+						observer: '_sortChanged',
+						reflectToAttribute: true
 					},
 					/**
 					 * Whether the column is currently sorted. Should only be set on one column at a time

@@ -25,8 +25,8 @@
 				<div toolbar-select>
 					<paper-icon-button icon="delete"></paper-icon-button>
 				</div>
-				<paper-datatable selectable sort-property="i" multi-selection>
-					<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px"></paper-datatable-column>
+				<paper-datatable selectable multi-selection>
+					<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
 					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px" default='{"first": "", "last": ""}' editable>
 						<template>
 							<paper-input value="{{value.first}}" no-label-float style="display:inline-block;width:182px;"></paper-input>
