@@ -74,7 +74,7 @@ I absolutely HATE HATE HATE rejecting pull requests, so let me just outline some
 
  1. If you are planning on doing anything except a quick fix, it's a wise idea to open an issue first with your plans. That
     way we can talk it through and check whether it might not already be easily possible and whether it fits with the
-    spirit of the component (I try to keep everything pretty declarative and Polymer-y).
+    spirit of the component (I try to keep everything pretty declarative, generic and Polymer-y).
  2. You absolutely *must* make every feature you work on at least a separate commit and ideally a separate pull request.
     This both makes it clearer to me what is what, makes it easier to pull only the relevant parts and prevents situations
     where I can't give credits to the good parts, because of the bad parts.
