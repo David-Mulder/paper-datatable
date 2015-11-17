@@ -347,7 +347,9 @@ Mixins
 					this.set("page", Math.ceil(this.dataSource.length / this.pageSize));
 				},
 				addNew: function(){
-					//0. check we ain't adding one already
+					console.warn('This feature is temporarily deprecated.');
+					/*
+					//1. check we ain't adding one already
 					if(this._datatable._getIndexById('__new__') > -1){
 						console.warn('It\'s only possible to add one item at a time.');
 						return;
@@ -368,6 +370,7 @@ Mixins
 					item[this._datatable.idProperty] = '__new__';
 					//4. push default to visible data
 					this._datatable.push('data', item);
+					*/
 				},
 				_prevPageDisabled: function(){
 					return this.page == 1;
