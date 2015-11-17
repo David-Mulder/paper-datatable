@@ -249,7 +249,10 @@ Styling
 					};
 					return instance;
 				},
-				formatValue: function(data){
+				_formatValue: function(data){
+					if('formatValue' in this){
+						return this.formatValue(data);
+					}
 					if(typeof data == 'undefined'){
 						return '';
 					}

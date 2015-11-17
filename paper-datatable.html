@@ -498,7 +498,7 @@ Mixins
 										cell.innerHTML = '';
 										cell.appendChild(instance.root);
 									}else{
-										cell.innerHTML = this._columns[cellI].formatValue(data)
+										cell.innerHTML = this._columns[cellI]._formatValue(data)
 										//cell.textContent = data;
 									}
 								}
@@ -551,7 +551,7 @@ Mixins
 									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}else{
-									cell.innerHTML = this._columns[i].formatValue(change.value);
+									cell.innerHTML = this._columns[i]._formatValue(change.value);
 								}
 							}
 							if(cell.instance){
