@@ -11,7 +11,9 @@
 			</template>
 		</template>
 		<template id="editableInputTemplate">
-			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_getValidRegexForInput(column.type)]]" no-label-float></paper-input>
+			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_getValidRegexForInput(column.type)]]" no-label-float>
+				<paper-icon-button icon="create" suffix hidden="[[!value]]" noink on-tap="_onEditValueTap"></paper-icon-button>
+			</paper-input>
 		</template>
 		<template id="editableBooleanTemplate">
 			<paper-checkbox checked="{{value}}"></paper-checkbox>
@@ -311,6 +313,12 @@ Styling
 						return undefined;
 					}else if(type.toLowerCase() == 'number'){
 						return '[0-9.,]';
+					}
+				},
+				_onEditValueTap: function(e){
+					var input = e.path.find(node => node.localName === 'paper-input');
+					if (input) {
+						input.shadowRoot.querySelector('input').focus();
 					}
 				}
 

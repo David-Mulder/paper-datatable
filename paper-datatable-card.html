@@ -43,6 +43,14 @@
 			}
 			paper-dropdown-menu{
 				vertical-align: middle;
+				--paper-input-container-underline: {
+					display: none;
+				}
+				--paper-input-container-input: {
+					text-align: right;
+					color: #757575;
+				}
+				margin-right: 12px;
 			}
 			#topBlock{
 				height:64px;
@@ -60,8 +68,9 @@
 			#bottomBlock{
 				height:56px;
 				padding:0px 6px;
-				top: 1px solid var(--paper-datatable-divider-color, --divider-color);
-
+				border-top: 1px solid var(--paper-datatable-divider-color, --divider-color);
+				color: #757575;
+				font-size: 15px;
 			}
 		</style>
 		<paper-material elevation="1">
