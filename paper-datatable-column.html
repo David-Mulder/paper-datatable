@@ -7,11 +7,11 @@
 		</style>
 		<template id="arrayTemplate">
 			<template is="dom-repeat" items="{{value}}" as="arrayItem">
-				<div class="array-item">{{_getArrayItemLabel(arrayItem)}}</div>
+				<div class="array-item">{{_pdt_getArrayItemLabel(column, arrayItem)}}</div>
 			</template>
 		</template>
 		<template id="editableInputTemplate">
-			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_getValidRegexForInput(column.type)]]" no-label-float></paper-input>
+			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_pdt_getValidRegexForInput(column.type)]]" no-label-float></paper-input>
 		</template>
 		<template id="editableBooleanTemplate">
 			<paper-checkbox checked="{{value}}"></paper-checkbox>
@@ -223,6 +223,7 @@ Styling
 				attached: function() {
 					Polymer.dom(this).parentNode.push('_columns', this);
 					this.parentNodeRef = Polymer.dom(this).parentNode;
+					this._registerEvilFunctions();
 				},
 				detached: function() {
 					this.parentNodeRef.splice('_columns', this.parentNodeRef._columns.indexOf(this), 1);
@@ -329,11 +330,16 @@ Styling
 					//console.log('set', parentPath, 'to', value);
 					this.parentNodeRef.set(parentPath, value);
 				},
+				/*
 				_getRootDataHost: function(){
 					return this;
+				},*/
+				_registerEvilFunctions: function(){
+					this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
+					this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
 				},
-				_getArrayItemLabel: function(value){
-					return this.arrayDisplayProp ? value[this.arrayDisplayProp] : value;
+				_getArrayItemLabel: function(column, value){
+					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
 				},
 				_getProp: function(obj, prop){
 					return obj[prop];

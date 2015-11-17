@@ -89,6 +89,7 @@
 					<paper-datatable-column header="Yummy" property="yummy" type="Boolean" sortable editable align="center"></paper-datatable-column>
 					<paper-datatable-column header="Calories" property="calories" type="Number" sortable editable></paper-datatable-column>
 					<paper-datatable-column header="Array" property="arr" type="Array" on-cell-tap="log"></paper-datatable-column>
+					<paper-datatable-column header="Complex Array" property="complexArr" type="Array" array-display-prop="title"></paper-datatable-column>
 					<paper-datatable-column id="dateTest" header="Created" property="created" type="Date" sortable format-value="{{formatDate}}"></paper-datatable-column>
 					<paper-datatable-column id="dateTest" header="Created" property="created" type="Date" sortable></paper-datatable-column>
 				</paper-datatable>
@@ -106,9 +107,9 @@
 				return this.get(path);
 			};
 			app.data = [
-				{title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], created: new Date(1447315235838)},
-				{title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], created: new Date(1447155235838)},
-				{title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], created: new Date(1447355135838)}
+				{title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447315235838)},
+				{title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447155235838)},
+				{title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447355135838)}
 			];
 			app.log = function(ev){
 				console.info('event', ev.type, 'on', ev.target, 'with detail', ev.detail);
