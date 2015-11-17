@@ -191,8 +191,8 @@ Mixins
 						this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
 						this._datatable.addEventListener("sort", this._handleSort.bind(this));
 					//}
-					this._datatable.addEventListener("selected-id-changed", this._setSelectedToolbarVisible.bind(this));
-					this._datatable.addEventListener("selected-ids-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("selected-key-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("selected-keys-changed", this._setSelectedToolbarVisible.bind(this));
 				},
 				observers: [
 					'retrieveVisibleData(dataSource, pageSize, page, _datatable)'
@@ -280,10 +280,11 @@ Mixins
 						this._datatable.set('progress', true);
 
 						if('queryForIds' in this.dataSource){
-							var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
+							console.warn('I am sorry, this functionality has been deprecated for the time being, please use `get` directly till I get to implement a good solid cache again.');
+							//var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
 
 							//todo: do not retrieve items which we put in the cache
-							this.dataSource.getByIds(ids).then(processItems);
+							//this.dataSource.getByIds(ids).then(processItems);
 						}else{
 							this.dataSource.get.apply(this.dataSource, queryArgs).then(processItems);
 						}
@@ -333,15 +334,15 @@ Mixins
 				},
 				_setSelectedToolbarVisible: function(){
 					if(this._datatable.multiSelection){
-						this._selectedToolbarVisible = this._datatable.selectedIds.length > 0;
-						this._singleSelectToolbarVisible = this._datatable.selectedIds.length == 1;
-						this._multiSelectToolbarVisible = this._datatable.selectedIds.length > 1;
-						this._numberselectedIds = this._datatable.selectedIds.length;
+						this._selectedToolbarVisible = this._datatable.selectedKeys.length > 0;
+						this._singleSelectToolbarVisible = this._datatable.selectedKeys.length == 1;
+						this._multiSelectToolbarVisible = this._datatable.selectedKeys.length > 1;
+						this._numberselectedIds = this._datatable.selectedKeys.length;
 					}else{
-						this._selectedToolbarVisible = this._datatable.selectedId ? true : false;
-						this._singleSelectToolbarVisible = this._datatable.selectedId ? true : false;
+						this._selectedToolbarVisible = this._datatable.selectedKey ? true : false;
+						this._singleSelectToolbarVisible = this._datatable.selectedKey ? true : false;
 						this._multiSelectToolbarVisible = false;
-						this._numberselectedIds = this._datatable.selectedId ? 1 : 0;
+						this._numberselectedIds = this._datatable.selectedKey ? 1 : 0;
 					}
 				}
 

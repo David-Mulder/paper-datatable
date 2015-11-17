@@ -25,7 +25,8 @@
 				<div toolbar-select>
 					<paper-icon-button icon="delete"></paper-icon-button>
 				</div>
-				<paper-datatable selectable>
+				<paper-datatable selectable sort-property="i">
+					<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px"></paper-datatable-column>
 					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px" default='{"first": "", "last": ""}' editable>
 						<template>
 							<paper-input value="{{value.first}}" no-label-float style="display:inline-block;width:182px;"></paper-input>
@@ -56,12 +57,12 @@
 				var id = i*10000+Math.round(Math.random() * 500);
 				var rating = Math.round(Math.random() * 2000)+1000;
 				myData.push({
-					id: id,
+					i: i,
 					title: "title"+id,
 					rating: rating,
 					author: {
 						first: "David",
-						last: "Mulder "+ id
+						last: "Mulder "+ i
 					},
 					reserved: (Math.random() > 0.9 ? true : undefined)
 				});
@@ -69,15 +70,19 @@
 			window.myData = myData;
 
 			app.data = {
-				getByIds: function(ids){
+				get: function(sort, page, pageSize){
 					return new Promise(function(resolve, reject){
-						var data = [];
-						ids.forEach(function(id){
-							data.push(myData.find(function(item){
-								return item.id == id;
-							}));
+						myData.sort(function(a,b){
+							if(sort.direction == "desc"){
+								var c = a;
+								a = b;
+								b = c;
+							}
+							if(a[sort.property] > b[sort.property]) return 1;
+							if(a[sort.property] < b[sort.property]) return -1;
+							return 0;
 						});
-						resolve(data);
+						resolve(myData.slice((page-1)*pageSize, page*pageSize));
 					});
 				},
 				set: function(item, property, value){
@@ -85,6 +90,8 @@
 						console.info("a save was triggered", [item, property, value]);
 						if(item.id === '__new__'){
 							//validate item, if invalid (and thus not savable yet) reject, otherwise return it's new id
+							console.warn('this is for the time being deprecated');
+							/*
 							if(item.author.first.length > 0 && item.author.last.length > 0){
 								console.log('trigger save');
 								var id = Math.round(Math.random() * 10000);
@@ -96,7 +103,7 @@
 							}else{
 								console.log('no luck yet');
 								reject();
-							}
+							}*/
 						}else{
 							var myItem = myData.find(function(thisItem){
 								return thisItem.id == item.id;
@@ -106,25 +113,6 @@
 						}
 					});
 
-				},
-				queryForIds: function(sort, page, limit){
-					// query = {search: "test"}
-					// sort = {property: "something", direction: "asc"}
-					// page = 1
-					// limit = 10
-					myData.sort(function(a,b){
-						if(sort.direction == "asc"){
-							var c = a;
-							a = b;
-							b = c;
-						}
-						if(a[sort.property] > b[sort.property]) return 1;
-						if(a[sort.property] < b[sort.property]) return -1;
-						return 0;
-					});
-					return myData.slice((page-1)*limit, page*limit).map(function(item){
-						return item.id;
-					});
 				},
 				length:myData.length
 			};

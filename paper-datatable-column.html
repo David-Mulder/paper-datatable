@@ -213,19 +213,16 @@ Styling
 					});
 					console.log(this.config);
 				},
-				createCellInstance: function(model, notificationId, notificationProp){
+				createCellInstance: function(model, notificationKey){
 					if(typeof model[this.property] == "undefined" && typeof this.default !== "undefined"){
-						var instance = this.stamp({item: model, column:this, value: this.default, _dataId: notificationId});
+						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
 					}else{
-						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataId: notificationId});
+						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
 					}
 
 					instance._getProp = function(obj, prop){
 						return obj[prop];
 					};
-
-					//console.log(instance, {id: notificationId, prop: notificationProp});
-					//this.map.set(instance, {id: notificationId, prop: notificationProp});
 					return instance;
 				},
 				formatValue: function(data){
@@ -271,9 +268,9 @@ Styling
 				_forwardInstanceProp: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
-					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
 					if(item == 'value'){
-						var parentPath = ['data', dataRowI, this.property].join('.');
+						console.log(templateInstance.get('_dataKey'));
+						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].join('.');
 						value = this._cast(value);
 						//console.log('_forwardInstanceProp',arguments);
 						//console.log('set', parentPath, 'to', value);
@@ -285,16 +282,15 @@ Styling
 				_forwardInstancePath: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
-					var dataRowI = this.parentNodeRef._getDataRowIFromID(templateInstance.get('_dataId'));
 					if(item == 'value'){
-						var parentPath = ['data', dataRowI, this.property].concat(path).join('.');
+						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path).join('.');
 						if(path.length == 0){
 							value = this._cast(value);
 						}
 						//console.log(parentPath, path.join('.'), value)
 						//console.log('_forwardInstancePath',arguments);
 					}else if(item == 'item'){
-						var parentPath = ['data', dataRowI].concat(path).join('.');
+						var parentPath = ['data', templateInstance.get('_dataKey')].concat(path).join('.');
 						//console.log(parentPath, value);
 						//console.log('_forwardInstancePath',arguments);
 					}
