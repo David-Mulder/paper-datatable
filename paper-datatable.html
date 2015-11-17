@@ -40,6 +40,7 @@
 				transition: transform .2s linear, width .2s linear, color .2s linear;
 				color: rgba(0,0,0, .26);
 				width: 0px;
+				@apply(--paper-datatable-column-header-sort-icon-hover);
 			}
 			th[data-sortable]{
 				cursor: pointer;
@@ -50,12 +51,14 @@
 			th[data-sortable][data-sorted], th[data-sortable]:hover{
 				padding-left: 4px;
 				color: rgba(0,0,0, .87);
+				@apply(--paper-datatable-column-header-sorted);
 			}
 			th[data-sortable][data-sorted] iron-icon, th[data-sortable]:hover iron-icon{
 				width: 24px;
 			}
 			th[data-sortable][data-sorted] iron-icon.sort{
 				color: rgba(0,0,0, .87);
+				@apply(--paper-datatable-column-header-sorted);
 			}
 			th[data-sortable]:not([data-sorted]) iron-icon{
 				transform: rotate(180deg);
