@@ -103,8 +103,10 @@
 						</paper-menu>
 					</paper-dropdown-menu>
 					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, dataSource.length)]]</span> of <span>[[dataSource.length]]</span>
-					<paper-icon-button icon="chevron-left" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
-					<paper-icon-button icon="chevron-right" on-tap="nextPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
+					<paper-icon-button icon="datatable:first-page" on-tap="firstPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
+					<paper-icon-button icon="datatable:prev-page" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
+					<paper-icon-button icon="datatable:next-page" on-tap="nextPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
+					<paper-icon-button icon="datatable:last-page" on-tap="lastPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
 				</div>
 			</div>
 		</paper-material>
@@ -337,6 +339,12 @@ Mixins
 				},
 				prevPage: function(){
 					this.set("page", this.page-1);
+				},
+				firstPage: function(){
+					this.set("page", 1);
+				},
+				lastPage: function(){
+					this.set("page", Math.ceil(this.dataSource.length / this.pageSize));
 				},
 				addNew: function(){
 					//0. check we ain't adding one already
