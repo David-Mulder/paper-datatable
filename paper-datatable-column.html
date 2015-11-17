@@ -94,6 +94,30 @@ Styling
 					 */
 					sortable: Boolean,
 					/**
+					 * Whether the column is currently sorted. Should only be set on one column at a time
+					 *
+					 * @attribute sorted
+					 * @type Boolean
+					 * @default false
+					 */
+					sorted: {
+						type: Boolean,
+						notify: true,
+						observer: '_sortChanged'
+					},
+					/**
+					 * Whether the column is currently sorted. Should only be set on one column at a time
+					 *
+					 * @attribute sortDirection
+					 * @type String
+					 * @default 'asc'
+					 */
+					sortDirection: {
+						type: String,
+						value: 'asc',
+						observer: '_sortChanged'
+					},
+					/**
 					 * If `type` is a simple type, then if this is true one of the default editable
 					 * templates is used. For example if `type` is `String` every cell will contain
 					 * a `<paper-input>`. This is practically just a convenience method so that you
@@ -171,6 +195,7 @@ Styling
 					Polymer.Templatizer
 				],
 				ready: function() {
+
 					var template = Polymer.dom(this).querySelector('template');
 					if(!template && this.type.toLowerCase() == "array"){
 						var template = this.$.arrayTemplate;
@@ -183,7 +208,6 @@ Styling
 					}
 
 					if(template) {
-
 						this._instanceProps = {};
 						this._instanceProps.item = true;
 						this._instanceProps.value = true;
@@ -192,7 +216,6 @@ Styling
 						this.templatize(template);
 
 						this.template = true;
-
 					}
 
 				},
@@ -201,7 +224,7 @@ Styling
 					this.parentNodeRef = Polymer.dom(this).parentNode;
 				},
 				detached: function() {
-					this.parentNodeRef.splice('columns', this.parentNodeRef.columns.indexOf(this), 1);
+					this.parentNodeRef.splice('_columns', this.parentNodeRef._columns.indexOf(this), 1);
 				},
 				update: function(){
 					var that = this;
@@ -257,6 +280,11 @@ Styling
 						return new Date(value);
 					}else{
 						return value;
+					}
+				},
+				_sortChanged: function(){
+					if(this.sorted){
+						this.parentNodeRef.sort(this);
 					}
 				},
 				_forwardParentProp: function(prop, value){

@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="paper-datatable-column.html">
+<link rel="import" href="datatable-icons.html">
 
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
@@ -30,25 +31,39 @@
 				user-select: none;
 				color: rgba(0,0,0, .54);
 				font-size:12px;
+				transition: linear .1s color, padding-left .2s linear;
 			}
 			th:not([data-sortable]) iron-icon.sort{
 				display: none;
 			}
 			th[data-sortable] iron-icon.sort {
-				transition: transform .2s linear, width .2s linear;
+				transition: transform .2s linear, width .2s linear, color .2s linear;
+				color: rgba(0,0,0, .26);
 				width: 0px;
 			}
 			th[data-sortable]{
 				cursor: pointer;
-				transition: padding-left .2s linear;
 			}
-			th[data-sortable][data-sorted]{
+			th[data-sortable]:not([data-sorted]):hover iron-icon{
+
+			}
+			th[data-sortable][data-sorted], th[data-sortable]:hover{
 				padding-left: 4px;
+				color: rgba(0,0,0, .87);
 			}
-			th[data-sortable][data-sorted] iron-icon{
+			th[data-sortable][data-sorted] iron-icon, th[data-sortable]:hover iron-icon{
 				width: 24px;
 			}
-			th[data-sortable][data-sorted] iron-icon[data-direction='asc']{
+			th[data-sortable][data-sorted] iron-icon.sort{
+				color: rgba(0,0,0, .87);
+			}
+			th[data-sortable]:not([data-sorted]) iron-icon{
+				transform: rotate(180deg);
+			}
+			th[data-sortable]:not([data-sorted]):not([data-sort-direction='desc']) iron-icon{
+				transform: rotate(0deg);
+			}
+			th[data-sortable][data-sorted]:not([data-sort-direction='desc']) iron-icon{
 				transform: rotate(180deg);
 			}
 			tr td, tr th{
@@ -179,9 +194,9 @@
 								</template>
 							</th>
 						</template>
-						<template is="dom-repeat" items="{{_columns}}" as="column">
-							<th data-sortable$="[[column.sortable]]" data-sorted$="[[_isEqual(column.property, sortProperty)]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
-								<iron-icon icon="arrow-drop-down" class="sort" data-direction$="[[sortDirection]]"></iron-icon>
+						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column">
+							<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+								<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
 								<span id="title">{{column.header}}</span>
 								<template is="dom-if" if="[[column.tooltip]]">
 									<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
@@ -418,9 +433,7 @@ Mixins
 					/*'restructureData(data.*, _columns.splices)',*/
 					'_setRowKeys(data.splices)',
 					'_setRowKeys(data.*)',
-					'_notifyPathOnInstances(data.*)',
-					'_internalSort(_internalSortEnabled, sortProperty, sortDirection)'
-
+					'_notifyPathOnInstances(data.*)'
 				],
 
 				listeners: {
@@ -434,25 +447,6 @@ Mixins
 					}.bind(this));
 					this.set("_rowKeys", rowKeys);
 					this._internalSort();
-				},
-
-				_internalSort: function(){
-					if(this._internalSortEnabled) {
-						this._rowKeys.sort(function(a, b){
-							if(this.sortDirection == "desc"){
-								var c = a;
-								a = b;
-								b = c;
-							}
-							var valA = this._getByKey(a)[this.sortProperty] || "";
-							var valB = this._getByKey(b)[this.sortProperty] || "";
-
-							if(valA < valB) return -1;
-							if(valA > valB) return 1;
-							return 0;
-						}.bind(this));
-						this.set("_rowKeys", JSON.parse(JSON.stringify(this._rowKeys)));
-					}
 				},
 
 				_isEqual: function(a, b){
@@ -697,23 +691,92 @@ Mixins
 					}
 				},
 
+				sort: function(column){
+					var sortedColumn = this._columns.find(function(aColumn){
+						return aColumn.sorted && aColumn !== column;
+					});
+					if(sortedColumn){
+						sortedColumn.set('sorted', false);
+
+						var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
+							return el.dataColumn === sortedColumn;
+						});
+
+						th.removeAttribute('data-sorted');
+					}
+					var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
+						return el.dataColumn === column;
+					});
+					th.setAttribute('data-sorted', true);
+					th.setAttribute('data-sort-direction', column.sortDirection);
+
+					var triggeredEvent = this.fire('sort', {sort: {
+						property: column.property,
+						direction: column.sortDirection
+					}, column: column}, {cancelable: true});
+
+					if(triggeredEvent.defaultPrevented){
+						this._internalSortEnabled = false;
+					}else{
+						this._internalSortEnabled = true;
+						this._internalSort(column);
+					}
+				},
+
+				_internalSort: function(column){
+					if(this._internalSortEnabled) {
+						this._rowKeys.sort(function(a, b){
+							if(column.sortDirection == 'desc'){
+								var c = a;
+								a = b;
+								b = c;
+							}
+							var valA = this._getByKey(a)[column.property] || "";
+							var valB = this._getByKey(b)[column.property] || "";
+
+							if(valA < valB) return -1;
+							if(valA > valB) return 1;
+							return 0;
+						}.bind(this));
+						this.set("_rowKeys", JSON.parse(JSON.stringify(this._rowKeys)));
+					}
+				},
+
 				_handleSort: function(ev){
 
 					var column = ev.model.column;
 					if(column.sortable){
-						this.set("sortDirection", this.sortDirection == 'asc' ? 'desc' : 'asc');
-						var triggeredEvent = this.fire("sort", {sort: {
-							property: this.sortProperty,
-							direction: this.sortDirection
+						/*
+						//this.set("sortDirection", this.sortDirection == 'asc' ? 'desc' : 'asc');
+						if(column.sorted){
+							column.set('sortDirection', column.sortDirection == 'asc' ? 'desc' : 'asc');
+						}else{
+							if(this._currentlySortedColumn){
+								this._currentlySortedColumn.set('sorted', false);
+							}
+							column.set('sorted', true);
+						}
+						var triggeredEvent = this.fire('sort', {sort: {
+							property: column.property,
+							direction: column.sortDirection
 						}, column: column}, {cancelable: true});
+
 						if(!triggeredEvent.defaultPrevented){
 							this._internalSortEnabled = false;
-							this.set("sortProperty", column.property);
+							this.set('sortProperty', column.property);
 							this._internalSortEnabled = true;
 						}else{
-							this.set("sortProperty", column.property);
+							this.set('sortProperty', column.property);
 							this._internalSortEnabled = false;
 						}
+						this._currentlySortedColumn = column;
+						*/
+						column.set('sortDirection', column.sortDirection == 'asc' ? 'desc' : 'asc');
+						//if(column.sorted){
+						//	column.set('sortDirection', column.sortDirection == 'asc' ? 'desc' : 'asc');
+						//}else{
+							column.set('sorted', true);
+						//}
 					}
 
 				},
@@ -784,6 +847,11 @@ Mixins
 
 				_customRowStyle: function(rowKey){
 					return this.customRowStyle(this._getByKey(rowKey));
+				},
+
+				_getProp: function(obj, prop){
+					console.log(obj);
+					return obj[prop];
 				}
 
 			});
