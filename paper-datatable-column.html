@@ -1,3 +1,4 @@
+<script src="../whenever.js/whenever.js"></script>
 <dom-module id="paper-datatable-column">
 	<template>
 		<style>
@@ -195,6 +196,11 @@ Styling
 				behaviors: [
 					Polymer.Templatizer
 				],
+
+				created: function(){
+					this.beenAttached = new Whenever();
+				},
+
 				ready: function() {
 
 					var template = Polymer.dom(this).querySelector('template');
@@ -219,24 +225,18 @@ Styling
 						this.template = true;
 					}
 
+
 				},
 				attached: function() {
 					Polymer.dom(this).parentNode.push('_columns', this);
 					this.parentNodeRef = Polymer.dom(this).parentNode;
 					this._registerEvilFunctions();
+					this.async(function(){
+						this.beenAttached.ready();
+					});
 				},
 				detached: function() {
 					this.parentNodeRef.splice('_columns', this.parentNodeRef._columns.indexOf(this), 1);
-				},
-				update: function(){
-					var that = this;
-					Object.keys(this.properties).forEach(function(property){
-						if(property !== 'config'){
-							console.log(that.get('config'));
-							that.set('config.'+property, that.get(property));
-						}
-					});
-					console.log(this.config);
 				},
 				createCellInstance: function(model, notificationKey){
 					if(typeof model[this.property] == "undefined" && typeof this.default !== "undefined"){
@@ -289,7 +289,9 @@ Styling
 				},
 				_sortChanged: function(){
 					if(this.sorted){
-						this.parentNodeRef.sort(this);
+						this.beenAttached.whenReady(function(){
+							this.parentNodeRef.sort(this);
+						}.bind(this));
 					}
 				},
 				_forwardParentProp: function(prop, value){

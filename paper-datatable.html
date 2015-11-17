@@ -695,35 +695,38 @@ Mixins
 				},
 
 				sort: function(column){
-					var sortedColumn = this._columns.find(function(aColumn){
-						return aColumn.sorted && aColumn !== column;
-					});
-					if(sortedColumn){
-						sortedColumn.set('sorted', false);
+					this.async(function(){
+						var sortedColumn = this._columns.find(function(aColumn){
+							return aColumn.sorted && aColumn !== column;
+						});
+						if(sortedColumn){
+							sortedColumn.set('sorted', false);
 
+							var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
+								return el.dataColumn === sortedColumn;
+							});
+
+							th.removeAttribute('data-sorted');
+						}
 						var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
-							return el.dataColumn === sortedColumn;
+							return el.dataColumn === column;
 						});
 
-						th.removeAttribute('data-sorted');
-					}
-					var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
-						return el.dataColumn === column;
+						th.setAttribute('data-sorted', true);
+						th.setAttribute('data-sort-direction', column.sortDirection);
+
+						var triggeredEvent = this.fire('sort', {sort: {
+							property: column.property,
+							direction: column.sortDirection
+						}, column: column}, {cancelable: true});
+
+						if(triggeredEvent.defaultPrevented){
+							this._internalSortEnabled = false;
+						}else{
+							this._internalSortEnabled = true;
+							this._internalSort(column);
+						}
 					});
-					th.setAttribute('data-sorted', true);
-					th.setAttribute('data-sort-direction', column.sortDirection);
-
-					var triggeredEvent = this.fire('sort', {sort: {
-						property: column.property,
-						direction: column.sortDirection
-					}, column: column}, {cancelable: true});
-
-					if(triggeredEvent.defaultPrevented){
-						this._internalSortEnabled = false;
-					}else{
-						this._internalSortEnabled = true;
-						this._internalSort(column);
-					}
 				},
 
 				_internalSort: function(column){
