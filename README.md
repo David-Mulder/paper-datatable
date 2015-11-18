@@ -1,10 +1,8 @@
 # paper-datatable
 
-A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty solid alpha release, or maybe even a beta.
+A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty ~~solid alpha release, or maybe even~~ a beta.
 
 Documentation **and demos** can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
-
-**Important:** This element *does* support custom `<template>`'s for each column, *including* two way binding (so you can place `<paper-input>`'s in your cells and listen for data changes), as far as I know this is pretty unique, but it's also the reason why it can be a bit slow on Firefox and Edge.
 
 ## Features
 
@@ -26,6 +24,7 @@ Documentation **and demos** can be found here: http://david-mulder.github.io/pap
  - Extremely simple to set up ([simple demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/simple.html))
  - Pretty good styling support ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/theming.html))
  - Pagination and external data sources ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/users-card.html))
+ - Supporting both inline editing and in Material Design dialogs.
  - ~~Add new items on the fly ([unpolished demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card.html))~~
  - [Delightful details](https://www.google.com/design/spec/animation/delightful-details.html) in sorting and partial selections. If you have ideas for more: let me know.
 
