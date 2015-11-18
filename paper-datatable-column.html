@@ -304,7 +304,6 @@ Styling
 					var path = prop.split('.');
 					var item = path.shift();
 					if(item == 'value'){
-						console.log(templateInstance.get('_dataKey'));
 						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].join('.');
 						value = this._cast(value);
 						//console.log('_forwardInstanceProp',arguments);
