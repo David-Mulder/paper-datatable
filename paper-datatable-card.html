@@ -208,6 +208,13 @@ Mixins
 						type: Array,
 						notify: true,
 						value: []
+					},
+					_sortDirection: {
+						type: String,
+						value: 'asc'
+					},
+					_sortProperty: {
+						type: String
 					}
 				},
 				ready: function(){
@@ -221,9 +228,10 @@ Mixins
 					this._datatable.addEventListener("selection-changed", this._setSelectedIds.bind(this));
 					this._datatable.addEventListener("selection-changed", this._setSelectedToolbarVisible.bind(this));
 					this.set('selectedIds', []);
+					this.set('_sortProperty', this.idProperty);
 				},
 				observers: [
-					'retrieveVisibleData(dataSource, pageSize, page, _datatable)'
+					'retrieveVisibleData(dataSource, pageSize, page, _datatable, _sortDirection, _sortProperty)'
 				],
 				_triggerSave: function(ev){
 					if(this.dataSource) {
@@ -279,7 +287,12 @@ Mixins
 				_handleSort: function(ev){
 					if(this.dataSource) {
 						ev.preventDefault();
-						this.retrieveVisibleData();
+						var sortedColumn = Polymer.dom(this).querySelector('paper-datatable-column[sorted]');
+						if(sortedColumn){
+							this._sortProperty = sortedColumn.property;
+							this._sortDirection = sortedColumn.sortDirection;
+						}
+						//this.retrieveVisibleData();
 					}
 				},
 				/*
@@ -304,13 +317,10 @@ Mixins
 
 						}.bind(this);
 
-						var sortedColumn = Polymer.dom(this).querySelector('paper-datatable-column[sorted]');
-						var sort = {};
-						if(sortedColumn){
-							sort.property = sortedColumn.property;
-							sort.direction = sortedColumn.sortDirection;
-						}
-						var queryArgs = [sort, this.page, this.pageSize];
+						var queryArgs = [{
+							property: this._sortProperty,
+							direction: this._sortDirection
+						}, this.page, this.pageSize];
 
 						//this._datatable.splice("data", 0, this._datatable.data.length);
 						this._datatable.set('progress', true);

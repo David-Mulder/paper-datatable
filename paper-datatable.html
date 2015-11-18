@@ -398,28 +398,6 @@ Mixins
 						notify: true,
 						computed: '_getSelectedItems(selectedKeys.splices)'
 					},
-					/**
-					 * Property to sort on
-					 *
-					 * @attribute sortProperty
-					 * @type String
-					 * @default ''
-					 */
-					sortProperty: {
-						type: String,
-						value: ''
-					},
-					/**
-					 * Direction to sort in
-					 *
-					 * @attribute sortDirection
-					 * @type String
-					 * @default 'asc'
-					 */
-					sortDirection: {
-						type: String,
-						value: 'asc'
-					},
 					_internalSortEnabled: {
 						type: Boolean,
 						value: false
@@ -462,7 +440,9 @@ Mixins
 				},
 
 				_restructureData: function(){
-					if(Polymer.dom(this).querySelectorAll('paper-datatable-column').length === this._columns.length) {
+
+					this.debounce('restructure data', function(){
+
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
 
 						// loop through the rows
@@ -470,6 +450,7 @@ Mixins
 							var row = rows[rowI];
 							//find the data that belongs with the row
 							var rowData = this.get('data.'+row.dataset.key);
+							//console.log(row.dataset.key, row, rowI, rows.length, rowData);
 
 							//get all cells in the row
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
@@ -504,7 +485,7 @@ Mixins
 								}
 							}
 						}
-					}
+					});
 
 				},
 
@@ -696,6 +677,7 @@ Mixins
 
 				sort: function(column){
 					this.async(function(){
+						console.log('sort is finally set');
 						var sortedColumn = this._columns.find(function(aColumn){
 							return aColumn.sorted && aColumn !== column;
 						});
