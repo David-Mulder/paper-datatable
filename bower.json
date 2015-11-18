@@ -19,8 +19,7 @@
   "homepage": "https://github.com/David Mulder/paper-datatable/",
   "ignore": [
     "/.*",
-    "/test/",
-    "/demo/"
+    "/test/"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#~1.2.0",
