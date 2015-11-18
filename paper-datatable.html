@@ -779,14 +779,19 @@ Mixins
 
 				_internalSort: function(column){
 					if(this._internalSortEnabled) {
+						//todo: move function to paper-datatable-column.html
 						this._rowKeys.sort(function(a, b){
 							if(column.sortDirection == 'desc'){
 								var c = a;
 								a = b;
 								b = c;
 							}
-							var valA = this._getByKey(a)[column.property] || "";
-							var valB = this._getByKey(b)[column.property] || "";
+							var valA = this._getByKey(a)[column.property];
+							valA = typeof valA === 'undefined' ? '' : valA;
+							valA = typeof valA === 'undefined' ? valA.toString() : valA;
+							var valB = this._getByKey(b)[column.property];
+							valB = typeof valB === 'undefined' ? '' : valB;
+							valB = typeof valB === 'undefined' ? valB.toString() : valB;
 
 							if(valA < valB) return -1;
 							if(valA > valB) return 1;
