@@ -27,6 +27,7 @@ Documentation **and demos** can be found here: http://david-mulder.github.io/pap
  - Supporting both inline editing and in Material Design dialogs.
  - ~~Add new items on the fly ([unpolished demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card.html))~~
  - [Delightful details](https://www.google.com/design/spec/animation/delightful-details.html) in sorting and partial selections. If you have ideas for more: let me know.
+ - Usable on mobile. Only tested on Chrome for Android, and it's not great, but it doesn't overflow or overlap anything.
 
 ## Installation
 
