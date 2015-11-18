@@ -24,6 +24,14 @@
 				border-spacing: 0px;
 				width:100%;
 			}
+			tr td, tr th{
+				border-bottom: 1px solid var(--paper-datatable-divider-color, --divider-color);
+				padding: 6px 28px 6px 28px;
+				box-sizing: border-box;
+			}
+			td{
+				height: 48px;
+			}
 			th{
 				font-weight: 500;
 				text-align:left;
@@ -37,6 +45,7 @@
 				font-size:12px;
 				transition: linear .1s color, padding-left .2s linear;
 				box-sizing: border-box;
+				height: 56px;
 			}
 			th:not([data-sortable]) iron-icon.sort{
 				display: none;
@@ -73,11 +82,6 @@
 			}
 			th[data-sortable][data-sorted]:not([data-sort-direction='desc']) iron-icon{
 				transform: rotate(180deg);
-			}
-			tr td, tr th{
-				border-bottom: 1px solid var(--paper-datatable-divider-color, --divider-color);
-				padding: 6px 28px 6px 28px;
-				height: 41px;
 			}
 			tr td{
 				cursor: pointer;
@@ -844,14 +848,15 @@ Mixins
 					}
 					var rowModel = this.$.rowRepeat.modelForElement(path[i]);
 
+					// clicks in the checkbox cell do not have a set column
 					if(ev.model.column){
 						ev.model.column.fire('cell-tap', {key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev});
 						this.fire('cell-tap', {column: ev.model.column, key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {});
-					}
 
-					if(ev.model.column.dialog){
-						this._initializeInDialog(cell, ev.model.column, this._getByKey(rowModel.rowKey), rowModel.rowKey);
-						var dialogInitialized = true;
+						if(ev.model.column.dialog){
+							this._initializeInDialog(cell, ev.model.column, this._getByKey(rowModel.rowKey), rowModel.rowKey);
+							var dialogInitialized = true;
+						}
 					}
 
 					var triggeredEvent = this.fire('row-tap', {key: rowModel.rowKey, item: this._getByKey(rowModel.rowKey), originalEvent: ev}, {cancelable: true});
