@@ -13,118 +13,102 @@
 		<link rel="import" href="../../paper-card/paper-card.html">
 		<link rel="import" href="../paper-datatable-card.html">
 		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
 
 		<style is="custom-style">
 
-			:root{
-				--paper-datatable-array-item: {
-					min-width: 15px;
-					height: 17px;
-					text-align: center;
-					border-radius: 8px;
-					background: gray;
-					color: white;
-					padding: 0px 1px;
-				};
+			:root {
+				--dark-primary-color:       #D32F2F;
+				--default-primary-color:    #F44336;
+				--light-primary-color:      #FFCDD2;
+				--accent-color:             #FF9800;
+				--primary-background-color: #FFCDD2;
+				--primary-text-color:       #212121;
+				--secondary-text-color:     #727272;
+				--disabled-text-color:      #BDBDBD;
+				--divider-color:            rgba(0,0,0,.3);
+
+				--paper-progress-active-color: #EC407A;
+				--paper-progress-container-color: var(--paper-grey-800);
 			}
 
-			paper-card{
-				margin:20px;
-				display:block;
+			demo-menu{
+				--demo-menu-background: #303030;
+			}
+
+			paper-datatable-card{
+				max-width: 1000px;
+				margin: 30px auto;
+				--paper-datatable-selection-toolbar-color: var(--paper-grey-900);
+				--paper-datatable-card: {
+					background: var(--paper-grey-800);
+				};
+				color: rgba(255, 255, 255, var(--dark-primary-opacity));
+				--paper-input-container-input-color: rgba(255, 255, 255, var(--dark-primary-opacity));
+			}
+
+			paper-datatable{
+				--paper-datatable-row-hover-color: inherit;
+				--paper-datatable-row-selection-color: inherit;
+
+				--paper-datatable-column-header: {
+					color: inherit;
+					padding-left: 5px;
+					padding-right: 5px;
+					min-width: 73px;
+					border-bottom: 0px;
+				};
+				--paper-datatable-column-header-sorted: {
+					color: inherit;
+				};
+				--paper-datatable-column-header-sort-icon-hover: {
+					color: rgba(255, 255, 255, .5)
+				};
+				--paper-datatable-column-header-last: {
+					padding-right: 24px;
+				};
+				--paper-datatable-cell-last: {
+					padding-right: 24px;
+				};
+
+				--paper-datatable-header-checkbox-color: rgba(255, 255, 255, var(--dark-primary-opacity));
+
+				--paper-datatable-cell: {
+					color: #212121;
+					padding-left: 5px;
+					padding-right: 5px;
+				};
 			}
 
 		</style>
 
 	</head>
 	<body>
+		<demo-menu>
+			<template is="dom-bind" id="app">
 
-		<template is="dom-bind" id="app">
+				<paper-datatable-card header="Dangerously delicious">
+					<div toolbar-main>
+						<paper-icon-button icon="more-vert" on-tap="delete"></paper-icon-button>
+					</div>
+					<div toolbar-select>
+						<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+					</div>
+					<paper-datatable data="{{data}}" selectable multi-selection custom-row-style="{{generateRowCss}}" progress="{{progressBarVisble}}" sort-property="calories" sort-direction="asc">
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable editable></paper-datatable-column>
+						<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
+						<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Calcium (%)" property="calcium" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Iron (%)" property="iron" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
+					</paper-datatable>
+				</paper-datatable-card>
 
-			<style is="custom-style">
-				:root {
-					--dark-primary-color:       #D32F2F;
-					--default-primary-color:    #F44336;
-					--light-primary-color:      #FFCDD2;
-					--accent-color:             #FF9800;
-					--primary-background-color: #FFCDD2;
-					--primary-text-color:       #212121;
-					--secondary-text-color:     #727272;
-					--disabled-text-color:      #BDBDBD;
-					--divider-color:            rgba(0,0,0,.3);
+			</template>
 
-					--paper-progress-active-color: #EC407A;
-					--paper-progress-container-color: var(--paper-grey-800);
-				}
-
-				body{
-					background: #303030;
-				}
-
-				paper-datatable-card{
-					max-width: 1000px;
-					margin: 30px auto;
-					--paper-datatable-selection-toolbar-color: var(--paper-grey-900);
-					--paper-datatable-card: {
-						background: var(--paper-grey-800);
-					};
-					color: rgba(255, 255, 255, var(--dark-primary-opacity));
-					--paper-input-container-input-color: rgba(255, 255, 255, var(--dark-primary-opacity));
-				}
-
-				paper-datatable{
-					--paper-datatable-row-hover-color: inherit;
-					--paper-datatable-row-selection-color: inherit;
-
-					--paper-datatable-column-header: {
-						color: inherit;
-						padding-left: 5px;
-						padding-right: 5px;
-						min-width: 73px;
-						border-bottom: 0px;
-					};
-					--paper-datatable-column-header-sorted: {
-						color: inherit;
-					};
-					--paper-datatable-column-header-sort-icon-hover: {
-						color: rgba(255, 255, 255, .5)
-					};
-					--paper-datatable-column-header-last: {
-						padding-right: 24px;
-					};
-					--paper-datatable-cell-last: {
-						padding-right: 24px;
-					};
-
-					--paper-datatable-header-checkbox-color: rgba(255, 255, 255, var(--dark-primary-opacity));
-
-					--paper-datatable-cell: {
-						color: #212121;
-						padding-left: 5px;
-						padding-right: 5px;
-					};
-				}
-			</style>
-
-			<paper-datatable-card header="Dangerously delicious">
-				<div toolbar-main>
-					<paper-icon-button icon="more-vert" on-tap="delete"></paper-icon-button>
-				</div>
-				<div toolbar-select>
-					<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
-				</div>
-				<paper-datatable data="{{data}}" selectable multi-selection custom-row-style="{{generateRowCss}}" progress="{{progressBarVisble}}" sort-property="calories" sort-direction="asc">
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable editable></paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
-					<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Calcium (%)" property="calcium" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Iron (%)" property="iron" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
-				</paper-datatable>
-			</paper-datatable-card>
-
-		</template>
+		</demo-menu>
 
 		<script>
 			var app = document.querySelector('#app');

@@ -13,27 +13,17 @@
 		<link rel="import" href="../../paper-card/paper-card.html">
 		<link rel="import" href="../paper-datatable-card.html">
 		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="./demo-menu.html">
 
 		<style is="custom-style">
 
 			:root{
-				--paper-datatable-array-item: {
-					min-width: 15px;
-					height: 17px;
-					text-align: center;
-					border-radius: 8px;
-					background: gray;
-					color: white;
-					padding: 0px 1px;
-				};
 			}
-
 			body{
-				background: #f5f5f5;
+				overflow:hidden;
 			}
 
 			paper-card{
-				margin:20px;
 				display:block;
 			}
 
@@ -42,64 +32,31 @@
 	</head>
 	<body>
 
-		<div style="text-align:center">
-			<a href="index.html">See all other demo's</a>
-		</div>
-
 		<template is="dom-bind" id="app">
 
-			<style is="custom-style">
-				paper-card {
-					--paper-card-header-text: {
-						font-family: 'Roboto', 'Noto', sans-serif;
-						font-weight: normal;
-						font-size: 20px;
+			<demo-menu>
+				<style is="custom-style">
+					paper-card {
+						--paper-card-header-text: {
+							font-family: 'Roboto', 'Noto', sans-serif;
+							font-weight: normal;
+							font-size: 20px;
+						}
 					}
-				}
-			</style>
+				</style>
 
-			<paper-card heading="Just a normal data table">
-				<paper-datatable data="{{data}}" selectable multi-selection>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable></paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." sorted></paper-datatable-column>
-					<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Calcium (%)" property="calcium" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Iron (%)" property="iron" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
-				</paper-datatable>
-			</paper-card>
-
-			<paper-card heading="And one with `[editable]` and `[dialog]` added to each column.">
-				<paper-datatable data="{{data}}" selectable multi-selection>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" editable dialog edit-icon sortable>
-						<template>
-							<paper-input value="{{value}}" no-label-float maxlength="40" char-counter></paper-input>
-						</template>
-					</paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable sorted tooltip="The total amount of food energy in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Calcium (%)" property="calcium" type="String" align="right" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Iron (%)" property="iron" type="String" align="right" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
-				</paper-datatable>
-			</paper-card>
-
-			<paper-card heading="And one with just `[editable]` added to each column.">
-				<paper-datatable data="{{data}}" selectable multi-selection>
-					<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" editable sortable></paper-datatable-column>
-					<paper-datatable-column header="Calories" property="calories" type="Number" align="right" editable sortable sorted tooltip="The total amount of food energy in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" editable sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" editable sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" editable sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
-					<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" editable sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Calcium (%)" property="calcium" type="String" align="right" editable sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
-					<paper-datatable-column header="Iron (%)" property="iron" type="String" align="right" editable sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
-				</paper-datatable>
-			</paper-card>
+				<paper-card heading="Just a normal data table">
+					<paper-datatable data="{{data}}" selectable multi-selection>
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable></paper-datatable-column>
+						<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." sorted></paper-datatable-column>
+						<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Calcium (%)" property="calcium" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Iron (%)" property="iron" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
 
 		</template>
 

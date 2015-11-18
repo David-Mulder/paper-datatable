@@ -1,0 +1,76 @@
+<link rel="import" href="../../paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../../iron-icon/iron-icon.html">
+<dom-module id="demo-menu">
+	<style>
+		iron-icon{
+			padding-right: 10px;
+			width: 34px;
+		}
+		paper-item{
+			font-size: 12px;
+			line-height: 12px;
+			cursor: pointer;
+		}
+		#content{
+			overflow: auto;
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			right: 0px;
+			bottom: 0px;
+			background: #f5f5f5;
+			background: var(--demo-menu-background);
+			padding: 20px;
+		}
+		#drawer{
+			background: var(--light-primary-color);
+		}
+	</style>
+	<template>
+		<paper-drawer-panel>
+			<paper-header-panel id="drawer" drawer>
+				<paper-menu selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
+					<paper-item data-url="simple.html">
+						<iron-icon icon="explore"></iron-icon><span>Simple <code>&lt;datatable&gt;</code></span>
+					</paper-item>
+					<paper-item data-url="editable.html">
+						<iron-icon icon="explore"></iron-icon><span>Editable <code>&lt;datatable&gt;</code></span>
+					</paper-item>
+					<paper-item data-url="users-card.html">
+						<iron-icon icon="explore"></iron-icon><span>Simple <code>&lt;datatable-card&gt;</code></span>
+					</paper-item>
+					<paper-item data-url="theming.html">
+						<iron-icon icon="explore"></iron-icon><span>Theming options</span>
+					</paper-item>
+					<paper-item data-url="paper-datatable.html">
+						<iron-icon icon="build"></iron-icon><span>Complex <code>&lt;datatable&gt;</code> element</span>
+					</paper-item>
+					<paper-item data-url="paper-datatable-card.html">
+						<iron-icon icon="build"></iron-icon><span><code>&lt;datatable-card&gt;</code> element</span>
+					</paper-item>
+				</paper-menu>
+			</paper-header-panel>
+			<paper-header-panel main>
+				<div id="content">
+					<content></content>
+				</div>
+			</paper-header-panel>
+		</paper-drawer-panel>
+	</template>
+	<script>
+		Polymer({
+			is: 'demo-menu',
+			properties: {
+				currentUrl: {
+					type: String,
+					value: function(){
+						return location.pathname.split("/").pop();
+					}
+				}
+			},
+			navigate: function(event, item){
+				location.href = item.selected;
+			}
+		});
+	</script>
+</dom-module>

@@ -6,51 +6,53 @@
 		<link rel="import" href="../../polymer/polymer.html">
 		<link rel="import" href="../paper-datatable-card.html">
 		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
+
 	</head>
 	<body>
 
 
 		<template is="dom-bind" id="app">
+			<demo-menu>
+				<style is="custom-style">
+					body{
+						background: #f5f5f5;
+					}
+				</style>
 
-			<style is="custom-style">
-				body{
-					background: #f5f5f5;
-				}
-			</style>
+				<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}" id-property="i" selected-ids="{{selectedIds}}">
+					<div toolbar-main>
+						<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
+					</div>
+					<div toolbar-select>
+						<paper-icon-button icon="delete"></paper-icon-button>
+					</div>
+					<paper-datatable selectable multi-selection>
+						<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
+						<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 500px" default='{"first": "", "last": ""}' editable>
+							<template>
+								<paper-input value="{{value.first}}" no-label-float style="display:inline-block;width:49%;"></paper-input>
+								<paper-input value="{{value.last}}" no-label-float style="display:inline-block;width:49%;"></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Document title" property="title" type="String" tooltip="Some title" sortable style="width: 99%"></paper-datatable-column>
+						<paper-datatable-column header="Rating" property="rating" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px" editable>
+							<template>
+								<paper-input value="{{value}}" no-label-float></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column property="reserved" header="Reserved" type="boolean" default="false" style="min-width: 100px" cell-style="padding-left:40px;" align="center" editable>
+							<template>
+								<paper-checkbox checked="{{value}}"></paper-checkbox>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-datatable-card>
 
-			<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}" id-property="i" selected-ids="{{selectedIds}}">
-				<div toolbar-main>
-					<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
+				<div style="padding:20px">
+					Selected IDs: {{outputSelectedIds(selectedIds.splices)}}
 				</div>
-				<div toolbar-select>
-					<paper-icon-button icon="delete"></paper-icon-button>
-				</div>
-				<paper-datatable selectable multi-selection>
-					<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
-					<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 400px" default='{"first": "", "last": ""}' editable>
-						<template>
-							<paper-input value="{{value.first}}" no-label-float style="display:inline-block;width:182px;"></paper-input>
-							<paper-input value="{{value.last}}" no-label-float style="display:inline-block;width:182px;"></paper-input>
-						</template>
-					</paper-datatable-column>
-					<paper-datatable-column header="Document title" property="title" type="String" tooltip="Some title" sortable style="width: 99%"></paper-datatable-column>
-					<paper-datatable-column header="Rating" property="rating" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px" editable>
-						<template>
-							<paper-input value="{{value}}" no-label-float></paper-input>
-						</template>
-					</paper-datatable-column>
-					<paper-datatable-column property="reserved" header="Reserved" type="boolean" default="false" style="min-width: 100px" cell-style="padding-left:40px;" align="center" editable>
-						<template>
-							<paper-checkbox checked="{{value}}"></paper-checkbox>
-						</template>
-					</paper-datatable-column>
-				</paper-datatable>
-			</paper-datatable-card>
-
-			<div>
-				Selected IDs: {{outputSelectedIds(selectedIds.splices)}}
-			</div>
-
+			</demo-menu>
 		</template>
 
 		<script>
