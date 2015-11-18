@@ -30,7 +30,8 @@
     "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.13",
     "paper-tooltip": "PolymerElements/paper-tooltip#~1.1.1",
     "paper-styles": "PolymerElements/paper-styles#~1.0.12",
-    "whenever.js": "~0.0.1"
+    "whenever.js": "~0.0.1",
+    "iron-form": "PolymerElements/iron-form#~1.0.12"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

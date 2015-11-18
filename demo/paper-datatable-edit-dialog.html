@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-input/paper-input.html">
+		<link rel="import" href="../../paper-input/paper-textarea.html">
+		<link rel="import" href="../../iron-input/iron-input.html">
+		<link rel="import" href="../paper-datatable-edit-dialog.html">
+	</head>
+	<body>
+		<template is="dom-bind" id="app">
+			<paper-datatable-edit-dialog id="dialog" visible>
+				<paper-input name="haha" label="test" no-label-float char-counter maxlength="100"></paper-input>
+				<!--<paper-textarea no-label-float char-counter maxlength="100"></paper-textarea>-->
+			</paper-datatable-edit-dialog>
+
+			<button on-tap="focus">Focus</button>
+		</template>
+		<script>
+			var app = document.querySelector('#app');
+			app.focus = function(){
+				app.$.dialog.findFocus();
+			}
+		</script>
+	</body>
+</html>

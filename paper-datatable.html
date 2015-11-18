@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="paper-datatable-column.html">
+<link rel="import" href="paper-datatable-edit-dialog.html">
 <link rel="import" href="datatable-icons.html">
 
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
@@ -75,6 +76,12 @@
 				padding: 6px 28px 6px 28px;
 				height: 41px;
 			}
+			tr td{
+				cursor: pointer;
+			}
+			tr td.bound-cell[data-edit-icon]{
+				padding-right: 10px;
+			}
 			th:not(:first-of-type){
 				@apply(--paper-datatable-column-header);
 			}
@@ -85,6 +92,22 @@
 				font-size: 13px;
 				color: rgba(0,0,0,.87);
 				@apply(--paper-datatable-cell);
+			}
+			td.bound-cell div span{
+				flex: 1;
+			}
+			td.bound-cell iron-icon.editable{
+				display: none;
+			}
+			td.bound-cell div{
+				display: flex;
+				align-items:center;
+			}
+			td.bound-cell[data-edit-icon] iron-icon.editable{
+				color: rgba(0,0,0,.54);
+				width: 18px;
+				display: inline-block;
+				padding-left: 7px;
 			}
 			td.bound-cell paper-input{
 				--paper-input-container-input: {
@@ -183,76 +206,85 @@
 				transform: scale(1) rotate(0deg);
 			}
 		</style>
-		<div>
-			<content select="paper-datatable-column"></content>
-			<table>
-				<thead>
-					<tr>
-						<template is="dom-if" if="{{selectable}}">
-							<th style="min-width:30px;">
-								<template is="dom-if" if="{{multiSelection}}">
-									<div class="partialSelectionContainer" style="">
-										<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
-										<paper-checkbox on-tap="toggleAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
-									</div>
-								</template>
-							</th>
-						</template>
-						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column">
-							<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
-								<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
-								<span id="title">{{column.header}}</span>
-								<template is="dom-if" if="[[column.tooltip]]">
-									<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
-								</template>
-							</th>
-						</template>
-					</tr>
-					<tr class="progress" data-progress$="[[progress]]">
-						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
-							<paper-progress indeterminate></paper-progress>
+		<!--<content select="paper-datatable-column"></content>-->
+		<paper-datatable-edit-dialog id="dialog"></paper-datatable-edit-dialog>
+		<table>
+			<thead>
+				<tr>
+					<template is="dom-if" if="{{selectable}}">
+						<th style="min-width:30px;">
+							<template is="dom-if" if="{{multiSelection}}">
+								<div class="partialSelectionContainer" style="">
+									<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
+									<paper-checkbox on-tap="toggleAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
+								</div>
+							</template>
 						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
-						<!--
-						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
-						-->
-						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
-								<template is="dom-if" if="{{selectable}}">
-									<td on-tap="_cellTapped">
-										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
-										<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
-											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKeys.splices)]]" on-change="_setSelection"></paper-checkbox>
-										<!-- </template> -->
-									</td>
-								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" on-tap="_cellTapped"></td>
-								</template>
-							</tr>
-						</template>
-						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
-								<template is="dom-if" if="{{selectable}}">
-									<td on-tap="_cellTapped">
-										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
-										<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
-											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
-										<!-- </template> -->
-									</td>
-								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" on-tap="_cellTapped"></td>
-								</template>
-							</tr>
-						</template>
 					</template>
-				</tbody>
-			</table>
-		</div>
+					<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column">
+						<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+							<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
+							<span id="title">{{column.header}}</span>
+							<template is="dom-if" if="[[column.tooltip]]">
+								<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
+							</template>
+						</th>
+					</template>
+				</tr>
+				<tr class="progress" data-progress$="[[progress]]">
+					<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
+						<paper-progress indeterminate></paper-progress>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
+					<!--
+					 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
+					-->
+					<template is="dom-if" if="{{multiSelection}}">
+						<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
+							<template is="dom-if" if="{{selectable}}">
+								<td on-tap="_cellTapped">
+									<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
+									<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
+										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKeys.splices)]]" on-change="_setSelection"></paper-checkbox>
+									<!-- </template> -->
+								</td>
+							</template>
+							<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
+								<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+									<div>
+										<span></span>
+										<iron-icon icon="datatable:editable" class="editable"></iron-icon>
+									</div>
+								</td>
+							</template>
+						</tr>
+					</template>
+					<template is="dom-if" if="{{!multiSelection}}">
+						<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
+							<template is="dom-if" if="{{selectable}}">
+								<td on-tap="_cellTapped">
+									<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
+									<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
+										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
+									<!-- </template> -->
+								</td>
+							</template>
+							<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
+								<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+									<div>
+										<span></span>
+										<iron-icon icon="datatable:editable" class="editable"></iron-icon>
+									</div>
+								</td>
+							</template>
+						</tr>
+					</template>
+				</template>
+			</tbody>
+		</table>
 	</template>
 
 	<script>
@@ -470,16 +502,17 @@ Mixins
 									}
 									cell.style['text-align'] = this._columns[cellI].align;
 
-									if(this._columns[cellI].template){
+									if(this._columns[cellI].template && !this._columns[cellI].dialog){
 										var instance = this._columns[cellI].createCellInstance(
 												rowData,
 												row.dataset.key
 										);
 										cell.instance = instance;
+										cell.instanceType = 'inline';
 										cell.innerHTML = '';
 										cell.appendChild(instance.root);
 									}else{
-										cell.innerHTML = this._columns[cellI]._formatValue(data)
+										cell.querySelector('span').innerHTML = this._columns[cellI]._formatValue(data)
 										//cell.textContent = data;
 									}
 								}
@@ -531,8 +564,9 @@ Mixins
 									var instanceValuePath = ["value"].concat(localPath).join(".");
 									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
 									cell.instance.notifyPath(instanceValuePath, change.value);
-								}else{
-									cell.innerHTML = this._columns[i]._formatValue(change.value);
+								}
+								if(!cell.instance || cell.instanceType == 'dialog'){
+									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(change.value);
 								}
 							}
 							if(cell.instance){
@@ -734,37 +768,8 @@ Mixins
 
 					var column = ev.model.column;
 					if(column.sortable){
-						/*
-						//this.set("sortDirection", this.sortDirection == 'asc' ? 'desc' : 'asc');
-						if(column.sorted){
-							column.set('sortDirection', column.sortDirection == 'asc' ? 'desc' : 'asc');
-						}else{
-							if(this._currentlySortedColumn){
-								this._currentlySortedColumn.set('sorted', false);
-							}
-							column.set('sorted', true);
-						}
-						var triggeredEvent = this.fire('sort', {sort: {
-							property: column.property,
-							direction: column.sortDirection
-						}, column: column}, {cancelable: true});
-
-						if(!triggeredEvent.defaultPrevented){
-							this._internalSortEnabled = false;
-							this.set('sortProperty', column.property);
-							this._internalSortEnabled = true;
-						}else{
-							this.set('sortProperty', column.property);
-							this._internalSortEnabled = false;
-						}
-						this._currentlySortedColumn = column;
-						*/
 						column.set('sortDirection', column.sortDirection == 'asc' ? 'desc' : 'asc');
-						//if(column.sorted){
-						//	column.set('sortDirection', column.sortDirection == 'asc' ? 'desc' : 'asc');
-						//}else{
-							column.set('sorted', true);
-						//}
+						column.set('sorted', true);
 					}
 
 				},
@@ -773,7 +778,11 @@ Mixins
 
 					var PolymerEvent = Polymer.dom(ev);
 					var path = PolymerEvent.path;
+					var cell;
 					for(var i=0;i<path.length;i++){
+						if(path[i].nodeName.toLowerCase() == 'td'){
+							cell = path[i];
+						}
 						if(path[i].nodeName.toLowerCase() == 'tr'){
 							break;
 						}
@@ -785,8 +794,13 @@ Mixins
 						this.fire('cell-tap', {column: ev.model.column, key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {});
 					}
 
+					if(ev.model.column.dialog){
+						this._initializeInDialog(cell, ev.model.column, this._getByKey(rowModel.rowKey), rowModel.rowKey);
+						var dialogInitialized = true;
+					}
+
 					var triggeredEvent = this.fire('row-tap', {key: rowModel.rowKey, item: this._getByKey(rowModel.rowKey), originalEvent: ev}, {cancelable: true});
-					if(!triggeredEvent.defaultPrevented){
+					if(!triggeredEvent.defaultPrevented && !dialogInitialized){
 						if(path[0].nodeName.toLowerCase() == 'td' || (ev.model.column && !ev.model.column.editable)){
 							this._toggleSelection(rowModel.rowKey);
 							ev.preventDefault();
@@ -795,6 +809,24 @@ Mixins
 						ev.preventDefault();
 					}
 
+				},
+
+				_initializeInDialog: function(cell, column, row, rowKey){
+					var oldCell = this.$.dialog.positionedRelativeTo;
+					if(oldCell){
+						delete oldCell.instance;
+					}
+					this.$.dialog.positionedRelativeTo = cell;
+					var instance = column.createCellInstance(
+							row,
+							rowKey
+					);
+					cell.instance = instance;
+					cell.instanceType = 'dialog';
+					this.$.dialog.innerHTML = '';
+					this.$.dialog.appendChild(instance.root);
+					this.$.dialog.findFocus();
+					//console.log(cell.getBoundingClientRect());
 				},
 
 				_getKeyByItem: function(item){
