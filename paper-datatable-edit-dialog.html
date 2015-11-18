@@ -21,9 +21,10 @@
 				min-width: 100px;
 				display: inline-block;
 				padding: 4px 24px;
-				background: var(--paper-grey-50);
+				background: var(--paper-datatable-edit-dialog-color, --paper-grey-50);
 				border-radius: 2px;
 				box-sizing: border-box;
+				@apply(--paper-datatable-edit-dialog);
 			}
 		</style>
 		<paper-material id="material" elevation="1">
@@ -45,19 +46,25 @@
 				}
 			},
 
-			dismiss: function(ev){
-				this.removeAttribute('visible');
-				this.positionedRelativeTo = undefined;
-				if(ev)
-					ev.preventDefault();
-			},
-
 			ready: function(){
 				this.addEventListener('keyup', function(ev){
 					if(ev.keyCode == 13){
 						this.dismiss();
 					}
 				}.bind(this));
+				document.body.addEventListener('click', function(ev){
+					var path = Polymer.dom(ev).path;
+					if(path.indexOf(this) == -1 && path.indexOf(this.positionedRelativeTo) == -1){
+						this.dismiss(ev);
+					}
+				}.bind(this));
+			},
+
+			dismiss: function(ev){
+				this.removeAttribute('visible');
+				this.positionedRelativeTo = undefined;
+				if(ev)
+					ev.preventDefault();
 			},
 
 			findFocus: function() {
@@ -78,6 +85,7 @@
 			setLocationRelativeTo: function(el){
 				if(el) {
 					this.setAttribute('visible', '');
+					this.revealTime = Date.now();
 					var relativeToParent = this.parentNode;
 					while (relativeToParent !== window) {
 						if (relativeToParent.nodeName == '#document-fragment') {

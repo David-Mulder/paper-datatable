@@ -30,6 +30,9 @@
 
 				--paper-progress-active-color: #EC407A;
 				--paper-progress-container-color: var(--paper-grey-800);
+
+				--paper-input-container-input-color: rgba(255, 255, 255, var(--dark-primary-opacity));
+				--paper-input-container-focus-color: #EC407A;
 			}
 
 			demo-menu{
@@ -78,7 +81,14 @@
 					padding-left: 5px;
 					padding-right: 5px;
 				};
+
+				--paper-datatable-edit-dialog-color: #303030;
+				--paper-datatable-edit-dialog: {
+					border: 1px solid rgba(255, 255, 255, .2);
+					box-sizing: border-box;
+				}
 			}
+
 
 		</style>
 
@@ -95,7 +105,11 @@
 						<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
 					</div>
 					<paper-datatable data="{{data}}" selectable multi-selection custom-row-style="{{generateRowCss}}" progress="{{progressBarVisble}}" sort-property="calories" sort-direction="asc">
-						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable editable></paper-datatable-column>
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable editable dialog edit-icon>
+							<template>
+								<paper-input value="{{value}}" no-label-float maxlength="40" char-counter></paper-input>
+							</template>
+						</paper-datatable-column>
 						<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
 						<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
 						<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
@@ -139,7 +153,7 @@
 			app.progressBarVisble = true;
 			setTimeout(function(){
 				app.progressBarVisble = false;
-			}.bind(this), 5000)
+			}.bind(this), 1000)
 		</script>
 
 	</body>

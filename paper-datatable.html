@@ -14,8 +14,11 @@
 		<style>
 			:host {
 				display: block;
-				overflow: auto;
 				@apply(--paper-font-common-base);
+				position: relative;
+			}
+			#container{
+				overflow: auto;
 			}
 			table{
 				border-spacing: 0px;
@@ -208,83 +211,85 @@
 		</style>
 		<content select="paper-datatable-column"></content>
 		<paper-datatable-edit-dialog id="dialog"></paper-datatable-edit-dialog>
-		<table>
-			<thead>
-				<tr>
-					<template is="dom-if" if="{{selectable}}">
-						<th style="min-width:30px;">
-							<template is="dom-if" if="{{multiSelection}}">
-								<div class="partialSelectionContainer" style="">
-									<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
-									<paper-checkbox on-tap="toggleAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
-								</div>
-							</template>
-						</th>
-					</template>
-					<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column">
-						<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
-							<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
-							<span id="title">{{column.header}}</span>
-							<template is="dom-if" if="[[column.tooltip]]">
-								<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
-							</template>
-						</th>
-					</template>
-				</tr>
-				<tr class="progress" data-progress$="[[progress]]">
-					<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
-						<paper-progress indeterminate></paper-progress>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
-					<!--
-					 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
-					-->
-					<template is="dom-if" if="{{multiSelection}}">
-						<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
-							<template is="dom-if" if="{{selectable}}">
-								<td on-tap="_cellTapped">
-									<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
-									<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
-										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKeys.splices)]]" on-change="_setSelection"></paper-checkbox>
-									<!-- </template> -->
-								</td>
-							</template>
-							<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-								<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
-									<div>
-										<span></span>
-										<iron-icon icon="datatable:editable" class="editable"></iron-icon>
+		<div id="container">
+			<table>
+				<thead>
+					<tr>
+						<template is="dom-if" if="{{selectable}}">
+							<th style="min-width:30px;">
+								<template is="dom-if" if="{{multiSelection}}">
+									<div class="partialSelectionContainer" style="">
+										<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
+										<paper-checkbox on-tap="toggleAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
 									</div>
-								</td>
-							</template>
-						</tr>
+								</template>
+							</th>
+						</template>
+						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column">
+							<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+								<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
+								<span id="title">{{column.header}}</span>
+								<template is="dom-if" if="[[column.tooltip]]">
+									<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
+								</template>
+							</th>
+						</template>
+					</tr>
+					<tr class="progress" data-progress$="[[progress]]">
+						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
+							<paper-progress indeterminate></paper-progress>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
+						<!--
+						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
+						-->
+						<template is="dom-if" if="{{multiSelection}}">
+							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
+								<template is="dom-if" if="{{selectable}}">
+									<td on-tap="_cellTapped">
+										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
+										<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
+											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKeys.splices)]]" on-change="_setSelection"></paper-checkbox>
+										<!-- </template> -->
+									</td>
+								</template>
+								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+										<div>
+											<span></span>
+											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
+										</div>
+									</td>
+								</template>
+							</tr>
+						</template>
+						<template is="dom-if" if="{{!multiSelection}}">
+							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
+								<template is="dom-if" if="{{selectable}}">
+									<td on-tap="_cellTapped">
+										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
+										<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
+											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
+										<!-- </template> -->
+									</td>
+								</template>
+								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
+									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+										<div>
+											<span></span>
+											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
+										</div>
+									</td>
+								</template>
+							</tr>
+						</template>
 					</template>
-					<template is="dom-if" if="{{!multiSelection}}">
-						<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
-							<template is="dom-if" if="{{selectable}}">
-								<td on-tap="_cellTapped">
-									<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
-									<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
-										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
-									<!-- </template> -->
-								</td>
-							</template>
-							<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-								<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
-									<div>
-										<span></span>
-										<iron-icon icon="datatable:editable" class="editable"></iron-icon>
-									</div>
-								</td>
-							</template>
-						</tr>
-					</template>
-				</template>
-			</tbody>
-		</table>
+				</tbody>
+			</table>
+		</div>
 	</template>
 
 	<script>
