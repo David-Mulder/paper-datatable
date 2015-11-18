@@ -206,7 +206,7 @@
 				transform: scale(1) rotate(0deg);
 			}
 		</style>
-		<!--<content select="paper-datatable-column"></content>-->
+		<content select="paper-datatable-column"></content>
 		<paper-datatable-edit-dialog id="dialog"></paper-datatable-edit-dialog>
 		<table>
 			<thead>
@@ -293,7 +293,41 @@
 			'use strict';
 			/* jshint eqeqeq : false */
 			/*
-The main element defining the data table. Data is provided to the `data` attribute as an array of objects and based on the `<paper-datatable-column>`'s cells will be generated for the respective properties.
+Getting started
+===
+First of all you have to set up a `<paper-datatable>` element. You provide it with a
+`data` attribute which should be an array of `object`'s. Additionally you decide
+whether you want the `data-table` to be `selectable`. At this point we get something
+like
+
+	<paper-datatable data="{{data}}" selectable multi-selection>
+	</paper-datatable>
+
+Next we have to define our columns, this is done by adding child elements of the type
+`<paper-datatable-column>`. A fairly minimal example would be
+
+	<paper-datatable data="{{data}}" selectable multi-selection>
+		<paper-datatable-column header="Title" property="title" sortable>
+		</paper-datatable-column>
+	</paper-datatable>
+
+If we want to format our content in a custom way we can easily do this by adding a `<template>`
+element, which exposes `{{value}}`, `{{item}}` (the entire row) and `{{column}}` bindings.
+
+	<paper-datatable data="{{data}}" selectable multi-selection>
+		<paper-datatable-column header="Title" property="title" sortable editable>
+			<template>
+				<paper-input value="{{value}}">
+			</template>
+		</paper-datatable-column>
+	</paper-datatable>
+
+Note that we also added an `[editable]` attribute which indicates to the system that the custom
+template doesn't just style the content differently, but actually also allows interaction with the
+content.
+
+For more information please check out the demo's and keep on reading the `<paper-datatable-column>`
+documentation that can be found in the top left menu.
 
 Styling
 ===
@@ -311,12 +345,11 @@ Events
 ===
 There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell. `cell-tap` can be listened for both on `paper-datatable` and `paper-datatable-column`.
 
-ID: '__new__'
----
-Note: the id value of `__new__` is reserved and can not be normally used. It's used by for example `<paper-datatable-card>` to support adding of new items.
-
 Theming
 ===
+Not all variables and mixins are documented below, for that I apologize. Please check the code and/or
+the `theming.html` demo for better information.
+
 Variables
 ---
 
@@ -711,7 +744,6 @@ Mixins
 
 				sort: function(column){
 					this.async(function(){
-						console.log('sort is finally set');
 						var sortedColumn = this._columns.find(function(aColumn){
 							return aColumn.sorted && aColumn !== column;
 						});

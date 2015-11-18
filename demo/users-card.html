@@ -21,7 +21,7 @@
 				}
 			</style>
 
-			<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{dataSource}}" progress>
+			<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{dataSource}}" progress id-property="sha1">
 				<div toolbar-main>
 				</div>
 				<div toolbar-select-single>
@@ -30,7 +30,7 @@
 				<div toolbar-select>
 					<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
 				</div>
-				<paper-datatable id="datatable" id-property="sha1" selectable multi-selection>
+				<paper-datatable id="datatable" selectable multi-selection>
 					<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
 						<template>
 							<div>

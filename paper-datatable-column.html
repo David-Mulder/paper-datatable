@@ -32,13 +32,16 @@ There are two ways to define editable columns, the easiest way is to just set th
 
 	<paper-datatable-column header="Author" property="title" type="String" editable></paper-datatable-column>
 
-which which is internally equal to
+which which is internally equal to the second way
 
 	<paper-datatable-column header="Author" property="title">
 		<template>
 			 <paper-input value="{{value}}" no-label-float></paper-input>
 		</template>
 	</paper-datatable-column>
+
+Additionally you can prefer setting it in a `[dialog]` which will `on-tap` load up a dialog hovering above the cell with
+the `<template>` content. The big advantage of this is performance as not every cell needs to be initalized.
 
 Styling
 ---
@@ -137,6 +140,10 @@ Styling
 					 * If `type` is an `Array` and the array consists of `Object`s it's a common need
 					 * to display a single property of every object (in non-editable mode).
 					 *
+					 * Note that it's not possible to use this in combination with an editable dialog,
+					 * as internally this is using a `<template>` and Polymer currently allows only
+					 * one template to be templatized per element.
+					 *
 					 * @attribute arrayDisplayProp
 					 * @type String
 					 */
@@ -192,10 +199,26 @@ Styling
 					 * @default see code
 					 */
 					formatValue: Function,
-
+					/**
+					 * Instead of rendering the `<template>` inline in the cell it will instead be rendered in a
+					 * floating `<paper-datatable-edit-dialog>` after the user `tap`s on the cell.
+					 *
+					 * @attribute dialog
+					 * @type Boolean
+					 * @default false
+					 */
 					dialog: {
 						type: Boolean
 					},
+					/**
+					 * Per material design spec it's often useful to indicate that a cell is editable if you're using
+					 * `[dialog]` based editing. This will show a little pencil icon to the right of the cell, but can be
+					 * a bit overwhelming if used on more than one column.
+					 *
+					 * @attribute editIcon
+					 * @type Boolean
+					 * @default false
+					 */
 					editIcon: {
 						type: Boolean
 					}
