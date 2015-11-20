@@ -54,7 +54,7 @@
 				}.bind(this));
 				document.body.addEventListener('click', function(ev){
 					var path = Polymer.dom(ev).path;
-					if(path.indexOf(this) == -1 && path.indexOf(this.positionedRelativeTo) == -1){
+					if(this.positionedRelativeTo && path.indexOf(this) == -1 && path.indexOf(this.positionedRelativeTo) == -1){
 						this.dismiss(ev);
 					}
 				}.bind(this));
