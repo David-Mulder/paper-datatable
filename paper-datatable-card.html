@@ -135,7 +135,24 @@
 			'use strict';
 
 /*
-Still to be written, but in the meantime, check the `paper-datatable-card` demo's.
+Still to be written/finished, but in the meantime, check the `paper-datatable-card` demo's and the stuff below.
+
+Data sources
+---
+This component uses an object with a set number of functions to retrieve and save data. A `data-source` looks like
+
+    {
+        get: function(sort, page, pageSize){ return new Promise(...) },
+        set: function(item, property, value){ return new Promise(...) },
+        length: Number
+    }
+
+Note: If you wonder why the functions aren't directly available to the element and instead are grouped like this, the
+reason for this is that this allows you to create a
+
+    <my-api-datasource for="users" data-source="{{dataSource}}"></my-api-datasource>
+
+object which in turn you bind to this element. I have however been considering allowing manual binding directly as well.
 
 Main toolbar
 ---
