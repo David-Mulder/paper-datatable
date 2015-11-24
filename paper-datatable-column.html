@@ -281,6 +281,7 @@ Styling
 					return instance;
 				},
 				_formatValue: function(data){
+					data = this._cast(data);
 					if('formatValue' in this){
 						return this.formatValue(data);
 					}
