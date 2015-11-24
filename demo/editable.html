@@ -58,8 +58,8 @@
 						<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
 						<paper-datatable-column header="Protein (g)" property="protein" type="Number" align="right" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
 						<paper-datatable-column header="Sodium (mg)" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
-						<paper-datatable-column header="Calcium (%)" property="calcium" type="String" align="right" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
-						<paper-datatable-column header="Iron (%)" property="iron" type="String" align="right" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Calcium (%)" property="calcium" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Iron (%)" property="iron" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
 					</paper-datatable>
 				</paper-card>
 
