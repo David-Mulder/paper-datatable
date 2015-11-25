@@ -501,7 +501,9 @@ Mixins
 				observers: [
 					/*'restructureData(data.*, _columns.splices)',*/
 					'_setRowKeys(data.splices)',
-					'_notifyPathOnInstances(data.*)'
+					'_notifyPathOnInstances(data.*)',
+					'_linkSelectedItem(selectedKey)',
+					'_linkSelectedItems(selectedKeys.splices)'
 				],
 
 				listeners: {
@@ -642,7 +644,6 @@ Mixins
 						}else{
 							this.select(item);
 						}
-
 					}.bind(this));
 				},
 
@@ -932,6 +933,17 @@ Mixins
 				_getProp: function(obj, prop){
 					console.log(obj);
 					return obj[prop];
+				},
+
+				_linkSelectedItem: function(selectedKey){
+					this.linkPaths('selectedItem', 'data.'+selectedKey);
+				},
+
+				_linkSelectedItems: function(){
+					var selectedItemsCollection = Polymer.Collection.get(this.selectedItems);
+					selectedItemsCollection.getKeys().forEach(function(selectedItemKey, i){
+						this.linkPaths('selectedItems.'+selectedItemKey, 'data.'+this.selectedKeys[i]);
+					}.bind(this));
 				}
 
 			});
