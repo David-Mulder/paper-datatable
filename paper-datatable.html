@@ -884,8 +884,8 @@ Mixins
 					);
 					cell.instance = instance;
 					cell.instanceType = 'dialog';
-					this.$.dialog.innerHTML = '';
-					this.$.dialog.appendChild(instance.root);
+					Polymer.dom(this.$.dialog).innerHTML = '';
+					Polymer.dom(this.$.dialog).appendChild(instance.root);
 					this.$.dialog.findFocus();
 					//console.log(cell.getBoundingClientRect());
 				},
