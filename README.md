@@ -70,6 +70,19 @@ And you can find the full documentation [here](http://david-mulder.github.io/pap
 </paper-datatable>
 ```
 
+## License
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 of the License as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+If you need it under different terms do contact me personally.
+
 ## Contributing
 
 I absolutely HATE HATE HATE rejecting pull requests, so let me just outline some advice:
