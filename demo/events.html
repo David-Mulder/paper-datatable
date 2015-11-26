@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title></title>
+
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-card/paper-card.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
+
+	</head>
+	<body>
+		<demo-menu>
+			<template is="dom-bind" id="app">
+				<paper-drawer-panel right-drawer>
+					<div drawer style="overflow:auto;">
+						<h2 style="font-family:Roboto;padding-left:15px;">Event log</h2>
+						<template is="dom-repeat" items="{{eventLog}}" sort="{{inverse}}">
+							<div style="padding:3px 15px;border-bottom:1px solid rgb(230, 230, 230);margin:10px 0px;">
+								<strong>{{item.type}}</strong> on <code>&lt;paper-{{item.on}}&gt;</code><br>
+								<pre style="display:block;word-wrap: break-word;background:rgb(245,245,245);padding:5px;">{{item.message}}</pre>
+								<i>{{item.error}}</i>
+							</div>
+						</template>
+					</div>
+					<div main style="padding:30px;">
+						<paper-datatable-card id="card" header="Dangerously delicious" number-of-items="49">
+							<div toolbar-main>
+							</div>
+							<div toolbar-select>
+								<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+							</div>
+							<paper-datatable id="datatable" data="{{data}}" selectable multi-selection>
+								<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable>
+								</paper-datatable-column>
+								<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
+								<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
+							</paper-datatable>
+						</paper-datatable-card>
+						<p>
+							Note: This demo attempts to showcase as many events as possible. It should be understood however that a single demo can not show all events as some
+							events are mutually exclusive.
+						</p>
+					</div>
+				</paper-drawer-panel>
+			</template>
+
+		</demo-menu>
+
+		<script>
+			var app = document.querySelector('#app');
+			app.data = [
+				{id: 0, title: 'Frozen yogurt', calories: 159, fat: 6},
+				{id: 1, title: 'Ice cream sandwich', calories: 237, fat: 9},
+				{id: 2, title: 'Eclair', calories: 262, fat: 16},
+				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7},
+				{id: 4, title: 'Gingerbread', calories: 356, fat: 16},
+				{id: 5, title: 'Jelly bean', calories: 373, fat: 0},
+				{id: 6, title: 'Lollipop', calories: 392, fat: 0.2},
+				{id: 7, title: 'Honeycomb', calories: 408, fat: 3.2}
+			];
+			app.toFixedOne = function(value){
+				return value.toFixed(1);
+			};
+			app.toPercentage = function(value){
+				return Math.round(value * 10000)/100 + '%';
+			};
+
+			app.inverse = function(a, b){
+				return a.timestamp < b.timestamp ? 1 : -1;
+			};
+
+			app.eventLog = [];
+			var log = function(element, ev){
+				console.info(ev.type, ev.detail);
+				try{
+					var message = JSON.stringify(ev.detail);
+				}catch(e){
+					var error = 'See console for details';
+					var message = {};
+					Object.keys(ev.detail).forEach(function(key){
+						try{
+							JSON.stringify(ev.detail[key]);
+							message[key] = ev.detail[key];
+						}catch(e){
+							message[key] = '...';
+						}
+					});
+					message = JSON.stringify(message, null, ' ');
+				}
+				app.push('eventLog', {
+					type: ev.type,
+					message: message,
+					error: error,
+					timestamp: new Date(),
+					on: element
+				});
+				if(app.eventLog.length > 14){
+					app.splice('eventLog', 0, 1);
+				}
+			};
+			document.addEventListener('WebComponentsReady', function(){
+				app.$.card.addEventListener('page-changed', log.bind(app, 'datatable-card'));
+				app.$.card.addEventListener('page-size-changed', log.bind(app, 'datatable-card'));
+				app.$.datatable.addEventListener('sort', log.bind(app, 'datatable'));
+				app.$.datatable.addEventListener('selection-changed', log.bind(app, 'datatable'));
+				app.$.datatable.addEventListener('row-tap', log.bind(app, 'datatable'));
+				app.$.datatable.addEventListener('cell-tap', log.bind(app, 'datatable'));
+				var columns = document.querySelectorAll('paper-datatable-column');
+				for(var i=0;i<columns.length;i++){
+					columns[i].addEventListener('cell-tap', log.bind(app, 'datatable-column'));
+				}
+			});
+
+		</script>
+
+	</body>
+</html>
