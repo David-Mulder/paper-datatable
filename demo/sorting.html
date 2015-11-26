@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title></title>
+
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-card/paper-card.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="./demo-menu.html">
+
+		<style is="custom-style">
+
+			:root{
+			}
+			body{
+				overflow:hidden;
+			}
+
+			paper-card{
+				display:block;
+			}
+
+		</style>
+
+	</head>
+	<body>
+
+		<template is="dom-bind" id="app">
+
+			<demo-menu>
+				<style is="custom-style">
+					paper-card {
+						--paper-card-header-text: {
+							font-family: 'Roboto', 'Noto', sans-serif;
+							font-weight: normal;
+							font-size: 20px;
+						}
+					}
+				</style>
+
+				<paper-card heading="Just a normal data table">
+					<paper-datatable data="{{data}}" selectable multi-selection>
+						<paper-datatable-column header="String" property="string" type="String" sortable default="Default"></paper-datatable-column>
+						<paper-datatable-column header="Integer" property="integer" type="Number" sortable default="1"></paper-datatable-column>
+						<paper-datatable-column header="Float" property="float" type="Number" sortable default="1"></paper-datatable-column>
+						<paper-datatable-column header="Date time" property="date" type="Date" sortable default="2000-01-01T00:00:00-00:00"></paper-datatable-column>
+						<paper-datatable-column header="Object" property="object" type="Object" sortable default='{"integer": 0, "string": "AA"}' sort="{{customObjectSorter}}">
+							<template>
+								<span>{{value.integer}}</span>
+								=
+								<span>{{value.string}}</span>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
+
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+			app.data = [
+				{string: 'Frozen yogurt', integer: 159, float: 24.234234234256547569878089, date: "1973-10-06T06:57:04-07:00", object: {integer: 1, string: 'AB'}},
+				{string: 'Ice cream sandwich', integer: 237, float: 9.2384290745893573940856398456, date: "1944-12-03T00:23:52-07:00", object: {integer: 2, string: 'DE'}},
+				{string: 'Eclair', integer: 262, float: 4.345083495345792734293056340, date: "2001-09-08T19:07:57-07:00", object: {integer: 2, string: 'BC'}},
+				{string: 'Cupcake', integer: 305, float: 9.23477349694578596263273544, date: "1958-09-15T02:12:31-07:00", object: {integer: 3, string: 'AA'}},
+				{string: 'Gingerbread', integer: 356, float: 49.2459783407653497443, date: "1958-10-02T18:32:59-08:00", object: {integer: 8, string: 'XYZ'}},
+				{string: 'Jelly bean', integer: 1110, float: 9.34534058345934593844, date: "1967-02-24T06:49:36-08:00", object: {integer: 2, string: 'DE'}},
+				{}
+			];
+			app.customObjectSorter = function(a,b){
+				if(a.integer == b.integer){
+					if(a.string == b.string){
+						return 0;
+					}else{
+						return a.string < b.string ? -1 : 1;
+					}
+				}else{
+					return a.integer < b.integer ? -1 : 1;
+				}
+			};
+		</script>
+
+	</body>
+</html>
