@@ -169,6 +169,9 @@
 			};
 
 			app.onlyFirst = function(item, index){
+				if(typeof index === 'undefined'){
+					alert('Please see issue #34');
+				}
 				if(index == 0){
 					return true;
 				}
