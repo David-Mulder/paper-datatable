@@ -93,7 +93,8 @@
 					Note: This demo isn't using a 'real' database, but instead queries a local array. Sorting, pagination,
 					deleting, etc. are all implemented however on this 'fake' database (including <code>setTimeout</code>'s
 					to emulate AJAX requests) and it should provide a solid starting point when you implement an AJAX
-					based datatable.
+					based datatable. Also do please check out the edit dialog (by double clicking or selecting a row and
+					hitting the edit icon in the toolbar).
 				</div>
 			</demo-menu>
 		</template>
@@ -169,6 +170,9 @@
 			};
 
 			app.onlyFirst = function(item, index){
+				if(typeof index === 'undefined'){
+					alert('Please see issue #34');
+				}
 				if(index == 0){
 					return true;
 				}
