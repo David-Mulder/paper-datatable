@@ -866,7 +866,7 @@ Mixins
 
 					// clicks in the checkbox cell do not have a set column
 					if(ev.model.column){
-						ev.model.column.fire('cell-tap', {key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev});
+						ev.model.column.fire('cell-tap', {key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {bubbles: false});
 						this.fire('cell-tap', {column: ev.model.column, key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {});
 
 						if(ev.model.column.dialog){

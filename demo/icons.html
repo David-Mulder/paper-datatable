@@ -5,7 +5,6 @@
 		<title></title>
 
 		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-		<script src="./relativeDate.js"></script>
 		<script>
 			window.Polymer = window.Polymer || {};
 			window.Polymer.dom = 'shadow';
@@ -14,20 +13,22 @@
 		<link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 		<link rel="import" href="../datatable-icons.html">
 
+		<link rel="import" href="demo-menu.html">
 
 	</head>
 	<body>
-
 		<template is="dom-bind" id="app">
-			<paper-icon-button icon="datatable:sort-desc-md"></paper-icon-button>
-			<paper-icon-button icon="datatable:sort-asc-md"></paper-icon-button>
-			<paper-icon-button icon="datatable:sort-desc"></paper-icon-button>
-			<paper-icon-button icon="datatable:sort-asc"></paper-icon-button>
-			<paper-icon-button icon="datatable:first-page"></paper-icon-button>
-			<paper-icon-button icon="datatable:prev-page"></paper-icon-button>
-			<paper-icon-button icon="datatable:next-page"></paper-icon-button>
-			<paper-icon-button icon="datatable:last-page"></paper-icon-button>
-			<paper-icon-button icon="datatable:editable"></paper-icon-button>
+			<demo-menu>
+				<paper-icon-button icon="datatable:sort-desc-md"></paper-icon-button>
+				<paper-icon-button icon="datatable:sort-asc-md"></paper-icon-button>
+				<paper-icon-button icon="datatable:sort-desc"></paper-icon-button>
+				<paper-icon-button icon="datatable:sort-asc"></paper-icon-button>
+				<paper-icon-button icon="datatable:first-page"></paper-icon-button>
+				<paper-icon-button icon="datatable:prev-page"></paper-icon-button>
+				<paper-icon-button icon="datatable:next-page"></paper-icon-button>
+				<paper-icon-button icon="datatable:last-page"></paper-icon-button>
+				<paper-icon-button icon="datatable:editable"></paper-icon-button>
+			</demo-menu>
 		</template>
 
 		<script>
