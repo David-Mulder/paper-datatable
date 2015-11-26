@@ -120,12 +120,12 @@
 					</paper-menu>
 				</paper-dropdown-menu>
 				<span>
-					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, dataSource.length)]]</span> of&nbsp;<span>[[dataSource.length]]</span>
+					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, numberOfItems)]]</span> of&nbsp;<span>[[numberOfItems]]</span>
 				</span>
 				<paper-icon-button icon="datatable:first-page" on-tap="firstPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
 				<paper-icon-button icon="datatable:prev-page" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
-				<paper-icon-button icon="datatable:next-page" on-tap="nextPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
-				<paper-icon-button icon="datatable:last-page" on-tap="lastPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
+				<paper-icon-button icon="datatable:next-page" on-tap="nextPage" disabled="[[_nextPageDisabled(page, pageSize, numberOfItems)]]"></paper-icon-button>
+				<paper-icon-button icon="datatable:last-page" on-tap="lastPage" disabled="[[_nextPageDisabled(page, pageSize, numberOfItems)]]"></paper-icon-button>
 			</div>
 		</paper-material>
 	</template>
@@ -135,7 +135,8 @@
 			'use strict';
 
 /*
-Still to be written/finished, but in the meantime, check the `paper-datatable-card` demo's and the stuff below.
+This documentation still isn't as complete as I would like it to be, so if anything is unclear please check the source
+code from the demo's.
 
 Data sources
 ---
@@ -181,14 +182,19 @@ Theming
 ===
 Variables
 ---
-
- - `--paper-datatable-divider-color` divider color is used to draw the bottom line
- - `--paper-datatable-selection-toolbar-color` color of selected toolbar, should be 50 of the secondary color
+ Custom property | Description | Default
+ ----------------|-------------|----------
+ `--paper-datatable-divider-color` | divider color is used to draw the bottom line | --divider-color
+ `--paper-datatable-selection-toolbar-color` | color of selected toolbar, should be 50 of the secondary color | --paper-pink-50
+ `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar
 
 Mixins
 ---
 
- - `--paper-datatable-card` applied to the main card
+ Mixin | Description
+ ------|-------------
+ `--paper-datatable-card` | applied to the main card
+ `--paper-datatable-navigation-bar` | applied to the bottom bar containing the navigation
 
 @element paper-datatable-card
 @demo demo/users-card.html Polished demo
@@ -199,15 +205,44 @@ Mixins
 
 				is: 'paper-datatable-card',
 				properties: {
+					/**
+					 * Heading shown above the data table
+					 *
+					 * @attribute String
+					 * @default ''
+					 * @type Object
+					 */
 					header: String,
+					/**
+					 * See general documentation.
+					 *
+					 * @attribute dataSource
+					 * @type Object
+					 */
 					dataSource: Object,
+					/**
+					 * Number of items per page
+					 *
+					 * @attribute Number
+					 * @default 10
+					 * @type Object
+					 */
 					pageSize: {
 						type: Number,
-						value: 10
+						value: 10,
+						notify: true
 					},
+					/**
+					 * Current page shown
+					 *
+					 * @attribute Number
+					 * @default 1
+					 * @type Object
+					 */
 					page: {
 						type: Number,
-						value: 1
+						value: 1,
+						notify: true
 					},
 					_disableSave: {
 						type: Boolean,
@@ -216,7 +251,12 @@ Mixins
 					_datatable: {
 						type: Object
 					},
-					/* used as the default when .addNew() is called */
+					/**
+					 * Used when the value is `undefined`.
+					 *
+					 * @attribute default
+					 * @type Object
+					 */
 					default: {
 						type: Object
 					},
@@ -258,19 +298,17 @@ Mixins
 				},
 				ready: function(){
 					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
-					//if(this.dataSource) {
-						this._datatable.data = [];
-						this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
-						this._datatable.addEventListener("sort", this._handleSort.bind(this));
-					//}
-					//this._datatable.addEventListener("selected-key-changed", this._setSelectedId.bind(this));
+					this._datatable.data = [];
+					this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
+					this._datatable.addEventListener("sort", this._handleSort.bind(this));
 					this._datatable.addEventListener("selection-changed", this._setSelectedIds.bind(this));
 					this._datatable.addEventListener("selection-changed", this._setSelectedToolbarVisible.bind(this));
 					this.set('selectedIds', []);
 					this.set('_sortProperty', this.idProperty);
 				},
 				observers: [
-					'retrieveVisibleData(dataSource, pageSize, page, _datatable, _sortDirection, _sortProperty)'
+					'retrieveVisibleData(dataSource, pageSize, page, _datatable, _sortDirection, _sortProperty)',
+					'_setNumberOfItems(dataSource.length)'
 				],
 				_triggerSave: function(ev){
 					if(this.dataSource) {
@@ -380,7 +418,7 @@ Mixins
 					return (this.page-1)*this.pageSize;
 				},
 				_getRangeEnd: function(){
-					return Math.min((this.page)*this.pageSize, this.dataSource.length);
+					return Math.min((this.page)*this.pageSize, this.numberOfItems);
 				},
 				nextPage: function(){
 					this.set("page", this.page+1);
@@ -392,8 +430,11 @@ Mixins
 					this.set("page", 1);
 				},
 				lastPage: function(){
-					this.set("page", Math.ceil(this.dataSource.length / this.pageSize));
+					this.set("page", Math.ceil(this.numberOfItems / this.pageSize));
 				},
+				/**
+				 * DO NOT USE
+				 */
 				addNew: function(){
 					console.warn('This feature is temporarily deprecated.');
 					/*
@@ -424,7 +465,7 @@ Mixins
 					return this.page == 1;
 				},
 				_nextPageDisabled: function(){
-					return this.page * this.pageSize >= this.dataSource.length;
+					return this.page * this.pageSize >= this.numberOfItems;
 				},
 				_setSelectedToolbarVisible: function(){
 					this._selectedToolbarVisible = this.selectedIds.length > 0;
@@ -461,9 +502,17 @@ Mixins
 						}
 					}.bind(this));
 				},
+				_setNumberOfItems: function(){
+					this.set('numberOfItems', this.dataSource.length);
+				},
 				deselectAll: function(){
 					this._datatable.deselectAll(false);
-					this.splice("selectedIds", 0, this.selectedIds.length);
+					this.splice('selectedIds', 0, this.selectedIds.length);
+					this._setSelectedToolbarVisible();
+				},
+				select: function(id){
+					this.push('selectedIds', id);
+					this._setSelectedKeysOnDatatable();
 					this._setSelectedToolbarVisible();
 				}
 

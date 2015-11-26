@@ -13,7 +13,10 @@
 		<link rel="import" href="demo-menu.html">
 		<link rel="import" href="../../google-map/google-map.html">
 		<link rel="import" href="../../paper-input/paper-textarea.html">
-		<script src="userData.js"></script>
+		<link rel="import" href="../../paper-dialog/paper-dialog.html">
+		<link rel="import" href="../../paper-button/paper-button.html">
+		<link rel="import" href="../../paper-dialog-scrollable/paper-dialog-scrollable.html">
+		<script src="data/userData.js"></script>
 	</head>
 	<body>
 
@@ -25,13 +28,42 @@
 					}
 				</style>
 
+				<paper-dialog id="editDialog" with-backdrop style="max-width:500px;min-height:300px;">
+					<template is="dom-repeat" items="{{selectedItems}}" filter="{{onlyFirst}}">
+						<h2>Item #<span>{{item.id}}</span></h2>
+						<div>
+							<div class="horizontal layout">
+								<paper-input value="{{item.name.first}}" label="First Name" class="flex"></paper-input>
+								<paper-input value="{{item.name.last}}" label="Last Name" class="flex"></paper-input>
+							</div>
+							<paper-input value="{{item.birthday}}" label="Birthday"></paper-input>
+							<paper-input value="{{item.bank}}" label="International Bank Account Number"></paper-input>
+							<paper-textarea value="{{item.about}}" label="About me"></paper-textarea>
+							<paper-input-container>
+								<label>Location</label>
+								<google-map latitude="{{item.location.lat}}" longitude="{{item.location.lng}}" style="width:100%;height:200px;margin:3px;">
+									<google-map-marker latitude="{{item.location.lat}}" longitude="{{item.location.lng}}" draggable="true"></google-map-marker>
+								</google-map>
+								<input value="set" type="hidden"/ >
+							</paper-input-container>
+						</div>
+						<div class="buttons">
+							<paper-button dialog-confirm>Okay</paper-button>
+						</div>
+					</template>
+				</paper-dialog>
+
 				<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}">
 					<div toolbar-main>
+						<paper-icon-button icon="cached" on-tap="retrieveResults"></paper-icon-button>
 					</div>
 					<div toolbar-select>
 						<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
 					</div>
-					<paper-datatable id="datatable" selectable multi-selection>
+					<div toolbar-select-single>
+						<paper-icon-button icon="datatable:editable" on-tap="editDialogForSelected"></paper-icon-button>
+					</div>
+					<paper-datatable id="datatable" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
 						<paper-datatable-column header="ID" property="id" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
 						<paper-datatable-column header="Name" property="name" type="Object" tooltip="Some title" sortable style="min-width: 160px">
 							<template>
@@ -69,34 +101,38 @@
 			app.data = {
 				get: function(sort, page, pageSize){
 					return new Promise(function(resolve, reject){
-						users.sort(function(a,b){
-							if(sort.direction == 'desc'){
-								var c = a;
-								a = b;
-								b = c;
-							}
-							if(sort.property == 'name'){
-								a = a[sort.property].last + '    ' + a[sort.property].first;
-								b = b[sort.property].last + '    ' + b[sort.property].first;
-							}else{
-								a = a[sort.property];
-								b = b[sort.property];
-							}
-							if(a > b) return 1;
-							if(a < b) return -1;
-							return 0;
-						});
-						resolve(users.slice((page-1)*pageSize, page*pageSize));
+						setTimeout(function(){
+							users.sort(function(a,b){
+								if(sort.direction == 'desc'){
+									var c = a;
+									a = b;
+									b = c;
+								}
+								if(sort.property == 'name'){
+									a = a[sort.property].last + '    ' + a[sort.property].first;
+									b = b[sort.property].last + '    ' + b[sort.property].first;
+								}else{
+									a = a[sort.property];
+									b = b[sort.property];
+								}
+								if(a > b) return 1;
+								if(a < b) return -1;
+								return 0;
+							});
+							resolve(users.slice((page-1)*pageSize, page*pageSize));
+						}, Math.random() * 500);
 					});
 				},
 				set: function(item, property, value){
 					return new Promise(function(resolve, reject){
-						console.info("a save was triggered", [item, property, value]);
-						var myItem = users.find(function(thisItem){
-							return thisItem.id == item.id;
-						});
-						myItem[property] = value;
-						resolve(true);
+						setTimeout(function() {
+							console.info("a save was triggered", [item, property, value]);
+							var myItem = users.find(function (thisItem) {
+								return thisItem.id == item.id;
+							});
+							myItem[property] = value;
+							resolve(true);
+						}, Math.random() * 500);
 					});
 
 				},
@@ -131,6 +167,40 @@
 				});
 				this.$.datatableCard.retrieveVisibleData();
 				this.$.datatableCard.deselectAll();
+			};
+
+			app.editDialogForSelected = function(){
+				this.$.editDialog.opened = true;
+			};
+
+			app.onlyFirst = function(item, index){
+				if(index == 0){
+					return true;
+				}
+			};
+
+			app.rowTapped = function(ev){
+				if(app.isDebouncerActive('dblclick')){
+					//double click
+					console.log('now');
+					app.$.datatableCard.deselectAll();
+					app.$.datatableCard.select(ev.detail.item.id);
+					app.editDialogForSelected();
+					ev.preventDefault();
+					app.cancelDebouncer('dblclick');
+					return;
+					if(this.$.datatableCard.selectedIds.length === 1){
+						ev.preventDefault();
+						app.editDialogForSelected();
+					}
+					app.cancelDebouncer('dblclick');
+				}else{
+					app.debounce('dblclick', function(){}, 300);
+				}
+			};
+
+			app.retrieveResults = function(ev){
+				app.$.datatableCard.retrieveVisibleData();
 			};
 
 		</script>

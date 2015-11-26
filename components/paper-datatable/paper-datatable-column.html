@@ -200,6 +200,15 @@ Styling
 					 */
 					formatValue: Function,
 					/**
+					 * Can be overwritten to manually sort the datatable if internal sorting is used. This is a normal
+					 * function following the Javascript sort API.
+					 *
+					 * @attribute sort
+					 * @type Function
+					 * @default see code
+					 */
+					sort: Function,
+					/**
 					 * Instead of rendering the `<template>` inline in the cell it will instead be rendered in a
 					 * floating `<paper-datatable-edit-dialog>` after the user `tap`s on the cell.
 					 *
@@ -301,7 +310,23 @@ Styling
 						return '?';
 					}
 				},
+				_sort: function(valA, valB){
+					valA = this._cast(valA);
+					valB = this._cast(valB);
+
+					if('sort' in this){
+						return this.sort(valA, valB);
+					}
+
+					if(valA < valB) return -1;
+					if(valA > valB) return 1;
+					return 0;
+				},
 				_cast: function(value){
+					if(typeof value === 'undefined' && this.default){
+						value = JSON.parse(JSON.stringify(this.default));
+					}
+
 					if(this.type.toLowerCase() == 'string'){
 						return value.toString();
 					}else if(this.type.toLowerCase() == 'number'){

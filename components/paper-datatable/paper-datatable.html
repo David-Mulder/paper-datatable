@@ -119,7 +119,7 @@
 			td.bound-cell paper-input, td.bound-cell paper-textarea, paper-datatable-edit-dialog paper-input, paper-datatable-edit-dialog paper-textarea{
 				--paper-input-container-input: {
 					font-size: 13px;
-					line-height: 1.2em;
+					line-height: 1.4em;
 				};
 			}
 			tr td:first-child, tr th:first-child{
@@ -370,26 +370,34 @@ There is a `row-tap` event for when a users taps on a row, and a `cell-tap` even
 
 Theming
 ===
-Not all variables and mixins are documented below, for that I apologize. Please check the code and/or
-the `theming.html` demo for better information.
+Tip: Check the `theming.html` demo for a live demonstration.
 
 Variables
 ---
 
- - `--paper-datatable-divider-color`: Divider color, defaults to `--divider-color`
- - `--paper-datatable-row-selection-color`: Color of selected row
- - `--paper-datatable-row-hover-color`: Color of hovered row
+ Custom property | Description | Default
+ ----------------|-------------|----------
+ `--paper-datatable-divider-color` | Divider color between rows | `--divider-color`
+ `--paper-datatable-row-selection-color` | Divider color between rows | `--paper-grey-100`
+ `--paper-datatable-row-hover-color` | Color of hovered row | `--paper-grey-200`
+ `--paper-datatable-header-checkbox-color` | Checkbox color | `--primary-text-color`
 
 Mixins
 ---
- - `--paper-datatable-column-header`: Column header style applied to text headers
- - `--paper-datatable-cell`: Applied to all data cells
- - `--paper-datatable-array-item`: Only works when using the proper Shadow DOM and is applied to columns using the `array-display-prop` attribute.
- - `--paper-datatable-class-1`: Applied to any content in cells with `class='class-1'`.
- - `--paper-datatable-class-2`: Applied to any content in cells with `class='class-2'`.
- - `--paper-datatable-class-3`: Applied to any content in cells with `class='class-3'`.
- - `--paper-datatable-class-4`: Applied to any content in cells with `class='class-4'`.
- - `--paper-datatable-class-5`: Applied to any content in cells with `class='class-5'`.
+
+ Mixin | Description
+ ------|-------------
+ `--paper-datatable-column-header` | Column header style applied to text headers
+ `--paper-datatable-cell` | Applied to all data cells
+ `--paper-datatable-cell-last` | Applied to the last cell of each row (used to increase the `padding-right` if you overwrite it in `--paper-datatable-cell`)
+ `--paper-datatable-column-header-sorted` | Applied to the sort icon
+ `--paper-datatable-column-header-sort-icon-hover` | Applied to the sort icon when hovered
+ `--paper-datatable-array-item` | Only works when using the proper Shadow DOM and is applied to columns using the `array-display-prop` attribute.
+ `--paper-datatable-class-1` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-1'`.
+ `--paper-datatable-class-2` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-2'`.
+ `--paper-datatable-class-3` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-3'`.
+ `--paper-datatable-class-4` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-4'`.
+ `--paper-datatable-class-5` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-5'`.
 
 @element paper-datatable
 @demo demo/simple.html Simple clear example
@@ -824,15 +832,8 @@ Mixins
 								b = c;
 							}
 							var valA = this._getByKey(a)[column.property];
-							valA = typeof valA === 'undefined' ? '' : valA;
-							valA = typeof valA === 'undefined' ? valA.toString() : valA;
 							var valB = this._getByKey(b)[column.property];
-							valB = typeof valB === 'undefined' ? '' : valB;
-							valB = typeof valB === 'undefined' ? valB.toString() : valB;
-
-							if(valA < valB) return -1;
-							if(valA > valB) return 1;
-							return 0;
+							return column._sort(valA, valB);
 						}.bind(this));
 						this.set("_rowKeys", JSON.parse(JSON.stringify(this._rowKeys)));
 					}
@@ -865,7 +866,7 @@ Mixins
 
 					// clicks in the checkbox cell do not have a set column
 					if(ev.model.column){
-						ev.model.column.fire('cell-tap', {key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev});
+						ev.model.column.fire('cell-tap', {key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {bubbles: false});
 						this.fire('cell-tap', {column: ev.model.column, key:rowModel.rowKey, target:PolymerEvent.path[0], originalEvent: ev}, {});
 
 						if(ev.model.column.dialog){
@@ -933,8 +934,8 @@ Mixins
 					return this._columns.length + 1;
 				},
 
-				/*
-				 Method that can be overwritten to apply a custom style to specific rows.
+				/**
+				 * Method that can be overwritten to apply a custom style to specific rows.
 				 */
 				customRowStyle: function(rowItem){
 

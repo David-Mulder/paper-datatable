@@ -1,5 +1,7 @@
 <link rel="import" href="../../paper-drawer-panel/paper-drawer-panel.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../paper-item/paper-item.html">
+<link rel="import" href="../../paper-menu/paper-menu.html">
 <dom-module id="demo-menu">
 	<style>
 		iron-icon{
@@ -24,6 +26,7 @@
 		}
 		#drawer{
 			background: var(--light-primary-color);
+			overflow: auto;
 		}
 	</style>
 	<template>
@@ -31,7 +34,7 @@
 			<paper-header-panel id="drawer" drawer>
 				<paper-menu selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
 					<paper-item data-url="simple.html">
-						<iron-icon icon="explore"></iron-icon><span>Simple <code>&lt;datatable&gt;</code></span>
+						<iron-icon icon="favorite"></iron-icon><span>Simple <code>&lt;datatable&gt;</code></span>
 					</paper-item>
 					<paper-item data-url="editable.html">
 						<iron-icon icon="explore"></iron-icon><span>Editable <code>&lt;datatable&gt;</code></span>
@@ -39,17 +42,30 @@
 					<paper-item data-url="users-card.html">
 						<iron-icon icon="explore"></iron-icon><span>Simple <code>&lt;datatable-card&gt;</code></span>
 					</paper-item>
+					<paper-item data-url="complex-paper-datatable-card.html">
+						<iron-icon icon="favorite"></iron-icon><span><code>&lt;datatable-card&gt;</code> full impl.</span>
+					</paper-item>
 					<paper-item data-url="bindings.html">
 						<iron-icon icon="explore"></iron-icon><span>The magic of data bindings</span>
 					</paper-item>
 					<paper-item data-url="theming.html">
 						<iron-icon icon="explore"></iron-icon><span>Theming options</span>
 					</paper-item>
+					<paper-item data-url="events.html">
+						<iron-icon icon="explore"></iron-icon><span>Event explorer</span>
+					</paper-item>
+					<hr style="border-bottom-color:rgba(240,240,240);border-top:0px;">
+					<paper-item data-url="sorting.html">
+						<iron-icon icon="build"></iron-icon><span>Sorting & Type system</span>
+					</paper-item>
 					<paper-item data-url="paper-datatable.html">
 						<iron-icon icon="build"></iron-icon><span>Complex <code>&lt;datatable&gt;</code> element</span>
 					</paper-item>
 					<paper-item data-url="paper-datatable-card.html">
 						<iron-icon icon="build"></iron-icon><span><code>&lt;datatable-card&gt;</code> element</span>
+					</paper-item>
+					<paper-item data-url="icons.html">
+						<iron-icon icon="build"></iron-icon><span>Icons</span>
 					</paper-item>
 				</paper-menu>
 			</paper-header-panel>

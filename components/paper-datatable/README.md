@@ -2,7 +2,9 @@
 
 A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty ~~solid alpha release, or maybe even~~ a beta.
 
-Documentation **and demos** can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
+ - Documentation can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
+ - Demos can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/
+
 
 ## Features
 
