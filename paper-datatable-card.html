@@ -504,7 +504,12 @@ Mixins
 				},
 				deselectAll: function(){
 					this._datatable.deselectAll(false);
-					this.splice("selectedIds", 0, this.selectedIds.length);
+					this.splice('selectedIds', 0, this.selectedIds.length);
+					this._setSelectedToolbarVisible();
+				},
+				select: function(id){
+					this.push('selectedIds', id);
+					this._setSelectedKeysOnDatatable();
 					this._setSelectedToolbarVisible();
 				}
 
