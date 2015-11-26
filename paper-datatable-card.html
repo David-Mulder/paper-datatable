@@ -135,7 +135,8 @@
 			'use strict';
 
 /*
-Still to be written/finished, but in the meantime, check the `paper-datatable-card` demo's and the stuff below.
+This documentation still isn't as complete as I would like it to be, so if anything is unclear please check the source
+code from the demo's.
 
 Data sources
 ---
@@ -181,14 +182,19 @@ Theming
 ===
 Variables
 ---
-
- - `--paper-datatable-divider-color` divider color is used to draw the bottom line
- - `--paper-datatable-selection-toolbar-color` color of selected toolbar, should be 50 of the secondary color
+ Custom property | Description | Default
+ ----------------|-------------|----------
+ `--paper-datatable-divider-color` | divider color is used to draw the bottom line | --divider-color
+ `--paper-datatable-selection-toolbar-color` | color of selected toolbar, should be 50 of the secondary color | --paper-pink-50
+ `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar
 
 Mixins
 ---
 
- - `--paper-datatable-card` applied to the main card
+ Mixin | Description
+ ------|-------------
+ `--paper-datatable-card` | applied to the main card
+ `--paper-datatable-navigation-bar` | applied to the bottom bar containing the navigation
 
 @element paper-datatable-card
 @demo demo/users-card.html Polished demo
@@ -199,12 +205,39 @@ Mixins
 
 				is: 'paper-datatable-card',
 				properties: {
+					/**
+					 * Heading shown above the data table
+					 *
+					 * @attribute String
+					 * @default ''
+					 * @type Object
+					 */
 					header: String,
+					/**
+					 * See general documentation.
+					 *
+					 * @attribute dataSource
+					 * @type Object
+					 */
 					dataSource: Object,
+					/**
+					 * Number of items per page
+					 *
+					 * @attribute Number
+					 * @default 10
+					 * @type Object
+					 */
 					pageSize: {
 						type: Number,
 						value: 10
 					},
+					/**
+					 * Current page shown
+					 *
+					 * @attribute Number
+					 * @default 1
+					 * @type Object
+					 */
 					page: {
 						type: Number,
 						value: 1
@@ -216,7 +249,12 @@ Mixins
 					_datatable: {
 						type: Object
 					},
-					/* used as the default when .addNew() is called */
+					/**
+					 * Used when the value is `undefined`.
+					 *
+					 * @attribute default
+					 * @type Object
+					 */
 					default: {
 						type: Object
 					},
@@ -394,6 +432,9 @@ Mixins
 				lastPage: function(){
 					this.set("page", Math.ceil(this.dataSource.length / this.pageSize));
 				},
+				/**
+				 * DO NOT USE
+				 */
 				addNew: function(){
 					console.warn('This feature is temporarily deprecated.');
 					/*

@@ -69,34 +69,38 @@
 			app.data = {
 				get: function(sort, page, pageSize){
 					return new Promise(function(resolve, reject){
-						users.sort(function(a,b){
-							if(sort.direction == 'desc'){
-								var c = a;
-								a = b;
-								b = c;
-							}
-							if(sort.property == 'name'){
-								a = a[sort.property].last + '    ' + a[sort.property].first;
-								b = b[sort.property].last + '    ' + b[sort.property].first;
-							}else{
-								a = a[sort.property];
-								b = b[sort.property];
-							}
-							if(a > b) return 1;
-							if(a < b) return -1;
-							return 0;
-						});
-						resolve(users.slice((page-1)*pageSize, page*pageSize));
+						setTimeout(function(){
+							users.sort(function(a,b){
+								if(sort.direction == 'desc'){
+									var c = a;
+									a = b;
+									b = c;
+								}
+								if(sort.property == 'name'){
+									a = a[sort.property].last + '    ' + a[sort.property].first;
+									b = b[sort.property].last + '    ' + b[sort.property].first;
+								}else{
+									a = a[sort.property];
+									b = b[sort.property];
+								}
+								if(a > b) return 1;
+								if(a < b) return -1;
+								return 0;
+							});
+							resolve(users.slice((page-1)*pageSize, page*pageSize));
+						}, Math.random() * 500);
 					});
 				},
 				set: function(item, property, value){
 					return new Promise(function(resolve, reject){
-						console.info("a save was triggered", [item, property, value]);
-						var myItem = users.find(function(thisItem){
-							return thisItem.id == item.id;
-						});
-						myItem[property] = value;
-						resolve(true);
+						setTimeout(function() {
+							console.info("a save was triggered", [item, property, value]);
+							var myItem = users.find(function (thisItem) {
+								return thisItem.id == item.id;
+							});
+							myItem[property] = value;
+							resolve(true);
+						}, Math.random() * 500);
 					});
 
 				},
