@@ -89,8 +89,11 @@
 					</paper-datatable>
 				</paper-datatable-card>
 
-				<div style="padding:20px">
-					Selected IDs: {{outputSelectedIds(selectedIds.splices)}}
+				<div style="padding:20px; max-width:500px; margin:auto;text-align:justify;">
+					Note: This demo isn't using a 'real' database, but instead queries a local array. Sorting, pagination,
+					deleting, etc. are all implemented however on this 'fake' database (including <code>setTimeout</code>'s
+					to emulate AJAX requests) and it should provide a solid starting point when you implement an AJAX
+					based datatable.
 				</div>
 			</demo-menu>
 		</template>
@@ -139,20 +142,12 @@
 				length:users.length
 			};
 
-			app.addNew = function(){
-				this.$.datatableCard.addNew();
-			};
-
-			app.outputSelectedIds = function(){
-				return app.selectedIds.join(', ');
-			}
-
 			app.clip = function(value){
 				var substr = value.substr(0, 40);
 				if(substr.length < 40){
 					return substr;
 				}else{
-					return substr + "...";
+					return substr + '...';
 				}
 			};
 
