@@ -529,6 +529,7 @@ Mixins
 				],
 
 				listeners: {
+					'container.scroll': '_triggerDialogResize'
 				},
 
 				_setRowKeys: function(){
@@ -658,15 +659,19 @@ Mixins
 				},
 
 				toggleAll: function(){
-					// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
-					var allChecked = this._allChecked();
-					this.data.forEach(function(item){
-						if(allChecked){
-							this.deselect(item);
-						}else{
-							this.select(item);
-						}
-					}.bind(this));
+					var triggeredEvent = this.fire('toggle-all', {}, {cancelable: true});
+
+					if(!triggeredEvent.defaultPrevented){
+						// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
+						var allChecked = this._allChecked();
+						this.data.forEach(function(item){
+							if(allChecked){
+								this.deselect(item);
+							}else{
+								this.select(item);
+							}
+						}.bind(this));
+					}
 				},
 
 				select: function(item, notify){
@@ -954,6 +959,10 @@ Mixins
 					selectedItemsCollection.getKeys().forEach(function(selectedItemKey, i){
 						this.linkPaths('selectedItems.'+selectedItemKey, 'data.'+this.selectedKeys[i]);
 					}.bind(this));
+				},
+
+				_triggerDialogResize: function(){
+					this.$.dialog.setLocationRelativeTo()
 				}
 
 			});

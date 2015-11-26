@@ -113,6 +113,7 @@
 				app.$.datatable.addEventListener('selection-changed', log.bind(app, 'datatable'));
 				app.$.datatable.addEventListener('row-tap', log.bind(app, 'datatable'));
 				app.$.datatable.addEventListener('cell-tap', log.bind(app, 'datatable'));
+				app.$.datatable.addEventListener('toggle-all', log.bind(app, 'datatable'));
 				var columns = document.querySelectorAll('paper-datatable-column');
 				for(var i=0;i<columns.length;i++){
 					columns[i].addEventListener('cell-tap', log.bind(app, 'datatable-column'));
