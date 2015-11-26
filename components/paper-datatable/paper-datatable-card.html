@@ -449,6 +449,10 @@ Mixins
 									});
 								}
 
+								if(idsInCache.length === 0 && idsNotInCache.length === 0){
+									emptyDatatable();
+									processItems([]);
+								}
 
 							}.bind(this));
 
