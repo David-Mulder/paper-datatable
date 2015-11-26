@@ -64,6 +64,9 @@
 						<paper-icon-button icon="datatable:editable" on-tap="editDialogForSelected"></paper-icon-button>
 					</div>
 					<paper-datatable id="datatable" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
+						<div no-results>
+							Loading or no more items...
+						</div>
 						<paper-datatable-column header="ID" property="id" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
 						<paper-datatable-column header="Name" property="name" type="Object" tooltip="Some title" sortable style="min-width: 160px">
 							<template>

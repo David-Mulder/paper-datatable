@@ -245,6 +245,11 @@
 							<paper-progress indeterminate></paper-progress>
 						</th>
 					</tr>
+					<tr hidden$="[[!_noItemsVisible(_rowKeys.splices)]]">
+						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]" style="text-align:center;">
+							<content select="[no-results]"></content>
+						</th>
+					</tr>
 				</thead>
 				<tbody>
 					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
@@ -963,6 +968,10 @@ Mixins
 
 				_triggerDialogResize: function(){
 					this.$.dialog.setLocationRelativeTo()
+				},
+
+				_noItemsVisible: function(){
+					return this._rowKeys.length === 0;
 				}
 
 			});
