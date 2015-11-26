@@ -148,6 +148,10 @@ This component uses an object with a set number of functions to retrieve and sav
         length: Number
     }
 
+Alternatively you can use `queryForIds(sort, page, pageSize)` which returns an array of `ids` + `getByIds(ids)` instead
+of a simple `get`. Advantages are better caching, better cross page selections, but the big disadvantage is that you
+have two do two AJAX requests and the added complexity of the API calls.
+
 Note: If you wonder why the functions aren't directly available to the element and instead are grouped like this, the
 reason for this is that this allows you to create a
 
@@ -303,6 +307,7 @@ Mixins
 					this._datatable.addEventListener("sort", this._handleSort.bind(this));
 					this._datatable.addEventListener("selection-changed", this._setSelectedIds.bind(this));
 					this._datatable.addEventListener("selection-changed", this._setSelectedToolbarVisible.bind(this));
+					this._datatable.addEventListener("toggle-all", this._toggleAll.bind(this));
 					this.set('selectedIds', []);
 					this.set('_sortProperty', this.idProperty);
 				},
@@ -323,7 +328,12 @@ Mixins
 							this.debounce('save'+rowKey+property, function(){
 								var value = ev.detail.value;
 								var data = this._datatable.get(['data', rowKey]);
-								var id = data[this._datatable.idProperty];
+								if(!data){
+									return console.warn('Some elements (like the \<google-map\>) will trigger erroneous' +
+											' change notifications. Sadly this causes the paper-datatable to error out' +
+											' when browsing too quickly.');
+								}
+								var id = data[this.idProperty];
 								// setting properties in the `set` functions causes trouble, so it's more sensible for that
 								// to simply have no effect rather than make the entire element break, especially
 								// as the 'no effect' version can be useful (see paper-datatable-card.html demo)
@@ -401,13 +411,11 @@ Mixins
 						this._datatable.set('progress', true);
 
 						if('queryForIds' in this.dataSource){
-							console.warn('I am sorry, this functionality has been deprecated for the time being, please use `get` directly till I get to implement a good solid cache again.');
-							/*
-								var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
-
+							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
 								//todo: do not retrieve items which we put in the cache
 								this.dataSource.getByIds(ids).then(processItems);
-							*/
+							}.bind(this));
+
 						}else{
 							this.dataSource.get.apply(this.dataSource, queryArgs).then(processItems);
 						}
@@ -504,6 +512,23 @@ Mixins
 				},
 				_setNumberOfItems: function(){
 					this.set('numberOfItems', this.dataSource.length);
+				},
+				_toggleAll: function(ev){
+					if(this.dataSource){
+						if('queryForIds' in  this.dataSource){
+							if(this.selectedIds.length === this.dataSource.length){
+								this.deselectAll();
+							}else{
+								this.deselectAll();
+								this.dataSource.queryForIds(undefined, 1, this.dataSource.length).then(function(ids){
+									this.push.apply(this, ['selectedIds'].concat(ids));
+									this._setSelectedKeysOnDatatable();
+									this._setSelectedToolbarVisible();
+								}.bind(this));
+							}
+							ev.preventDefault();
+						}
+					}
 				},
 				deselectAll: function(){
 					this._datatable.deselectAll(false);
