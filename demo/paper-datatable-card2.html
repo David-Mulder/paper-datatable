@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
+		<link rel="import" href="../../google-map/google-map.html">
+		<link rel="import" href="../../paper-input/paper-textarea.html">
+		<script src="userData.js"></script>
+	</head>
+	<body>
+
+		<template is="dom-bind" id="app">
+			<demo-menu>
+				<style is="custom-style">
+					body{
+						background: #f5f5f5;
+					}
+				</style>
+
+				<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}">
+					<div toolbar-main>
+					</div>
+					<div toolbar-select>
+						<paper-icon-button icon="delete" on-tap="deleteSelected"></paper-icon-button>
+					</div>
+					<paper-datatable id="datatable" selectable multi-selection>
+						<paper-datatable-column header="ID" property="id" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
+						<paper-datatable-column header="Name" property="name" type="Object" tooltip="Some title" sortable style="min-width: 160px">
+							<template>
+								<span>{{value.first}}</span>
+								<span>{{value.last}}</span>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Birthday" property="birthday" type="Date" tooltip="Some title" sortable style="min-width: 40px"></paper-datatable-column>
+						<paper-datatable-column header="About me" property="about" type="String" sortable tooltip="Some title" style="min-width: 320px" dialog format-value="{{clip}}" edit-icon>
+							<template>
+								<paper-textarea value="{{value}}" no-label-float></paper-textarea>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Location" property="location" type="Object" tooltip="Some title" style="min-width: 300px" dialog format-value="{{formatLatLng}}" edit-icon>
+							<template>
+								<span>
+									<google-map latitude="{{value.lat}}" longitude="{{value.lng}}" style="height:300px;margin:20px 0px;" zoom="3">
+										<google-map-marker latitude="{{value.lat}}" longitude="{{value.lng}}" draggable="true"></google-map-marker>
+									</google-map>
+								</span>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-datatable-card>
+
+				<div style="padding:20px">
+					Selected IDs: {{outputSelectedIds(selectedIds.splices)}}
+				</div>
+			</demo-menu>
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+
+			app.data = {
+				get: function(sort, page, pageSize){
+					return new Promise(function(resolve, reject){
+						users.sort(function(a,b){
+							if(sort.direction == 'desc'){
+								var c = a;
+								a = b;
+								b = c;
+							}
+							if(sort.property == 'name'){
+								a = a[sort.property].last + '    ' + a[sort.property].first;
+								b = b[sort.property].last + '    ' + b[sort.property].first;
+							}else{
+								a = a[sort.property];
+								b = b[sort.property];
+							}
+							if(a > b) return 1;
+							if(a < b) return -1;
+							return 0;
+						});
+						resolve(users.slice((page-1)*pageSize, page*pageSize));
+					});
+				},
+				set: function(item, property, value){
+					return new Promise(function(resolve, reject){
+						console.info("a save was triggered", [item, property, value]);
+						var myItem = users.find(function(thisItem){
+							return thisItem.id == item.id;
+						});
+						myItem[property] = value;
+						resolve(true);
+					});
+
+				},
+				length:users.length
+			};
+
+			app.addNew = function(){
+				this.$.datatableCard.addNew();
+			};
+
+			app.outputSelectedIds = function(){
+				return app.selectedIds.join(', ');
+			}
+
+			app.clip = function(value){
+				var substr = value.substr(0, 40);
+				if(substr.length < 40){
+					return substr;
+				}else{
+					return substr + "...";
+				}
+			};
+
+			app.formatLatLng = function(value){
+				return value.lat.toFixed(7) + ', ' + value.lng.toFixed(7);
+			};
+
+			app.deleteSelected = function(){
+				app.selectedIds.forEach((id) => {
+					var index = users.findIndex((item) => id == item.id);
+					users.splice(index, 1);
+				});
+				this.$.datatableCard.retrieveVisibleData();
+				this.$.datatableCard.deselectAll();
+			};
+
+		</script>
+
+	</body>
+</html>

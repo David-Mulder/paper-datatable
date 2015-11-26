@@ -458,6 +458,11 @@ Mixins
 							this._datatable.select(item, false);
 						}
 					}.bind(this));
+				},
+				deselectAll: function(){
+					this._datatable.deselectAll(false);
+					this.splice("selectedIds", 0, this.selectedIds.length);
+					this._setSelectedToolbarVisible();
 				}
 
 			});

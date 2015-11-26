@@ -48,7 +48,8 @@
 
 			ready: function(){
 				this.addEventListener('keyup', function(ev){
-					if(ev.keyCode == 13){
+					var genericEvent = Polymer.dom(ev);
+					if(ev.keyCode == 13 && genericEvent.path[0].nodeName.toLowerCase() !== 'textarea'){
 						this.dismiss();
 					}
 				}.bind(this));
@@ -74,7 +75,9 @@
 				}
 				var paperInput = Polymer.dom(this).querySelector('paper-textarea')
 				if (paperInput) {
-					paperInput.$.textarea.focus();
+					var position = paperInput.$.input.$.textarea.value.length;
+					paperInput.$.input.$.textarea.focus();
+					paperInput.$.input.$.textarea.setSelectionRange(position, position);
 				}
 				var input = Polymer.dom(this).querySelector('input')
 				if (input) {

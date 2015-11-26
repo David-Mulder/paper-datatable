@@ -116,9 +116,10 @@
 				display: inline-block;
 				padding-left: 7px;
 			}
-			td.bound-cell paper-input{
+			td.bound-cell paper-input, td.bound-cell paper-textarea, paper-datatable-edit-dialog paper-input, paper-datatable-edit-dialog paper-textarea{
 				--paper-input-container-input: {
 					font-size: 13px;
+					line-height: 1.2em;
 				};
 			}
 			tr td:first-child, tr th:first-child{
@@ -623,7 +624,7 @@ Mixins
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}
 								if(!cell.instance || cell.instanceType == 'dialog'){
-									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(change.value);
+									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(this.get([object, rowKey, prop]));
 								}
 							}
 							if(cell.instance){
