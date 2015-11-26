@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
+
+	</head>
+	<body>
+
+		<demo-menu>
+
+			<template is="dom-bind" id="app">
+
+				<style is="custom-style">
+					body{
+						background: #f5f5f5;
+					}
+				</style>
+
+				<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{dataSource}}" progress id-property="sha1">
+					<div toolbar-main>
+					</div>
+					<div toolbar-select-single>
+						<paper-icon-button icon="info"></paper-icon-button>
+					</div>
+					<div toolbar-select>
+						<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+					</div>
+					<paper-datatable id="datatable" selectable multi-selection>
+						<paper-datatable-column id="nameColumn" header="Name" property="name" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
+							<template>
+								<div>
+									<img src="[[item.picture.thumbnail]]" style="width:32px;height:32px;border-radius:16px;vertical-align: middle;margin-right:4px;">
+									<span style="vertical-align:middle;">[[capitalize(value.title)]]</span>
+									<span style="vertical-align:middle;">[[capitalize(value.first)]]</span>
+									<span style="vertical-align:middle;">[[capitalize(value.last)]]</span>
+								</div>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="E-mail" property="email" style="min-width: 200px;" sortable></paper-datatable-column>
+						<paper-datatable-column header="SSN" property="SSN" style="min-width: 130px;" sortable></paper-datatable-column>
+						<paper-datatable-column header="Phone" property="phone" style="min-width: 150px;" sortable></paper-datatable-column>
+						<paper-datatable-column header="Cell" property="cell" style="min-width: 150px;" sortable></paper-datatable-column>
+						<paper-datatable-column header="Address" property="location" capitalize="[[capitalize]]" style="min-width: 200px;" sortable>
+							<template>
+								<div>[[capitalize(value.street)]]</div>
+								<div><span>[[capitalize(value.state)]]</span> <span>[[capitalize(value.zip)]]</span></div>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-datatable-card>
+
+				<div style="padding:20px; text-align:center;">
+					Note: This demo uses random data from <a href="http://randomuser.me">randomuser.me</a>, so because of this
+					browsing through the data is fake, sorting doesn't work and selections are not preserved, etc. The other
+					demo of the `&lt;paper-datatable-card&gt;` does support those things.
+				</div>
+
+			</template>
+
+		</demo-menu>
+
+		<script>
+			var app = document.querySelector('#app');
+
+			app.dataSource = {
+				get: function(sort, page, pageSize){
+					return new Promise(function(resolve, reject){
+						var httpRequest = new XMLHttpRequest();
+						httpRequest.onreadystatechange = function() {
+							if (httpRequest.readyState === XMLHttpRequest.DONE) {
+								if (httpRequest.status === 200) {
+									var result = JSON.parse(httpRequest.responseText);
+									var users = result.results.map(function(resultItem){
+										return resultItem.user;
+									});
+									resolve(users);
+								}
+							}
+						};
+						httpRequest.open('GET', 'http://api.randomuser.me/?nat=US&results='+pageSize);
+						httpRequest.send();
+					});
+				},
+				// none of the <templates> bind in an editable way right now, but if they would this is the function
+				// that's triggered after an edit
+				set: function(id, property, value){
+					console.info("a save was triggered", arguments);
+				},
+				length:100
+			};
+
+			app.capitalize = function(str){
+				return str.toString().split(' ').map(function(str){
+					return str.substr(0,1).toUpperCase() + str.substr(1, str.length - 1);
+				}).join(' ');
+			};
+
+			app.delete = function(){
+				// do your delete first
+				app.set('dataSource.length', app.dataSource.length - 1);
+				// and then call:
+				app.$.datatable.deselectAll();
+				app.$.datatableCard.retrieveVisibleData();
+			};
+
+		</script>
+
+	</body>
+</html>

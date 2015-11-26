@@ -1,0 +1,82 @@
+<link rel="import" href="../../promise-polyfill/promise-polyfill.html">
+<script>
+  var firebaseTestProject = 'fb-element-demo';
+
+  function randomKey() {
+    return (0|(Math.random() * 999999999)).toString();
+  }
+
+  function randomInt(min, max) {
+    min = min || 0;
+    max = max || 10000;
+
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  function randomObject(min, max) {
+    return {
+      value: randomInt(min, max)
+    };
+  }
+
+  function waitForEvent(element, event) {
+    return new Promise(function(resolve, reject) {
+      element.addEventListener(event, function onEvent() {
+        window.clearTimeout(timeout);
+        element.removeEventListener(event, onEvent);
+        resolve();
+      });
+
+      var timeout = window.setTimeout(function() {
+        reject(new Error('Firebase response took more than 5 seconds.'));
+      }, 5000);
+    });
+  }
+
+  function firebaseUrl(project, path) {
+    return 'https://' + project + '.firebaseio.com' + (path ? '/' + path : '');
+  }
+
+  function fixtureLocation(data) {
+    var firebase = new Firebase(firebaseUrl(firebaseTestProject));
+    return firebaseUrl(
+      firebaseTestProject,
+      firebase.push(data || {}).key()
+    );
+  }
+
+  function removeLocation(location) {
+    (new Firebase(location)).remove();
+  }
+
+  function fixtureFirebase(fixtureName, data) {
+    var firebase = fixture(fixtureName);
+    firebase.location = fixtureLocation(data);
+    return firebase;
+  }
+
+  function removeFirebase(firebase) {
+    removeLocation(firebase.location);
+    firebase.disconnect();
+  }
+
+  function arrayOfPrimitives(length) {
+    var array = [];
+
+    for (var i = 0; i < length; ++i) {
+      array.push(randomInt());
+    }
+
+    return array;
+  }
+
+  function arrayOfObjects(length) {
+    var array = [];
+
+    for (var i = 0; i < length; ++i) {
+      array.push(randomObject());
+    }
+
+    return array;
+  }
+</script>

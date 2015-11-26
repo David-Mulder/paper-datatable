@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title></title>
+
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="./relativeDate.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-card/paper-card.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
+
+		<style is="custom-style">
+
+			:root{
+				--paper-datatable-array-item: {
+					min-width: 15px;
+					height: 17px;
+					text-align: center;
+					border-radius: 8px;
+					background: gray;
+					color: white;
+					padding: 0px 1px;
+				};
+			}
+
+			body{
+				background: #f5f5f5;
+			}
+
+			paper-card{
+				padding:20px;
+				margin:20px;
+				display:block;
+			}
+
+		</style>
+
+	</head>
+	<body>
+		<template is="dom-bind" id="app">
+			<demo-menu>
+				<paper-card>
+					<paper-datatable data="{{data}}" selectable>
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+						<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
+							<template>
+								<paper-input value="{{value}}" no-label-float></paper-input>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
+
+				<paper-card>
+					<paper-datatable data="{{data}}" selectable multi-selection>
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+						<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
+							<template>
+								<paper-input value="{{value}}"></paper-input>
+								<paper-input value="{{item.calories}}"></paper-input>
+								<paper-input value="{{item.complexObj.a}}"></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Object" property="complexObj" type="Object" tooltip="The total amount of..." sortable>
+							<template>
+								<paper-input value="{{value.a}}"></paper-input>
+								<paper-input value="{{item.complexObj.a}}"></paper-input>
+								<paper-input value="{{item.complexObj.b}}"></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." sortable>
+							<template>
+								<template is="dom-repeat" items="{{value}}" as="valueItem">
+									<paper-input value="{{valueItem}}"></paper-input>
+								</template>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
+
+				<paper-card>
+					<paper-datatable id="lastDataTable" data="{{data}}" selectable multi-selection on-row-tap="log">
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" sortable editable></paper-datatable-column>
+						<paper-datatable-column header="Yummy" property="yummy" type="Boolean" sortable editable align="center"></paper-datatable-column>
+						<paper-datatable-column header="Calories" property="calories" type="Number" sortable editable></paper-datatable-column>
+						<paper-datatable-column header="Array" property="arr" type="Array" on-cell-tap="log"></paper-datatable-column>
+						<paper-datatable-column header="Complex Array" property="complexArr" type="Array" array-display-prop="title"></paper-datatable-column>
+						<paper-datatable-column id="dateTest" header="Created" property="created" type="Date" sortable format-value="{{formatDate}}"></paper-datatable-column>
+						<paper-datatable-column id="dateTest" header="Created" property="created" type="Date" sortable></paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
+
+				Calories: <span>{{getItem(data.*, 'data.0.calories')}}</span>
+				Array item: <span>{{getItem(data.*, 'data.0.arr.0')}}</span>
+				<paper-button on-tap="deselectAll">Deselect all</paper-button>
+			</demo-menu>
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+			//this function is necessary, because since Polymer 1.2 paths with indexes aren't allowed in direct bindings
+			app.getItem = function(watcher, path){
+				return this.get(path);
+			};
+			app.data = [
+				{title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447315235838)},
+				{title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447155235838)},
+				{title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447355135838)}
+			];
+			app.log = function(ev){
+				console.info('event', ev.type, 'on', ev.target, 'with detail', ev.detail);
+			};
+			app.deselectAll = function(){
+				app.$.lastDataTable.deselectAll();
+			};
+
+			/* relativeDate is defined in relativeDate.js */
+			app.formatDate = relativeDate;
+		</script>
+
+	</body>
+</html>

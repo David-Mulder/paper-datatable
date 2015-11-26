@@ -1,0 +1,44 @@
+{
+  "name": "paper-datatable",
+  "version": "1.0.0",
+  "authors": [
+    "David Mulder <david.mulder@ymail.com>"
+  ],
+  "description": "Material design data table.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "data-table"
+  ],
+  "main": [
+    "paper-datatable.html",
+    "paper-datatable-card.html"
+  ],
+  "license": "http://www.gnu.org/licenses/gpl-3.0.en.html",
+  "homepage": "https://github.com/David Mulder/paper-datatable/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~1.2.0",
+    "paper-material": "PolymerElements/paper-material#~1.0.3",
+    "paper-item": "PolymerElements/paper-item#~1.0.5",
+    "paper-icon-button": "PolymerElements/paper-icon-button#~1.0.5",
+    "paper-checkbox": "PolymerElements/paper-checkbox#~1.0.13",
+    "paper-tooltip": "PolymerElements/paper-tooltip#~1.1.1",
+    "paper-styles": "PolymerElements/paper-styles#~1.0.12",
+    "whenever.js": "~0.0.1",
+    "iron-form": "PolymerElements/iron-form#~1.0.12"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "paper-card": "PolymerElements/paper-card#~1.0.7",
+    "web-component-tester": "*",
+    "paper-progress": "PolymerElements/paper-progress#~1.0.7",
+    "paper-menu": "PolymerElements/paper-menu#~1.1.1",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#~1.1.0",
+    "paper-input": "PolymerElements/paper-input#~1.0.18"
+  }
+}

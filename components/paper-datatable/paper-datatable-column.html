@@ -1,0 +1,385 @@
+<script src="../whenever.js/whenever.js"></script>
+<dom-module id="paper-datatable-column">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+		</style>
+		<template id="arrayTemplate">
+			<template is="dom-repeat" items="{{value}}" as="arrayItem">
+				<div class="array-item">{{_pdt_getArrayItemLabel(column, arrayItem)}}</div>
+			</template>
+		</template>
+		<template id="editableInputTemplate">
+			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_pdt_getValidRegexForInput(column.type)]]" no-label-float></paper-input>
+		</template>
+		<template id="editableBooleanTemplate">
+			<paper-checkbox checked="{{value}}"></paper-checkbox>
+		</template>
+	</template>
+
+	<script>
+		(function () {
+			'use strict';
+
+			/*
+This element is used inside of `<paper-datatable>` to declare the columns to be shown in the datatable.
+
+Editable columns
+---
+There are two ways to define editable columns, the easiest way is to just set the `editable` attribute like
+
+	<paper-datatable-column header="Author" property="title" type="String" editable></paper-datatable-column>
+
+which which is internally equal to the second way
+
+	<paper-datatable-column header="Author" property="title">
+		<template>
+			 <paper-input value="{{value}}" no-label-float></paper-input>
+		</template>
+	</paper-datatable-column>
+
+Additionally you can prefer setting it in a `[dialog]` which will `on-tap` load up a dialog hovering above the cell with
+the `<template>` content. The big advantage of this is performance as not every cell needs to be initalized.
+
+Styling
+---
+&nbsp;*See the documentation for `<paper-datatable>`. *
+
+@element paper-datatable-column
+			*/
+
+			Polymer({
+				is: 'paper-datatable-column',
+				properties: {
+					/**
+					 * String displayed in `<th></th>`
+					 *
+					 * @attribute header
+					 * @type String
+					 * @required
+					 */
+					header: String,
+					/**
+					 * The property to be used from `data` for this column
+					 *
+					 * @attribute property
+					 * @type String
+					 * @required
+					 */
+					property: String,
+					/**
+					 * The type of the property (can be 'String', 'Number', 'Array', 'Date', etc.)
+					 * Used for sorting and default display
+					 *
+					 * @attribute type
+					 * @type String
+					 * @default 'String'
+					 */
+					type: {
+						type: String,
+						value: 'String'
+					},
+					/**
+					 * Tooltip shown when hovering the `<th>`
+					 *
+					 * @attribute tooltip
+					 * @type String
+					 */
+					tooltip: String,
+					/**
+					 * Whether to show sorting UI on the column. Sorting only works automagically
+					 * on simple data types.
+					 *
+					 * @attribute sortable
+					 * @type Boolean
+					 * @default false
+					 */
+					sortable: Boolean,
+					/**
+					 * Whether the column is currently sorted. Should only be set on one column at a time
+					 *
+					 * @attribute sorted
+					 * @type Boolean
+					 * @default false
+					 */
+					sorted: {
+						type: Boolean,
+						notify: true,
+						observer: '_sortChanged',
+						reflectToAttribute: true
+					},
+					/**
+					 * Whether the column is currently sorted. Should only be set on one column at a time
+					 *
+					 * @attribute sortDirection
+					 * @type String
+					 * @default 'asc'
+					 */
+					sortDirection: {
+						type: String,
+						value: 'asc',
+						observer: '_sortChanged'
+					},
+					/**
+					 * If `type` is a simple type, then if this is true one of the default editable
+					 * templates is used. For example if `type` is `String` every cell will contain
+					 * a `<paper-input>`. This is practically just a convenience method so that you
+					 * don't have to define every `<template>` on your own.
+					 *
+					 * If you do use a custom `<template>` this will prevent a `row-tap` from triggering
+					 * a selection. So if you click in a `<paper-input>` it won't select the row.
+					 *
+					 * @attribute editable
+					 * @type Boolean
+					 * @default false
+					 */
+					editable: Boolean,
+					/**
+					 * If `type` is an `Array` and the array consists of `Object`s it's a common need
+					 * to display a single property of every object (in non-editable mode).
+					 *
+					 * Note that it's not possible to use this in combination with an editable dialog,
+					 * as internally this is using a `<template>` and Polymer currently allows only
+					 * one template to be templatized per element.
+					 *
+					 * @attribute arrayDisplayProp
+					 * @type String
+					 */
+					arrayDisplayProp: String,
+					/**
+					 * Style to be applied to every cell.
+					 *
+					 * @attribute cellStyle
+					 * @type String
+					 */
+					cellStyle: {
+						type: String,
+						value: ''
+					},
+					/**
+					 * Style to be applied to the header.
+					 *
+					 * @attribute style
+					 * @type String
+					 */
+					_styleString: {
+						type: String,
+						value: function(){
+							var alignment = this.align || this.getAttribute('align') || 'left';
+							var styleString = this.getAttribute('style') || '';
+							return 'text-align:'+alignment+';'+styleString;
+						}
+					},
+					/**
+					 * If you have `undefined`'s in your `data` this method can be used to
+					 * set a default, thus preventing auto-saves from triggering.
+					 *
+					 * @attribute default
+					 * @type Object
+					 */
+					default: Object,
+					/**
+					 * Convenience attribute to align the header and cell content (e.g. 'center')
+					 *
+					 * @attribute align
+					 * @type String
+					 * @default 'left'
+					 */
+					align: {
+						type: String,
+						value: 'left'
+					},
+					/**
+					 * Can be overwritten to manually format the value in a non-editable state
+					 *
+					 * @attribute formatValue
+					 * @type Function
+					 * @default see code
+					 */
+					formatValue: Function,
+					/**
+					 * Instead of rendering the `<template>` inline in the cell it will instead be rendered in a
+					 * floating `<paper-datatable-edit-dialog>` after the user `tap`s on the cell.
+					 *
+					 * @attribute dialog
+					 * @type Boolean
+					 * @default false
+					 */
+					dialog: {
+						type: Boolean
+					},
+					/**
+					 * Per material design spec it's often useful to indicate that a cell is editable if you're using
+					 * `[dialog]` based editing. This will show a little pencil icon to the right of the cell, but can be
+					 * a bit overwhelming if used on more than one column.
+					 *
+					 * @attribute editIcon
+					 * @type Boolean
+					 * @default false
+					 */
+					editIcon: {
+						type: Boolean
+					}
+				},
+				behaviors: [
+					Polymer.Templatizer
+				],
+
+				created: function(){
+					this.beenAttached = new Whenever();
+				},
+
+				ready: function() {
+
+					var template = Polymer.dom(this).querySelector('template');
+					if(!template && this.type.toLowerCase() == "array"){
+						var template = this.$.arrayTemplate;
+					}else if(!template && this.editable && this.type.toLowerCase() == "string"){
+						var template = this.$.editableInputTemplate;
+					}else if(!template && this.editable && this.type.toLowerCase() == "number"){
+						var template = this.$.editableInputTemplate;
+					}else if(!template && this.editable && this.type.toLowerCase() == "boolean"){
+						var template = this.$.editableBooleanTemplate;
+					}
+
+					if(template) {
+						this._instanceProps = {};
+						this._instanceProps.item = true;
+						this._instanceProps.value = true;
+						this._instanceProps.column = true;
+
+						this.templatize(template);
+
+						this.template = true;
+					}
+
+
+				},
+				attached: function() {
+					Polymer.dom(this).parentNode.push('_columns', this);
+					this.parentNodeRef = Polymer.dom(this).parentNode;
+					this._registerEvilFunctions();
+					this.async(function(){
+						this.beenAttached.ready();
+					});
+				},
+				detached: function() {
+					this.parentNodeRef.splice('_columns', this.parentNodeRef._columns.indexOf(this), 1);
+				},
+				createCellInstance: function(model, notificationKey){
+					if(typeof model[this.property] == 'undefined' && typeof this.default !== 'undefined'){
+						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
+					}else{
+						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
+					}
+					return instance;
+				},
+				_formatValue: function(data){
+					data = this._cast(data);
+					if('formatValue' in this){
+						return this.formatValue(data);
+					}
+					if(typeof data == 'undefined'){
+						return '';
+					}
+					var value = this._cast(data);
+					if(this.type.toLowerCase() == 'string'){
+						return value;
+					}else if(this.type.toLowerCase() == 'number'){
+						return value;
+					}else if(this.type.toLowerCase() == 'boolean'){
+						return value ? 'Yes' : 'No';
+					}else if(this.type.toLowerCase() == 'date'){
+						var prependZero = function(val){
+							return val < 10 ? '0' + val : val;
+						}
+						return value.getUTCFullYear() +'/'+ prependZero(value.getUTCMonth()+1) +'/'+ prependZero(value.getUTCDate()) + '&nbsp;' + prependZero(value.getUTCHours()) + ':' + prependZero(value.getUTCMinutes()) + ':' + prependZero(value.getUTCSeconds());
+					}else{
+						console.warn('Complex objects should implement their own template.', data);
+						return '?';
+					}
+				},
+				_cast: function(value){
+					if(this.type.toLowerCase() == 'string'){
+						return value.toString();
+					}else if(this.type.toLowerCase() == 'number'){
+						return parseFloat(value);
+					}else if(this.type.toLowerCase() == 'boolean'){
+						return value ? true : false;
+					}else if(this.type.toLowerCase() == 'date'){
+						return new Date(value);
+					}else{
+						return value;
+					}
+				},
+				_sortChanged: function(){
+					if(this.sorted){
+						this.beenAttached.whenReady(function(){
+							this.parentNodeRef.sort(this);
+						}.bind(this));
+					}
+				},
+				_forwardParentProp: function(prop, value){
+					console.warn('_forwardParentProp',arguments);
+				},
+				_forwardParentPath: function(prop, value){
+					console.warn('_forwardParentPath',arguments);
+				},
+				_forwardInstanceProp: function(templateInstance, prop, value){
+					var path = prop.split('.');
+					var item = path.shift();
+					if(item == 'value'){
+						var parentPath = ['data', templateInstance.get('_dataKey'), this.property];
+						value = this._cast(value);
+						//console.log('_forwardInstanceProp',arguments);
+						//console.log('set', parentPath, 'to', value);
+						this.parentNodeRef.set(parentPath, value);
+					}else if(item == 'item'){
+						console.warn('_forwardInstanceProp',arguments);
+					}
+				},
+				_forwardInstancePath: function(templateInstance, prop, value){
+					var path = prop.split('.');
+					var item = path.shift();
+					if(item == 'value'){
+						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path);
+						if(path.length == 0){
+							value = this._cast(value);
+						}
+						//console.log(parentPath, path.join('.'), value)
+						//console.log('_forwardInstancePath',arguments);
+					}else if(item == 'item'){
+						var parentPath = ['data', templateInstance.get('_dataKey')].concat(path);
+						//console.log(parentPath, value);
+						//console.log('_forwardInstancePath',arguments);
+					}
+					//console.log('set', parentPath, 'to', value);
+					this.parentNodeRef.set(parentPath, value);
+				},
+				/*
+				_getRootDataHost: function(){
+					return this;
+				},*/
+				_registerEvilFunctions: function(){
+					this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
+					this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
+				},
+				_getArrayItemLabel: function(column, value){
+					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
+				},
+				_getValidRegexForInput: function(type){
+					if(type.toLowerCase() == 'string'){
+						return undefined;
+					}else if(type.toLowerCase() == 'number'){
+						return '[0-9.,]';
+					}
+				}
+
+
+			});
+		})();
+	</script>
+
+</dom-module>

@@ -1,0 +1,116 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-form/iron-form.html">
+<dom-module id="paper-datatable-edit-dialog">
+	<template>
+		<style>
+			:host{
+				position: absolute;
+				z-index: 10;
+				display: none;
+			}
+			:host([visible]){
+				display: block;
+			}
+			paper-material {
+				position:absolute;
+				left:0px;
+				top:0px;
+				right:0px;
+				min-width: 100px;
+				display: inline-block;
+				padding: 4px 24px;
+				background: var(--paper-datatable-edit-dialog-color, --paper-grey-50);
+				border-radius: 2px;
+				box-sizing: border-box;
+				@apply(--paper-datatable-edit-dialog);
+			}
+		</style>
+		<paper-material id="material" elevation="1">
+			<form is="iron-form" id="form" on-iron-form-presubmit="dismiss">
+				<content select="*"></content>
+			</form>
+		</paper-material>
+	</template>
+	<script>
+
+		Polymer({
+
+			is: 'paper-datatable-edit-dialog',
+
+			properties: {
+				positionedRelativeTo: {
+					type: Element,
+					observer: 'setLocationRelativeTo'
+				}
+			},
+
+			ready: function(){
+				this.addEventListener('keyup', function(ev){
+					var genericEvent = Polymer.dom(ev);
+					if(ev.keyCode == 13 && genericEvent.path[0].nodeName.toLowerCase() !== 'textarea'){
+						this.dismiss();
+					}
+				}.bind(this));
+				document.body.addEventListener('click', function(ev){
+					var path = Polymer.dom(ev).path;
+					if(this.positionedRelativeTo && path.indexOf(this) == -1 && path.indexOf(this.positionedRelativeTo) == -1){
+						this.dismiss(ev);
+					}
+				}.bind(this));
+			},
+
+			dismiss: function(ev){
+				this.removeAttribute('visible');
+				this.positionedRelativeTo = undefined;
+				if(ev)
+					ev.preventDefault();
+			},
+
+			findFocus: function() {
+				var paperInput = Polymer.dom(this).querySelector('paper-input')
+				if (paperInput) {
+					paperInput.$.input.focus();
+				}
+				var paperInput = Polymer.dom(this).querySelector('paper-textarea')
+				if (paperInput) {
+					var position = paperInput.$.input.$.textarea.value.length;
+					paperInput.$.input.$.textarea.focus();
+					paperInput.$.input.$.textarea.setSelectionRange(position, position);
+				}
+				var input = Polymer.dom(this).querySelector('input')
+				if (input) {
+					input.focus();
+				}
+			},
+
+			setLocationRelativeTo: function(el){
+				if(el) {
+					this.setAttribute('visible', '');
+					this.revealTime = Date.now();
+					var relativeToParent = this.parentNode;
+					while (relativeToParent !== window) {
+						if (relativeToParent.nodeName == '#document-fragment') {
+							relativeToParent = relativeToParent.host;
+						} else {
+							if (getComputedStyle(relativeToParent).position == 'relative' || getComputedStyle(relativeToParent).position == 'absolute') {
+								break;
+							}
+							relativeToParent = Polymer.dom(relativeToParent).parentNode;
+						}
+					}
+					var parent = relativeToParent.getBoundingClientRect();
+					var child = el.getBoundingClientRect();
+					this.style.top = child.top - 2 - parent.top + "px";
+					this.style.left = child.left - parent.left + "px";
+					this.style.right = parent.right - child.right + "px";
+					this.$.material.style.minHeight = child.height + 2 + "px";
+				}
+			}
+
+
+
+		});
+	</script>
+</dom-module>

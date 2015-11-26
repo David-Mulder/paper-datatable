@@ -1,0 +1,475 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="paper-datatable.html">
+
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+
+
+<script src="weakCache.js"></script>
+<dom-module id="paper-datatable-card">
+	<template>
+		<style>
+			:host {
+				display: block;
+				@apply(--paper-font-common-base);
+			}
+			paper-material{
+				border-radius: 2px;
+				background: white;
+				@apply(--paper-datatable-card);
+			}
+			#selectionToolbar{
+				display: none;
+				background: var(--paper-datatable-selection-toolbar-color, --paper-pink-50);
+				padding:0px 12px 0px 24px;
+			}
+			#selectionToolbar[data-visible]{
+				display: flex;
+			}
+			#selectionToolbar .toolbar{
+				display: none;
+			}
+			#selectionToolbar .toolbar[data-visible]{
+				display: flex;
+			}
+			#toolbar-main{
+				padding-right: 12px;
+			}
+			#topBlock{
+				height:64px;
+				padding:0px 6px 0px 24px;
+				position:relative;
+			}
+			#topBlock .header{
+				font-size:20px;
+				@apply(--paper-font-common-base);
+			}
+			#topBlock .selectionHeader{
+				font-size:16px;
+				@apply(--paper-font-common-base);
+			}
+			#bottomBlock{
+				height:56px;
+				padding:0px 6px;
+				top: 1px solid var(--paper-datatable-divider-color, --divider-color);
+				color: var(--paper-datatable-navigation-bar-text-color, rgba(0,0,0,.54));
+				align-items: center;
+				font-size: 12px;
+				text-align: center;
+				font-weight: 500;
+				@apply(--paper-datatable-navigation-bar);
+			}
+			#bottomBlock paper-dropdown-menu{
+				vertical-align: middle;
+				--paper-input-container-underline: {
+					display: none;
+				};
+				--paper-input-container-input: {
+					text-align: right;
+					font-size: 12px;
+					font-weight: 500;
+					color: var(--paper-datatable-navigation-bar-text-color, rgba(0,0,0,.54));
+				};
+				--paper-dropdown-menu-icon: {
+					color: var(--paper-datatable-navigation-bar-text-color, rgba(0,0,0,.54));
+				};
+				margin-right: 18px;
+			}
+		</style>
+		<paper-material elevation="1">
+			<div class="horizontal center layout" id="topBlock">
+				<div class="flex header">
+					<span>{{header}}</span>
+				</div>
+				<div id="toolbar-main" class="toolbar">
+					<content select="*[toolbar-main]"></content>
+				</div>
+				<div id="selectionToolbar" class="horizontal center layout fit" data-visible$="[[_selectedToolbarVisible]]">
+					<div class="flex selectionHeader">
+						<span>[[_numberselectedIds]]</span> item selected
+					</div>
+					<div class="toolbar" data-visible$="{{_singleSelectToolbarVisible}}">
+						<content select="*[toolbar-select-single]"></content>
+					</div>
+					<div class="toolbar" data-visible$="{{_multiSelectToolbarVisible}}">
+						<content select="*[toolbar-select-multi]"></content>
+					</div>
+					<div class="toolbar" data-visible>
+						<content select="*[toolbar-select]"></content>
+					</div>
+				</div>
+			</div>
+			<div>
+				<content select="paper-datatable"></content>
+			</div>
+			<div class="horizontal center layout" id="bottomBlock">
+				<div class="flex"></div>
+				<span>Rows per page:</span>
+				<paper-dropdown-menu no-label-float style="width: 68px;">
+					<paper-menu class="dropdown-content" selected="{{pageSize}}" attr-for-selected="value">
+						<paper-item value="5">5</paper-item>
+						<paper-item value="10">10</paper-item>
+						<paper-item value="25">25</paper-item>
+						<paper-item value="100">100</paper-item>
+					</paper-menu>
+				</paper-dropdown-menu>
+				<span>
+					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, dataSource.length)]]</span> of&nbsp;<span>[[dataSource.length]]</span>
+				</span>
+				<paper-icon-button icon="datatable:first-page" on-tap="firstPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
+				<paper-icon-button icon="datatable:prev-page" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
+				<paper-icon-button icon="datatable:next-page" on-tap="nextPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
+				<paper-icon-button icon="datatable:last-page" on-tap="lastPage" disabled="[[_nextPageDisabled(page, pageSize, dataSource.length)]]"></paper-icon-button>
+			</div>
+		</paper-material>
+	</template>
+
+	<script>
+		(function () {
+			'use strict';
+
+/*
+Still to be written/finished, but in the meantime, check the `paper-datatable-card` demo's and the stuff below.
+
+Data sources
+---
+This component uses an object with a set number of functions to retrieve and save data. A `data-source` looks like
+
+    {
+        get: function(sort, page, pageSize){ return new Promise(...) },
+        set: function(item, property, value){ return new Promise(...) },
+        length: Number
+    }
+
+Note: If you wonder why the functions aren't directly available to the element and instead are grouped like this, the
+reason for this is that this allows you to create a
+
+    <my-api-datasource for="users" data-source="{{dataSource}}"></my-api-datasource>
+
+object which in turn you bind to this element. I have however been considering allowing manual binding directly as well.
+
+Main toolbar
+---
+The main toolbar is located to the right of the heading and can be filled by specifying an element with `[toolbar-main]`.
+
+	<div toolbar-main>
+	 	<paper-input value="{{searchQuery}}">
+		<paper-icon-button icon="search" on-tap="search"></paper-icon-button>
+	</div>
+
+Selection toolbar
+---
+The selection toolbar is shown when any items are selected and shows the number of selected items. Items in the toolbar
+can be specified by adding an element with `[toolbar-select]`. Additionally it's often required to show different icons
+when a single item is selected from when multiple items are selected. For this there exists `[toolbar-select-single]`
+and `[toolbar-select-multi]`
+
+	<div toolbar-select-single>
+		<paper-icon-button icon="info" on-tap="info"></paper-icon-button>
+	</div>
+	<div toolbar-select>
+		<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+	</div>
+
+Theming
+===
+Variables
+---
+
+ - `--paper-datatable-divider-color` divider color is used to draw the bottom line
+ - `--paper-datatable-selection-toolbar-color` color of selected toolbar, should be 50 of the secondary color
+
+Mixins
+---
+
+ - `--paper-datatable-card` applied to the main card
+
+@element paper-datatable-card
+@demo demo/users-card.html Polished demo
+@demo demo/paper-datatable-card.html Complex demo
+*/
+
+			Polymer({
+
+				is: 'paper-datatable-card',
+				properties: {
+					header: String,
+					dataSource: Object,
+					pageSize: {
+						type: Number,
+						value: 10
+					},
+					page: {
+						type: Number,
+						value: 1
+					},
+					_disableSave: {
+						type: Boolean,
+						value: false
+					},
+					_datatable: {
+						type: Object
+					},
+					/* used as the default when .addNew() is called */
+					default: {
+						type: Object
+					},
+					/**
+					 * Property containing the `id` of every row. It is **important** this is available for multi-page selection to work
+					 *
+					 * @attribute idProperty
+					 * @type String
+					 * @default 'id'
+					 * @required
+					 */
+					idProperty: {
+						type: String,
+						value: 'id'
+					},
+					/**
+					 * An array of selected row id's.
+					 *
+					 * @attribute selectedIds
+					 * @type Array
+					 * @default []
+					 */
+					selectedIds: {
+						type: Array,
+						notify: true,
+						value: []
+					},
+					_sortDirection: {
+						type: String,
+						value: 'asc'
+					},
+					_sortProperty: {
+						type: String
+					},
+					_selectedToolbarVisible: Boolean,
+					_singleSelectToolbarVisible: Boolean,
+					_multiSelectToolbarVisible: Boolean,
+					_numberselectedIds: Number
+				},
+				ready: function(){
+					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
+					//if(this.dataSource) {
+						this._datatable.data = [];
+						this._datatable.addEventListener("data-changed", this._triggerSave.bind(this));
+						this._datatable.addEventListener("sort", this._handleSort.bind(this));
+					//}
+					//this._datatable.addEventListener("selected-key-changed", this._setSelectedId.bind(this));
+					this._datatable.addEventListener("selection-changed", this._setSelectedIds.bind(this));
+					this._datatable.addEventListener("selection-changed", this._setSelectedToolbarVisible.bind(this));
+					this.set('selectedIds', []);
+					this.set('_sortProperty', this.idProperty);
+				},
+				observers: [
+					'retrieveVisibleData(dataSource, pageSize, page, _datatable, _sortDirection, _sortProperty)'
+				],
+				_triggerSave: function(ev){
+					if(this.dataSource) {
+						if (!this._disableSave && ev.detail.path) {
+							var path = ev.detail.path.split(".");
+							if (path.length == 2) {
+								return;
+							}
+							var item = path.shift();
+							var rowKey = path.shift();
+							var property = path.shift();
+							this.debounce('save'+rowKey+property, function(){
+								var value = ev.detail.value;
+								var data = this._datatable.get(['data', rowKey]);
+								var id = data[this._datatable.idProperty];
+								// setting properties in the `set` functions causes trouble, so it's more sensible for that
+								// to simply have no effect rather than make the entire element break, especially
+								// as the 'no effect' version can be useful (see paper-datatable-card.html demo)
+								var dataClone = JSON.parse(JSON.stringify(data));
+
+								if (path.length > 0) {
+									value = dataClone[property];
+									var setPromise = this.dataSource.set(dataClone, property, value);
+								} else {
+									var setPromise = this.dataSource.set(dataClone, property, value);
+								}
+
+								this._datatable.set('progress', true);
+								setPromise.then(function (successOrId) {
+									if (typeof successOrId === 'boolean') {
+										if (successOrId !== true) {
+											throw new Error('failure');
+										}
+									} else {
+										console.warn('re-implement')
+										//var index = this._datatable._getIndexById('__new__');
+										//this._datatable.set(['data', index, this._datatable.idProperty], successOrId);
+									}
+									this._datatable.set('progress', false);
+								}.bind(this), function (err) {
+									throw new Error('failure');
+									this._datatable.set('progress', false);
+								}.bind(this)).catch(function () {
+									console.warn('saving failed');
+									this._datatable.set('progress', false);
+								}.bind(this));
+							}, 1000);
+						}
+					}
+				},
+				_handleSort: function(ev){
+					if(this.dataSource) {
+						ev.preventDefault();
+						var sortedColumn = Polymer.dom(this).querySelector('paper-datatable-column[sorted]');
+						if(sortedColumn){
+							this._sortProperty = sortedColumn.property;
+							this._sortDirection = sortedColumn.sortDirection;
+						}
+						//this.retrieveVisibleData();
+					}
+				},
+				/*
+					Call this function to trigger reloading of the current page
+				 */
+				retrieveVisibleData: function(){
+
+					this.debounce("visibleData", function(){
+						this._disableSave = true;
+
+						var processItems = function(items){
+
+							this._datatable.deselectAll(false);
+							this._datatable.splice('data', 0, this._datatable.data.length);
+
+							var args = ['data'].concat(items);
+							this._datatable.push.apply(this._datatable,args);
+							this._setSelectedKeysOnDatatable();
+							this._datatable.set('progress', false);
+
+							this._disableSave = false;
+
+						}.bind(this);
+
+						var queryArgs = [{
+							property: this._sortProperty,
+							direction: this._sortDirection
+						}, this.page, this.pageSize];
+
+						//this._datatable.splice("data", 0, this._datatable.data.length);
+						this._datatable.set('progress', true);
+
+						if('queryForIds' in this.dataSource){
+							console.warn('I am sorry, this functionality has been deprecated for the time being, please use `get` directly till I get to implement a good solid cache again.');
+							/*
+								var ids = this.dataSource.queryForIds.apply(this.dataSource, queryArgs);
+
+								//todo: do not retrieve items which we put in the cache
+								this.dataSource.getByIds(ids).then(processItems);
+							*/
+						}else{
+							this.dataSource.get.apply(this.dataSource, queryArgs).then(processItems);
+						}
+					}, 0);
+
+				},
+				_getRangeStart: function(){
+					return (this.page-1)*this.pageSize;
+				},
+				_getRangeEnd: function(){
+					return Math.min((this.page)*this.pageSize, this.dataSource.length);
+				},
+				nextPage: function(){
+					this.set("page", this.page+1);
+				},
+				prevPage: function(){
+					this.set("page", this.page-1);
+				},
+				firstPage: function(){
+					this.set("page", 1);
+				},
+				lastPage: function(){
+					this.set("page", Math.ceil(this.dataSource.length / this.pageSize));
+				},
+				addNew: function(){
+					console.warn('This feature is temporarily deprecated.');
+					/*
+					//1. check we ain't adding one already
+					if(this._datatable._getIndexById('__new__') > -1){
+						console.warn('It\'s only possible to add one item at a time.');
+						return;
+					}
+					//1. goto last page
+					//this.page = Math.floor(this.dataSource.length / this.pageSize) + 1;
+					//2. wait for data to load
+					//... :/
+					//3. generate default
+					var item = {};
+					this._datatable._columns.forEach(function(column){
+						if(column.default){
+							item[column.property] = JSON.parse(JSON.stringify(column.default));
+						}else{
+							item[column.property] = undefined;
+						}
+					});
+					item[this._datatable.idProperty] = '__new__';
+					//4. push default to visible data
+					this._datatable.push('data', item);
+					*/
+				},
+				_prevPageDisabled: function(){
+					return this.page == 1;
+				},
+				_nextPageDisabled: function(){
+					return this.page * this.pageSize >= this.dataSource.length;
+				},
+				_setSelectedToolbarVisible: function(){
+					this._selectedToolbarVisible = this.selectedIds.length > 0;
+					this._singleSelectToolbarVisible = this.selectedIds.length == 1;
+					this._multiSelectToolbarVisible = this.selectedIds.length > 1;
+					this._numberselectedIds = this.selectedIds.length;
+				},
+				_setSelectedIds: function(ev){
+					if(ev.detail.selected){
+						if(!this._datatable.multiSelection){
+							this.splice('selectedIds', 0, 1);
+						}
+						ev.detail.selected.forEach(function(key){
+							var id = this._datatable._getByKey(key)[this.idProperty];
+							if(this.selectedIds.indexOf(id) == -1){
+								this.push('selectedIds', id);
+							}
+						}.bind(this));
+					}
+					if(ev.detail.deselected){
+						ev.detail.deselected.forEach(function(key){
+							var id = this._datatable._getByKey(key)[this.idProperty];
+							if(this.selectedIds.indexOf(id) > -1){
+								this.splice('selectedIds', this.selectedIds.indexOf(id), 1);
+							}
+						}.bind(this));
+					}
+				},
+				_setSelectedKeysOnDatatable: function(){
+					this._datatable.data.forEach(function(item){
+						var id = item[this.idProperty];
+						if(this.selectedIds.indexOf(id) > -1){
+							this._datatable.select(item, false);
+						}
+					}.bind(this));
+				},
+				deselectAll: function(){
+					this._datatable.deselectAll(false);
+					this.splice("selectedIds", 0, this.selectedIds.length);
+					this._setSelectedToolbarVisible();
+				}
+
+			});
+
+		})();
+	</script>
+
+</dom-module>

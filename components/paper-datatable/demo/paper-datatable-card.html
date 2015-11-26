@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="demo-menu.html">
+
+	</head>
+	<body>
+
+
+		<template is="dom-bind" id="app">
+			<demo-menu>
+				<style is="custom-style">
+					body{
+						background: #f5f5f5;
+					}
+				</style>
+
+				<paper-datatable-card id="datatableCard" header="Document library" page-size="10" data-source="{{data}}" id-property="i" selected-ids="{{selectedIds}}">
+					<div toolbar-main>
+						<paper-icon-button icon="add" on-tap="addNew"></paper-icon-button>
+					</div>
+					<div toolbar-select>
+						<paper-icon-button icon="delete"></paper-icon-button>
+					</div>
+					<paper-datatable selectable multi-selection>
+						<paper-datatable-column header="ID" property="i" type="String" tooltip="Some title" sortable align="center" style="min-width: 40px" sorted></paper-datatable-column>
+						<paper-datatable-column header="Author" property="author" tooltip="The total amount of..." style="min-width: 500px" default='{"first": "", "last": ""}' editable>
+							<template>
+								<paper-input value="{{value.first}}" no-label-float style="display:inline-block;width:49%;"></paper-input>
+								<paper-input value="{{value.last}}" no-label-float style="display:inline-block;width:49%;"></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Document title" property="title" type="String" tooltip="Some title" sortable style="width: 99%"></paper-datatable-column>
+						<paper-datatable-column header="Rating" property="rating" type="Number" tooltip="The total amount of..." sortable style="min-width: 200px" editable>
+							<template>
+								<paper-input value="{{value}}" no-label-float></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column property="reserved" header="Reserved" type="boolean" default="false" style="min-width: 100px" cell-style="padding-left:40px;" align="center" editable>
+							<template>
+								<paper-checkbox checked="{{value}}"></paper-checkbox>
+							</template>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-datatable-card>
+
+				<div style="padding:20px">
+					Selected IDs: {{outputSelectedIds(selectedIds.splices)}}
+				</div>
+			</demo-menu>
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+
+			var myData = [];
+			for (var i=0; i<142; i++) {
+				var id = i*10000+Math.round(Math.random() * 500);
+				var rating = Math.round(Math.random() * 2000)+1000;
+				myData.push({
+					i: i,
+					title: "title"+id,
+					rating: rating,
+					author: {
+						first: "David",
+						last: "Mulder "+ i
+					},
+					reserved: (Math.random() > 0.9 ? true : undefined)
+				});
+			}
+			window.myData = myData;
+
+			app.data = {
+				get: function(sort, page, pageSize){
+					console.log('just once? :/');
+					return new Promise(function(resolve, reject){
+						myData.sort(function(a,b){
+							if(sort.direction == "desc"){
+								var c = a;
+								a = b;
+								b = c;
+							}
+							if(a[sort.property] > b[sort.property]) return 1;
+							if(a[sort.property] < b[sort.property]) return -1;
+							return 0;
+						});
+						resolve(myData.slice((page-1)*pageSize, page*pageSize));
+					});
+				},
+				set: function(item, property, value){
+					return new Promise(function(resolve, reject){
+						console.info("a save was triggered", [item, property, value]);
+						if(item.id === '__new__'){
+							//validate item, if invalid (and thus not savable yet) reject, otherwise return it's new id
+							console.warn('this is for the time being deprecated');
+							/*
+							if(item.author.first.length > 0 && item.author.last.length > 0){
+								console.log('trigger save');
+								var id = Math.round(Math.random() * 10000);
+
+								item.id = id;
+								myData.push(item);
+								app.set('data.length', myData.length);
+								resolve(id);
+							}else{
+								console.log('no luck yet');
+								reject();
+							}*/
+						}else{
+							var myItem = myData.find(function(thisItem){
+								return thisItem.id == item.id;
+							});
+							myItem[property] = value;
+							resolve(true);
+						}
+					});
+
+				},
+				length:myData.length
+			};
+
+			app.addNew = function(){
+				this.$.datatableCard.addNew();
+			};
+
+			app.outputSelectedIds = function(){
+				return app.selectedIds.join(', ');
+			}
+
+		</script>
+
+	</body>
+</html>

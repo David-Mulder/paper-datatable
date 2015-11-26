@@ -1,0 +1,276 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<html>
+<head>
+  <title>firebase-collection</title>
+
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <link rel="import" href="test-helpers.html">
+  <link rel="import" href="../firebase-collection.html">
+</head>
+<body>
+  <test-fixture id="TrivialCollection">
+    <template>
+      <firebase-collection log></firebase-collection>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="BoundCollection">
+    <template>
+      <section>
+        <!-- TODO(cdata): Add support for elements like `dom-bind` at the root
+             of the template to `test-fixture`, so that we can remove this
+             wrapping `section`. -->
+        <template is="dom-bind">
+          <template is="dom-repeat" items="{{data}}">
+            <div>[[item.value]]</div>
+          </template>
+          <firebase-collection
+            data="{{data}}"
+            log>
+          </firebase-collection>
+        </template>
+      </section>
+    </template>
+  </test-fixture>
+
+  <script>
+
+    suite('firebase-collection', function() {
+      var firebase;
+
+      teardown(function() {
+        if (firebase) {
+          removeFirebase(firebase);
+        }
+      });
+
+      suite('basic usage', function() {
+        var numberOfItems;
+
+        setup(function() {
+          numberOfItems = 3;
+          firebase = fixtureFirebase('TrivialCollection', arrayOfObjects(numberOfItems));
+        });
+
+        test('exposes data as an array', function() {
+          expect(firebase.data).to.be.an('array');
+          expect(firebase.data.length).to.be.equal(numberOfItems);
+        });
+
+        test('receives data from Firebase location', function() {
+          expect(firebase.data[0].value).to.be.a('number');
+        });
+      });
+
+      suite('ordered primitives', function() {
+        var numberOfItems;
+
+        setup(function() {
+          numberOfItems = 5;
+          firebase = fixtureFirebase('TrivialCollection', arrayOfPrimitives(numberOfItems));
+          firebase.orderByValue = true;
+        });
+
+        test('converts primitives into objects with a value key', function() {
+          expect(firebase.data[0]).to.be.an('object');
+        });
+
+        test('orders primitives by value', function() {
+          var lastValue = -Infinity;
+
+          expect(firebase.data.length).to.be.equal(numberOfItems);
+
+          firebase.data.forEach(function(datum) {
+            expect(datum.value).to.not.be.lessThan(lastValue);
+            lastValue = datum.value;
+          });
+        });
+      });
+
+      suite('removing a value locally', function() {
+        var numberOfItems;
+        setup(function() {
+          numberOfItems = 3;
+          firebase = fixtureFirebase('TrivialCollection', arrayOfObjects(numberOfItems));
+        });
+
+        test('works for data-bound changes', function() {
+          firebase.splice('data', 0, 1);
+          expect(firebase.data.length).to.be.equal(numberOfItems - 1);
+        });
+
+        test('can be done with `remove`', function() {
+          var objectToBeRemoved = firebase.data[0];
+          firebase.remove(objectToBeRemoved);
+
+          expect(firebase.data.length).to.be.equal(numberOfItems - 1);
+          expect(firebase.data.indexOf(objectToBeRemoved)).to.be.equal(-1);
+        });
+      });
+
+      suite('adding a value locally', function() {
+        setup(function() {
+          firebase = fixtureFirebase('TrivialCollection');
+        });
+
+        test('works for data-bound changes', function(done) {
+          var intendedValue = randomInt();
+          var index = firebase.push('data', intendedValue) - 1;
+
+          // NOTE(cdata): See polymer/polymer#2491.
+          Polymer.Base.async(function() {
+            expect(firebase.data[index]).to.have.property('value');
+            expect(firebase.data[index].value).to.be.equal(intendedValue);
+            done();
+          }, 1);
+        });
+
+        test('can be done with `add`', function(done) {
+          var object = randomObject();
+          var length = firebase.data.length;
+          var foundObject;
+
+          firebase.add(object);
+
+          // NOTE(cdata): See polymer/polymer#2491.
+          Polymer.Base.async(function() {
+            expect(firebase.data.length).to.be.equal(length + 1);
+
+            firebase.data.forEach(function(datum) {
+              if (datum.value === object.value) {
+                foundObject = datum;
+              }
+            });
+
+            expect(foundObject).to.be.okay;
+            expect(foundObject.value).to.be.equal(object.value);
+            done();
+          }, 1);
+        });
+      });
+
+      suite('a changing child', function() {
+        var numberOfItems;
+        var remoteFirebase;
+
+        setup(function() {
+          numberOfItems = 3;
+          firebase = fixtureFirebase('TrivialCollection', arrayOfObjects(numberOfItems));
+          remoteFirebase = new Firebase(firebase.location);
+        });
+
+        test('updates the child key in place with the new value', function() {
+          var datum = firebase.data[0];
+          var newValue = 99999;
+          var key = Polymer.Collection.get(firebase.data).getKey(datum);
+
+          firebase.set('data.' + key + '.value', newValue);
+
+          expect(firebase.data[0].value).to.be.equal(newValue);
+        });
+      });
+
+      suite('syncing collections', function() {
+        var numberOfItems;
+        var remoteFirebase;
+
+        setup(function() {
+          numberOfItems = 3;
+
+          firebase = fixtureFirebase('TrivialCollection', arrayOfObjects(3));
+          firebase.orderValueType = 'number';
+          firebase.orderByValue = true;
+
+          remoteFirebase = new Firebase(firebase.location);
+        });
+
+        test('sync a new item at the correct index', function() {
+          var firstValue = firebase.data[0];
+          var secondValue = firebase.data[1];
+          var datum = firebase.data[0];
+          var key = Polymer.Collection.get(firebase.data).getKey(datum);
+          var remoteValue;
+
+          remoteFirebase.on('value', function(snapshot) {
+            remoteValue = snapshot.val();
+          });
+
+          expect(remoteValue[0].value).to.be.equal(firebase.data[0].value);
+        });
+      });
+
+      suite('data-bound collection manipulation', function() {
+        var numberOfItems;
+        var elements;
+        var domBind;
+
+        setup(function() {
+          elements = fixture('BoundCollection');
+          domBind = elements.querySelector('[is=dom-bind]');
+          firebase = elements.querySelector('firebase-collection');
+          firebase.location = fixtureLocation(arrayOfObjects(3));
+          numberOfItems = 3;
+        });
+
+        test('splices reflect in Firebase data', function(done) {
+          domBind.splice('data', 0, 1, randomObject());
+          domBind.shift('data');
+          domBind.push.apply(domBind, ['data'].concat(arrayOfObjects(2)));
+
+          // NOTE(cdata): See polymer/polymer#2491.
+          Polymer.Base.async(function() {
+            expect(firebase.data.length).to.be.equal(domBind.data.length);
+
+            firebase.data.forEach(function(datum, index) {
+              expect(domBind.data[index].value).to.be.equal(datum.value);
+            });
+
+            done();
+          }, 1);
+        });
+
+        test('splices reflect in the DOM', function(done) {
+          var divs;
+
+          firebase.push.apply(firebase, ['data'].concat(arrayOfObjects(3)));
+
+          Polymer.Base.async(function() {
+            divs = elements.querySelectorAll('div');
+            expect(divs.length).to.be.equal(firebase.data.length);
+
+            domBind.splice('data', 2, 1, randomObject());
+
+            Polymer.Base.async(function() {
+              divs = elements.querySelectorAll('div');
+              expect(divs.length).to.be.equal(firebase.data.length);
+
+              firebase.data.forEach(function(datum, index) {
+                var divValue = parseInt(divs[index].textContent, 10);
+                expect(datum.value).to.be.equal(divValue);
+              });
+
+              done();
+            }, 1);
+          }, 1);
+        });
+      });
+    });
+
+  </script>
+
+</body>
+</html>
