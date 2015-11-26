@@ -250,7 +250,11 @@ Mixins
 					},
 					_sortProperty: {
 						type: String
-					}
+					},
+					_selectedToolbarVisible: Boolean,
+					_singleSelectToolbarVisible: Boolean,
+					_multiSelectToolbarVisible: Boolean,
+					_numberselectedIds: Number
 				},
 				ready: function(){
 					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
@@ -280,7 +284,7 @@ Mixins
 							var property = path.shift();
 							this.debounce('save'+rowKey+property, function(){
 								var value = ev.detail.value;
-								var data = this._datatable.get("data." + rowKey);
+								var data = this._datatable.get(['data', rowKey]);
 								var id = data[this._datatable.idProperty];
 								// setting properties in the `set` functions causes trouble, so it's more sensible for that
 								// to simply have no effect rather than make the entire element break, especially
@@ -301,9 +305,9 @@ Mixins
 											throw new Error('failure');
 										}
 									} else {
-										//alert();
-										var index = this._datatable._getIndexById('__new__');
-										this._datatable.set('data.' + index + '.' + this._datatable.idProperty, successOrId);
+										console.warn('re-implement')
+										//var index = this._datatable._getIndexById('__new__');
+										//this._datatable.set(['data', index, this._datatable.idProperty], successOrId);
 									}
 									this._datatable.set('progress', false);
 								}.bind(this), function (err) {
@@ -339,7 +343,7 @@ Mixins
 						var processItems = function(items){
 
 							this._datatable.deselectAll(false);
-							this._datatable.splice("data", 0, this._datatable.data.length);
+							this._datatable.splice('data', 0, this._datatable.data.length);
 
 							var args = ['data'].concat(items);
 							this._datatable.push.apply(this._datatable,args);

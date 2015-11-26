@@ -269,15 +269,11 @@ Styling
 					this.parentNodeRef.splice('_columns', this.parentNodeRef._columns.indexOf(this), 1);
 				},
 				createCellInstance: function(model, notificationKey){
-					if(typeof model[this.property] == "undefined" && typeof this.default !== "undefined"){
+					if(typeof model[this.property] == 'undefined' && typeof this.default !== 'undefined'){
 						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
 					}else{
 						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
 					}
-
-					instance._getProp = function(obj, prop){
-						return obj[prop];
-					};
 					return instance;
 				},
 				_formatValue: function(data){
@@ -335,7 +331,7 @@ Styling
 					var path = prop.split('.');
 					var item = path.shift();
 					if(item == 'value'){
-						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].join('.');
+						var parentPath = ['data', templateInstance.get('_dataKey'), this.property];
 						value = this._cast(value);
 						//console.log('_forwardInstanceProp',arguments);
 						//console.log('set', parentPath, 'to', value);
@@ -348,14 +344,14 @@ Styling
 					var path = prop.split('.');
 					var item = path.shift();
 					if(item == 'value'){
-						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path).join('.');
+						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path);
 						if(path.length == 0){
 							value = this._cast(value);
 						}
 						//console.log(parentPath, path.join('.'), value)
 						//console.log('_forwardInstancePath',arguments);
 					}else if(item == 'item'){
-						var parentPath = ['data', templateInstance.get('_dataKey')].concat(path).join('.');
+						var parentPath = ['data', templateInstance.get('_dataKey')].concat(path);
 						//console.log(parentPath, value);
 						//console.log('_forwardInstancePath',arguments);
 					}
@@ -372,9 +368,6 @@ Styling
 				},
 				_getArrayItemLabel: function(column, value){
 					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
-				},
-				_getProp: function(obj, prop){
-					return obj[prop];
 				},
 				_getValidRegexForInput: function(type){
 					if(type.toLowerCase() == 'string'){

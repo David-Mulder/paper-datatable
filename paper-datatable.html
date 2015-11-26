@@ -496,6 +496,19 @@ Mixins
 					},
 					_cellInstances: {
 						type: Object
+					},
+					/**
+					 * Whether to show the progress bar. As the progress bar is often not used in standalone
+					 * `<paper-datatable>'s the `<paper-progress>` element isn't included by default and needs to be
+					 * manually imported.
+					 *
+					 * @attribute progress
+					 * @type Boolean
+					 * @default false
+					 */
+					progress: {
+						type: Boolean,
+						value: false
 					}
 				},
 
@@ -539,7 +552,7 @@ Mixins
 						for(var rowI=0; rowI<rows.length; rowI++){
 							var row = rows[rowI];
 							//find the data that belongs with the row
-							var rowData = this.get('data.'+row.dataset.key);
+							var rowData = this.get(['data',row.dataset.key]);
 							//console.log(row.dataset.key, row, rowI, rows.length, rowData);
 
 							//get all cells in the row
@@ -605,7 +618,7 @@ Mixins
 						var row = Polymer.dom(this.root).querySelector('tbody tr[data-key=\''+rowKey+'\']');
 
 						if(!row){
-							console.error('critical failture');
+							console.error('critical failure');
 							console.log('key', rowKey);
 							return false;
 						}
@@ -619,7 +632,7 @@ Mixins
 								if(cell.instance){
 									var localPath = path.slice();
 									localPath.shift();
-									var instanceValuePath = ["value"].concat(localPath).join(".");
+									var instanceValuePath = ['value'].concat(localPath);
 									//console.info(cell, "prop column value path", instanceValuePath, "to", change.value);
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}
@@ -628,7 +641,7 @@ Mixins
 								}
 							}
 							if(cell.instance){
-								var instancePath = ["item", path.join(".")].join(".");
+								var instancePath = ['item'].concat(path);
 								cell.instance.notifyPath(instancePath, change.value, true);
 							}
 
@@ -902,7 +915,7 @@ Mixins
 					if(typeof key === 'object'){
 						return key.map(this._getByKey.bind(this));
 					}
-					return this.get('data.'+key);
+					return this.get(['data', key]);
 				},
 
 				_getSelectedItems: function(){
@@ -929,11 +942,6 @@ Mixins
 
 				_customRowStyle: function(rowKey){
 					return this.customRowStyle(this._getByKey(rowKey));
-				},
-
-				_getProp: function(obj, prop){
-					console.log(obj);
-					return obj[prop];
 				},
 
 				_linkSelectedItem: function(selectedKey){
