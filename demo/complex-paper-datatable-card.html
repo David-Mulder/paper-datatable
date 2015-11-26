@@ -126,12 +126,14 @@
 								});
 							}
 							resolve(users.slice((page-1)*pageSize, page*pageSize).map((item) => item.id));
-						}, Math.random() * 500);
+						}, Math.random() * 100);
 					});
 				},
 				getByIds: function(ids){
 					return new Promise(function(resolve, reject){
-						resolve(users.filter((user) => ids.indexOf(user.id) > -1 ));
+						setTimeout(function(){
+							resolve(users.filter((user) => ids.indexOf(user.id) > -1 ));
+						}, Math.random() * 500);
 					});
 				},
 				set: function(item, property, value){
