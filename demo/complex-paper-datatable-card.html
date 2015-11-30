@@ -93,7 +93,7 @@
 				</paper-datatable-card>
 
 				<div style="padding:20px; max-width:500px; margin:auto;text-align:justify;">
-					Note: This demo isn't using a 'real' database, but instead queries a local array. Sorting, pagination,
+					Note: This demo isn't using a 'real' database, but instead queries a localStorage array. Sorting, pagination,
 					deleting, etc. are all implemented however on this 'fake' database (including <code>setTimeout</code>'s
 					to emulate AJAX requests) and it should provide a solid starting point when you implement an AJAX
 					based datatable. Also do please check out the edit dialog (by double clicking or selecting a row and
@@ -101,6 +101,15 @@
 				</div>
 			</demo-menu>
 		</template>
+
+		<script>
+			if(localStorage.getItem('users') !== null){
+				users = JSON.parse(localStorage.users);
+			}
+			var saveToLocalStorage = function(){
+				localStorage.users = JSON.stringify(users);
+			}
+		</script>
 
 		<script>
 			var app = document.querySelector('#app');
@@ -147,8 +156,9 @@
 								return thisItem.id == item.id;
 							});
 							myItem[property] = value;
+							saveToLocalStorage();
 							resolve(true);
-						}, Math.random() * 500);
+						}, Math.random() * 100);
 					});
 
 				},
