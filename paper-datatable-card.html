@@ -396,12 +396,10 @@ Mixins
 					this.debounce("visibleData", function(){
 						this._disableSave = true;
 
-						var emptyDatatable = function(){
+						var processItems = function(items){
+
 							this._datatable.deselectAll(false);
 							this._datatable.splice('data', 0, this._datatable.data.length);
-						}.bind(this);
-
-						var processItems = function(items){
 
 							var args = ['data'].concat(items);
 							this._datatable.push.apply(this._datatable,args);
@@ -428,37 +426,45 @@ Mixins
 
 						if('queryForIds' in this.dataSource){
 							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
+								var items = [];
+								var i = 0;
+								var done = function(){
+									i++;
+									console.log(i, items.length, items);
+									if(i == 2){
+										var sortedItems = ids.map((id) => items.find((item) => item[this.idProperty] == id));
+										processItems(sortedItems);
+									}
+								}.bind(this);
+
 								var idsInCache = ids.filter((id) => this._cache.has(id));
 								if(idsInCache.length){
-									var items = [];
+									var cacheItems = [];
 									idsInCache.forEach(function(id){
-										items.push(this._cache.get(id));
+										cacheItems.push(this._cache.get(id));
 									}.bind(this));
-
-									emptyDatatable();
-									processItems(items);
+									items = items.concat(cacheItems);
+									done();
+								}else{
+									done();
 								}
 
 								var idsNotInCache = ids.filter((id) => !this._cache.has(id));
 								if(idsNotInCache.length){
-									this.dataSource.getByIds(idsNotInCache).then(function(items){
-										if(idsInCache.length == 0){
-											emptyDatatable();
-										}
-										processItems(items);
+									this.dataSource.getByIds(idsNotInCache).then(function(newItems){
+										items = items.concat(newItems);
+										done();
 									});
+								}else{
+									done();
 								}
 
-								if(idsInCache.length === 0 && idsNotInCache.length === 0){
-									emptyDatatable();
-									processItems([]);
-								}
+
 
 							}.bind(this));
 
 						}else{
 							this.dataSource.get.apply(this.dataSource, queryArgs).then(function(items){
-								emptyDatatable();
 								processItems(items);
 							});
 						}
