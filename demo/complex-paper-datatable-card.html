@@ -125,6 +125,7 @@
 										a = b;
 										b = c;
 									}
+
 									if (sort.property == 'name') {
 										a = a[sort.property].last + '    ' + a[sort.property].first;
 										b = b[sort.property].last + '    ' + b[sort.property].first;
@@ -132,6 +133,10 @@
 										a = a[sort.property];
 										b = b[sort.property];
 									}
+
+									a = typeof a === 'string' ? a.toLowerCase() : a;
+									b = typeof b === 'string' ? b.toLowerCase() : b;
+
 									if (a > b) return 1;
 									if (a < b) return -1;
 									return 0;
