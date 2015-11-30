@@ -311,6 +311,7 @@ Mixins
 					this._datatable.addEventListener("selection-changed", this._setSelectedIds.bind(this));
 					this._datatable.addEventListener("selection-changed", this._setSelectedToolbarVisible.bind(this));
 					this._datatable.addEventListener("toggle-all", this._toggleAll.bind(this));
+					this._datatable._setPartialSelection = function(){};
 					this.set('selectedIds', []);
 					this.set('_sortProperty', this.idProperty);
 				},
@@ -430,7 +431,6 @@ Mixins
 								var i = 0;
 								var done = function(){
 									i++;
-									console.log(i, items.length, items);
 									if(i == 2){
 										var sortedItems = ids.map((id) => items.find((item) => item[this.idProperty] == id));
 										processItems(sortedItems);
@@ -529,6 +529,7 @@ Mixins
 					this._singleSelectToolbarVisible = this.selectedIds.length == 1;
 					this._multiSelectToolbarVisible = this.selectedIds.length > 1;
 					this._numberselectedIds = this.selectedIds.length;
+					this._datatable._partialSelection = this.selectedIds.length > 0;
 				},
 				_setSelectedIds: function(ev){
 					if(ev.detail.selected){

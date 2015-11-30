@@ -235,7 +235,7 @@
 							<th>
 								<template is="dom-if" if="{{multiSelection}}">
 									<div class="partialSelectionContainer" style="">
-										<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
+										<div class="partialSelection" data-checked$="[[_partialSelection]]"></div>
 										<paper-checkbox on-tap="toggleAll" checked="[[_allChecked(selectedKeys.splices, data.*)]]" style="position:absolute;left:0px;top:0px;"></paper-checkbox>
 									</div>
 								</template>
@@ -545,6 +545,9 @@ Mixins
 						type: String,
 						value: 'overflow',
 						reflectToAttribute: true
+					},
+					_partialSelection: {
+						type: Boolean
 					}
 				},
 
@@ -557,7 +560,8 @@ Mixins
 					'_setRowKeys(data.splices)',
 					'_notifyPathOnInstances(data.*)',
 					'_linkSelectedItem(selectedKey)',
-					'_linkSelectedItems(selectedKeys.splices)'
+					'_linkSelectedItems(selectedKeys.splices)',
+					'_setPartialSelection(selectedKeys.splices, data.*)'
 				],
 
 				listeners: {
@@ -1004,6 +1008,10 @@ Mixins
 
 				_columnsRendered: function(){
 					this._renderTooltipsIfOverflow();
+				},
+
+				_setPartialSelection: function(){
+					this.set('_partialSelection', this._someChecked());
 				},
 
 				_renderTooltipsIfOverflow: function(){
