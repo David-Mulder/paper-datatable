@@ -87,7 +87,10 @@ Styling
 					 * @attribute tooltip
 					 * @type String
 					 */
-					tooltip: String,
+					tooltip: {
+						type: String,
+						notify: true
+					},
 					/**
 					 * Whether to show sorting UI on the column. Sorting only works automagically
 					 * on simple data types.
@@ -323,8 +326,12 @@ Styling
 					return 0;
 				},
 				_cast: function(value){
-					if(typeof value === 'undefined' && this.default){
-						value = JSON.parse(JSON.stringify(this.default));
+					if(typeof value === 'undefined'){
+						if(this.default){
+							value = JSON.parse(JSON.stringify(this.default));
+						}else{
+							value = '';
+						}
 					}
 
 					if(this.type.toLowerCase() == 'string'){
@@ -388,8 +395,13 @@ Styling
 					return this;
 				},*/
 				_registerEvilFunctions: function(){
-					this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
-					this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
+					if(typeof this.dataHost === 'undefined') {
+						console.warn('A hack is used to support some functionality of the `[editable]` and [`array-display-prop`] attribute. ' +
+								'This however requires the element to be located in a polymer element or `dom-bind`.')
+					}else{
+						this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
+						this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
+					}
 				},
 				_getArrayItemLabel: function(column, value){
 					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
