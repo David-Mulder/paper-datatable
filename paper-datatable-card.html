@@ -381,6 +381,7 @@ Mixins
 				_handleSort: function(ev){
 					if(this.dataSource) {
 						ev.preventDefault();
+						this.firstPage();
 						var sortedColumn = Polymer.dom(this).querySelector('paper-datatable-column[sorted]');
 						if(sortedColumn){
 							this._sortProperty = sortedColumn.property;
