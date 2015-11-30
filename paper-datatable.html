@@ -17,8 +17,18 @@
 				@apply(--paper-font-common-base);
 				position: relative;
 			}
-			#container{
+			:host([resize-behavior='overflow']) #container{
 				overflow: auto;
+			}
+			:host([resize-behavior='fixed']) table{
+				table-layout: fixed;
+			}
+			:host([resize-behavior='fixed']) th{
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+			:host([resize-behavior='fixed']) td{
+				overflow: hidden;
 			}
 			table{
 				border-spacing: 0px;
@@ -125,7 +135,8 @@
 			tr td:first-child, tr th:first-child{
 				padding-left: 24px;
 				padding-right: 0px;
-				width:20px;
+				width:56px;
+				min-width:56px;
 			}
 			tr td:nth-of-type(2), tr th:nth-of-type(2){
 				padding-left: 10px;
@@ -221,7 +232,7 @@
 				<thead>
 					<tr>
 						<template is="dom-if" if="{{selectable}}">
-							<th style="min-width:30px;">
+							<th>
 								<template is="dom-if" if="{{multiSelection}}">
 									<div class="partialSelectionContainer" style="">
 										<div class="partialSelection" data-checked$="[[_someChecked(selectedKeys.splices, data.*)]]"></div>
@@ -230,7 +241,7 @@
 								</template>
 							</th>
 						</template>
-						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column">
+						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_columnsRendered">
 							<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
 								<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
 								<span id="title">{{column.header}}</span>
@@ -522,8 +533,24 @@ Mixins
 					progress: {
 						type: Boolean,
 						value: false
+					},
+					/**
+					 * Overflow or fixed
+					 *
+					 * @attribute resizeBehavior
+					 * @type String
+					 * @default 'overflow'
+					 */
+					resizeBehavior: {
+						type: String,
+						value: 'overflow',
+						reflectToAttribute: true
 					}
 				},
+
+				behaviors: [
+					Polymer.IronResizableBehavior
+				],
 
 				observers: [
 					/*'restructureData(data.*, _columns.splices)',*/
@@ -534,7 +561,8 @@ Mixins
 				],
 
 				listeners: {
-					'container.scroll': '_triggerDialogResize'
+					'container.scroll': '_triggerDialogResize',
+					'iron-resize': '_renderTooltipsIfOverflow'
 				},
 
 				_setRowKeys: function(){
@@ -545,10 +573,6 @@ Mixins
 					}.bind(this));
 					this.set("_rowKeys", rowKeys);
 					this._internalSort();
-				},
-
-				_isEqual: function(a, b){
-					return a == b;
 				},
 
 				ready: function() {
@@ -972,6 +996,35 @@ Mixins
 
 				_noItemsVisible: function(){
 					return this._rowKeys.length === 0;
+				},
+
+				_isEqual: function(a, b){
+					return a == b;
+				},
+
+				_columnsRendered: function(){
+					this._renderTooltipsIfOverflow();
+				},
+
+				_renderTooltipsIfOverflow: function(){
+					if(this.resizeBehavior == 'fixed'){
+						//todo: this function is terribly inefficient as it's triggered once for every column yet loops all
+						// all columns up to the currently initialized one during initialization.
+						// see: console.log(this._columns.length);
+
+						var ths = Polymer.dom(this.root).querySelectorAll('th');
+						ths.forEach((th) => {
+							if(th.dataColumn){
+								console.dir(th);
+								var column = th.dataColumn;
+								if(th.scrollWidth > th.offsetWidth){
+									column.set('tooltip', column.header);
+								}else{
+									column.set('tooltip', '');
+								}
+							}
+						});
+					}
 				}
 
 			});
