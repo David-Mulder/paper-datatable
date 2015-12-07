@@ -1021,7 +1021,7 @@ Mixins
 						// see: console.log(this._columns.length);
 
 						var ths = Polymer.dom(this.root).querySelectorAll('th');
-						ths.forEach((th) => {
+						ths.forEach(function(th) {
 							if(th.dataColumn){
 								console.dir(th);
 								var column = th.dataColumn;
