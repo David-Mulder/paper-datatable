@@ -83,6 +83,11 @@
 						<paper-datatable-column header="Location" property="location" type="Object" tooltip="Some title" style="min-width: 300px" dialog format-value="{{formatLatLng}}" edit-icon>
 							<template>
 								<span>
+`									<!--
+									<google-map latitude="0" longitude="7" style="height:255px;margin:20px 0px;" zoom="0">
+										<google-map-marker latitude="{{value.lat}}" longitude="{{value.lng}}" draggable="true"></google-map-marker>
+									</google-map>
+									-->
 									<google-map latitude="{{value.lat}}" longitude="{{value.lng}}" style="height:300px;margin:20px 0px;" zoom="3">
 										<google-map-marker latitude="{{value.lat}}" longitude="{{value.lng}}" draggable="true"></google-map-marker>
 									</google-map>

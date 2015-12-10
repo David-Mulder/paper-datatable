@@ -548,6 +548,21 @@ Mixins
 					},
 					_partialSelection: {
 						type: Boolean
+					},
+					/**
+					 * The filter attribute can be used to specify a filter which will be applied to the `data`.
+					 * Note that selections should fully ignore filtering, and a filter only affects which data is
+					 * visible.
+					 *
+					 * The function takes three arguments: `item`, `key` and `items` per the JS filter function.
+					 *
+					 * For a demo please see [here](demo/filter.html).
+					 *
+					 * @attribute filter
+					 * @type Function
+					 */
+					filter: {
+						type: Function
 					}
 				},
 
@@ -569,19 +584,31 @@ Mixins
 					'iron-resize': '_renderTooltipsIfOverflow'
 				},
 
+				ready: function() {
+					this.set('_columns', []);
+					this.set('selectedKeys', []);
+				},
+
 				_setRowKeys: function(){
 					var rowKeys = [];
 					this._dataKeyCollection = Polymer.Collection.get(this.data);
 					this.data.forEach(function(row){
-						rowKeys.push(this._dataKeyCollection.getKey(row));
+						var key = this._dataKeyCollection.getKey(row);
+						if('filter' in this){
+							if(this.filter(row, key, this.data)){
+								rowKeys.push(key);
+							}
+						}else{
+							rowKeys.push(key);
+						}
+
 					}.bind(this));
 					this.set("_rowKeys", rowKeys);
-					this._internalSort();
+					this._internalSort(this.get('_currentlySortedColumn'));
 				},
 
-				ready: function() {
-					this.set('_columns', []);
-					this.set('selectedKeys', []);
+				reload: function(){
+					this._setRowKeys();
 				},
 
 				_restructureData: function(){
@@ -850,6 +877,7 @@ Mixins
 							property: column.property,
 							direction: column.sortDirection
 						}, column: column}, {cancelable: true});
+						this.set('_currentlySortedColumn', column);
 
 						if(triggeredEvent.defaultPrevented){
 							this._internalSortEnabled = false;
