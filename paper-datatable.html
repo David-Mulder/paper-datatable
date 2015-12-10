@@ -99,7 +99,7 @@
 			tr td.bound-cell[data-edit-icon]{
 				padding-right: 10px;
 			}
-			th:not(:first-of-type){
+			th.column{
 				@apply(--paper-datatable-column-header);
 			}
 			tr th span{
@@ -242,7 +242,7 @@
 							</th>
 						</template>
 						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_columnsRendered">
-							<th data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+							<th class="column" data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
 								<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
 								<span id="title">{{column.header}}</span>
 								<template is="dom-if" if="[[column.tooltip]]">
