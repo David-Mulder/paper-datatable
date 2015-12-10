@@ -628,8 +628,8 @@ Mixins
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
 							for(var cellI=0;cellI<cells.length;cellI++){
 								var cell = cells[cellI];
-								if(cell.hasAttribute('data-empty') || cell.getAttribute('data-row-key') !== row.dataset.key){
-									cell.removeAttribute('data-empty');
+								//if(cell.hasAttribute('data-empty') || cell.getAttribute('data-row-key') !== row.dataset.key){
+									//cell.removeAttribute('data-empty');
 
 									var prop = this._columns[cellI].property;
 									var data = rowData[prop];
@@ -655,7 +655,7 @@ Mixins
 										cell.querySelector('span').innerHTML = this._columns[cellI]._formatValue(data)
 										//cell.textContent = data;
 									}
-								}
+								//}
 							}
 						}
 					});
