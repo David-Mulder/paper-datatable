@@ -55,6 +55,11 @@
 
 				<paper-datatable-card id="datatableCard" header="Users" page-size="10" data-source="{{data}}" id-property="id" selected-ids="{{selectedIds}}">
 					<div toolbar-main>
+						<paper-input value="{{searchTerm}}" on-input="retrieveResults" label="Search..." style="display:inline-block" no-label-float>
+							<div prefix>
+								<iron-icon icon="search"></iron-icon>
+							</div>
+						</paper-input>
 						<paper-icon-button icon="cached" on-tap="retrieveResults"></paper-icon-button>
 					</div>
 					<div toolbar-select>
@@ -83,7 +88,7 @@
 						<paper-datatable-column header="Location" property="location" type="Object" tooltip="Some title" style="min-width: 300px" dialog format-value="{{formatLatLng}}" edit-icon>
 							<template>
 								<span>
-`									<!--
+									<!--
 									<google-map latitude="0" longitude="7" style="height:255px;margin:20px 0px;" zoom="0">
 										<google-map-marker latitude="{{value.lat}}" longitude="{{value.lng}}" draggable="true"></google-map-marker>
 									</google-map>
@@ -124,7 +129,18 @@
 					return new Promise(function(resolve, reject){
 						setTimeout(function(){
 							if(sort) {
-								users.sort(function (a, b) {
+								if(app.searchTerm.length > 0){
+									searchedUsers = users.filter(function(user){
+										if(user.name.first.toLowerCase().indexOf(app.searchTerm.toLowerCase()) > -1) return true;
+										if(user.name.last.toLowerCase().indexOf(app.searchTerm.toLowerCase()) > -1) return true;
+										if(user.about.toLowerCase().indexOf(app.searchTerm.toLowerCase()) > -1) return true;
+									});
+								}else{
+									searchedUsers = users;
+								}
+								app.set('data.length', searchedUsers.length);
+
+								searchedUsers.sort(function (a, b) {
 									if (sort.direction == 'desc') {
 										var c = a;
 										a = b;
@@ -147,7 +163,7 @@
 									return 0;
 								});
 							}
-							resolve(users.slice((page-1)*pageSize, page*pageSize).map((item) => item.id));
+							resolve(searchedUsers.slice((page-1)*pageSize, page*pageSize).map((item) => item.id));
 						}, Math.random() * 100);
 					});
 				},
