@@ -17,6 +17,7 @@
 		<link rel="import" href="../../paper-button/paper-button.html">
 		<link rel="import" href="../../paper-dialog-scrollable/paper-dialog-scrollable.html">
 		<script src="data/userData.js"></script>
+		<script src="data/fakeDB.js"></script>
 	</head>
 	<body>
 
@@ -85,7 +86,7 @@
 								<paper-textarea value="{{value}}" no-label-float></paper-textarea>
 							</template>
 						</paper-datatable-column>
-						<paper-datatable-column header="Location" property="location" type="Object" tooltip="Some title" style="min-width: 300px" dialog format-value="{{formatLatLng}}" edit-icon>
+						<paper-datatable-column header="Location" property="location" type="Object" tooltip="Some title" style="min-width: 300px" cell-style="font-family:monospace;" dialog format-value="{{formatLatLng}}" edit-icon>
 							<template>
 								<span>
 									<!--
@@ -106,89 +107,29 @@
 					Note: This demo isn't using a 'real' database, but instead queries a localStorage array. Sorting, pagination,
 					deleting, etc. are all implemented however on this 'fake' database (including <code>setTimeout</code>'s
 					to emulate AJAX requests) and it should provide a solid starting point when you implement an AJAX
-					based datatable. Also do please check out the edit dialog (by double clicking or selecting a row and
-					hitting the edit icon in the toolbar).
+					based datatable. Also do please check out the edit dialog (by <strong>double clicking or selecting a row and
+					hitting the edit icon in the toolbar</strong>).
 				</div>
 			</demo-menu>
 		</template>
-
-		<script>
-			if(localStorage.getItem('users') !== null){
-				users = JSON.parse(localStorage.users);
-			}
-			var saveToLocalStorage = function(){
-				localStorage.users = JSON.stringify(users);
-			}
-		</script>
 
 		<script>
 			var app = document.querySelector('#app');
 
 			app.data = {
 				queryForIds: function(sort, page, pageSize){
-					return new Promise(function(resolve, reject){
-						setTimeout(function(){
-							if(sort) {
-								if(app.searchTerm.length > 0){
-									searchedUsers = users.filter(function(user){
-										if(user.name.first.toLowerCase().indexOf(app.searchTerm.toLowerCase()) > -1) return true;
-										if(user.name.last.toLowerCase().indexOf(app.searchTerm.toLowerCase()) > -1) return true;
-										if(user.about.toLowerCase().indexOf(app.searchTerm.toLowerCase()) > -1) return true;
-									});
-								}else{
-									searchedUsers = users;
-								}
-								app.set('data.length', searchedUsers.length);
-
-								searchedUsers.sort(function (a, b) {
-									if (sort.direction == 'desc') {
-										var c = a;
-										a = b;
-										b = c;
-									}
-
-									if (sort.property == 'name') {
-										a = a[sort.property].last + '    ' + a[sort.property].first;
-										b = b[sort.property].last + '    ' + b[sort.property].first;
-									} else {
-										a = a[sort.property];
-										b = b[sort.property];
-									}
-
-									a = typeof a === 'string' ? a.toLowerCase() : a;
-									b = typeof b === 'string' ? b.toLowerCase() : b;
-
-									if (a > b) return 1;
-									if (a < b) return -1;
-									return 0;
-								});
-							}
-							resolve(searchedUsers.slice((page-1)*pageSize, page*pageSize).map((item) => item.id));
-						}, Math.random() * 100);
+					db.count(app.searchTerm, sort, (page-1)*pageSize, page*pageSize).then(function(count){
+						app.set('data.length', count);
 					});
+					return db.select('id', app.searchTerm, sort, (page-1)*pageSize, page*pageSize);
 				},
 				getByIds: function(ids){
-					return new Promise(function(resolve, reject){
-						setTimeout(function(){
-							resolve(users.filter((user) => ids.indexOf(user.id) > -1 ));
-						}, Math.random() * 500);
-					});
+					return db.select('*', ids);
 				},
 				set: function(item, property, value){
-					return new Promise(function(resolve, reject){
-						setTimeout(function() {
-							console.info("a save was triggered", [item, property, value]);
-							var myItem = users.find(function (thisItem) {
-								return thisItem.id == item.id;
-							});
-							myItem[property] = value;
-							saveToLocalStorage();
-							resolve(true);
-						}, Math.random() * 100);
-					});
-
+					return db.update(item.id, property, value);
 				},
-				length:users.length
+				length:0
 			};
 
 			app.clip = function(value){
@@ -201,7 +142,9 @@
 			};
 
 			app.formatLatLng = function(value){
-				return value.lat.toFixed(7) + ', ' + value.lng.toFixed(7);
+				var lat = (value.lat > 0 ? '&nbsp;': '') + (value.lat < 10 && value.lat > -10 ? '&nbsp;': '') + value.lat.toFixed(6);
+				var lng = (value.lng > 0 ? '&nbsp;': '') + (value.lng < 10 && value.lng > -10 ? '&nbsp;': '') + (value.lng < 100 && value.lng > -100 ? '&nbsp;': '') + value.lng.toFixed(6);
+				return lat + ' | ' + lng;
 			};
 
 			app.deleteSelected = function(){
