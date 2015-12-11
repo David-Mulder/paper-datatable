@@ -433,12 +433,18 @@ Mixins
 								var done = function(){
 									i++;
 									if(i == 2){
-										var sortedItems = ids.map((id) => items.find((item) => item[this.idProperty] == id));
+										var sortedItems = ids.map(function (id) {
+											return items.find(function (item) {
+												return item[undefined.idProperty] == id;
+											});
+										});
 										processItems(sortedItems);
 									}
 								}.bind(this);
 
-								var idsInCache = ids.filter((id) => this._cache.has(id));
+								var idsInCache = ids.filter(function (id) {
+									return undefined._cache.has(id);
+								});
 								if(idsInCache.length){
 									var cacheItems = [];
 									idsInCache.forEach(function(id){
@@ -450,7 +456,9 @@ Mixins
 									done();
 								}
 
-								var idsNotInCache = ids.filter((id) => !this._cache.has(id));
+								var idsNotInCache = ids.filter(function (id) {
+									return !undefined._cache.has(id);
+								});
 								if(idsNotInCache.length){
 									this.dataSource.getByIds(idsNotInCache).then(function(newItems){
 										items = items.concat(newItems);

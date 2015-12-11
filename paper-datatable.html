@@ -1049,13 +1049,13 @@ Mixins
 						// see: console.log(this._columns.length);
 
 						var ths = Polymer.dom(this.root).querySelectorAll('th');
-						ths.forEach((th) => {
-							if(th.dataColumn){
+						ths.forEach(function (th) {
+							if (th.dataColumn) {
 								console.dir(th);
 								var column = th.dataColumn;
-								if(th.scrollWidth > th.offsetWidth){
+								if (th.scrollWidth > th.offsetWidth) {
 									column.set('tooltip', column.header);
-								}else{
+								} else {
 									column.set('tooltip', '');
 								}
 							}
