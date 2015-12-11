@@ -233,6 +233,10 @@ Styling
 					 */
 					editIcon: {
 						type: Boolean
+					},
+					inactive: {
+						type: Boolean,
+						observer: '_requeryColumnList'
 					}
 				},
 				behaviors: [
@@ -269,7 +273,9 @@ Styling
 
 
 				},
+
 				attached: function() {
+					return false;
 					Polymer.dom(this).parentNode.push('_columns', this);
 					this.parentNodeRef = Polymer.dom(this).parentNode;
 					this._registerEvilFunctions();
@@ -277,9 +283,7 @@ Styling
 						this.beenAttached.ready();
 					});
 				},
-				detached: function() {
-					this.parentNodeRef.splice('_columns', this.parentNodeRef._columns.indexOf(this), 1);
-				},
+
 				createCellInstance: function(model, notificationKey){
 					if(typeof model[this.property] == 'undefined' && typeof this.default !== 'undefined'){
 						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
@@ -288,6 +292,7 @@ Styling
 					}
 					return instance;
 				},
+
 				_formatValue: function(data){
 					data = this._cast(data);
 					if('formatValue' in this){
@@ -313,6 +318,7 @@ Styling
 						return '?';
 					}
 				},
+
 				_sort: function(valA, valB){
 					valA = this._cast(valA);
 					valB = this._cast(valB);
@@ -325,6 +331,7 @@ Styling
 					if(valA > valB) return 1;
 					return 0;
 				},
+
 				_cast: function(value){
 					if(typeof value === 'undefined'){
 						if(this.default){
@@ -346,6 +353,7 @@ Styling
 						return value;
 					}
 				},
+
 				_sortChanged: function(){
 					if(this.sorted){
 						this.beenAttached.whenReady(function(){
@@ -353,12 +361,14 @@ Styling
 						}.bind(this));
 					}
 				},
+
 				_forwardParentProp: function(prop, value){
 					console.warn('_forwardParentProp',arguments);
 				},
 				_forwardParentPath: function(prop, value){
 					console.warn('_forwardParentPath',arguments);
 				},
+
 				_forwardInstanceProp: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
@@ -372,6 +382,7 @@ Styling
 						console.warn('_forwardInstanceProp',arguments);
 					}
 				},
+
 				_forwardInstancePath: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
@@ -389,6 +400,13 @@ Styling
 					}
 					//console.log('set', parentPath, 'to', value);
 					this.parentNodeRef.set(parentPath, value);
+				},
+				_requeryColumnList: function(){
+					//only trigger this if ready, anything before that point will be handled automatically during
+					// initial initialization.
+					if(this.beenAttached.state.ready){
+						this.parentNodeRef._queryAndSetColumns();
+					}
 				},
 				/*
 				_getRootDataHost: function(){

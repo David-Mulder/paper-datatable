@@ -225,7 +225,7 @@
 				transform: scale(1) rotate(0deg);
 			}
 		</style>
-		<content select="paper-datatable-column"></content>
+		<!--<content select="paper-datatable-column"></content>-->
 		<paper-datatable-edit-dialog id="dialog"></paper-datatable-edit-dialog>
 		<div id="container">
 			<table>
@@ -277,8 +277,8 @@
 										<!-- </template> -->
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
 											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
@@ -297,8 +297,8 @@
 										<!-- </template> -->
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
 											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
@@ -587,6 +587,25 @@ Mixins
 				ready: function() {
 					this.set('_columns', []);
 					this.set('selectedKeys', []);
+					this._observer = Polymer.dom(this).observeNodes(function(info) {
+						this._queryAndSetColumns();
+						//this.processNewNodes(info.addedNodes);
+						//this.processRemovedNodes(info.removedNodes);
+					});
+				},
+
+				_queryAndSetColumns: function(){
+					var columns = this.queryAllEffectiveChildren('paper-datatable-column');
+					columns.forEach((column) => {
+						if(!column.beenAttached.state.ready){
+							console.log('attaching', column);
+							column.parentNodeRef = this;
+							this.async(function(){
+								column.beenAttached.ready();
+							});
+						}
+					});
+					this.set('_columns', columns.filter((column) => !column.inactive));
 				},
 
 				_setRowKeys: function(){
@@ -616,34 +635,37 @@ Mixins
 					this.debounce('restructure data', function(){
 
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
+						var columnCollection = Polymer.Collection.get(this._columns);
 
 						// loop through the rows
 						for(var rowI=0; rowI<rows.length; rowI++){
 							var row = rows[rowI];
 							//find the data that belongs with the row
 							var rowData = this.get(['data',row.dataset.key]);
-							//console.log(row.dataset.key, row, rowI, rows.length, rowData);
 
-							//get all cells in the row
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
-							for(var cellI=0;cellI<cells.length;cellI++){
-								var cell = cells[cellI];
-								if(cell.hasAttribute('data-empty') || cell.getAttribute('data-row-key') !== row.dataset.key){
+
+							cells.forEach((cell) => {
+								var isEmpty = cell.hasAttribute('data-empty');
+								var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
+								var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
+								if(isEmpty || isWrongRow || isWrongColumn){
 									cell.removeAttribute('data-empty');
-
-									var prop = this._columns[cellI].property;
+									var prop = cell.dataColumn.property;
 									var data = rowData[prop];
-									cell.setAttribute('data-row-key', row.dataset.key);
 
-									if(this._columns[cellI].cellStyle.length > 0){
-										cell.setAttribute('style', this._columns[cellI].cellStyle);
+									cell.setAttribute('data-row-key', row.dataset.key);
+									cell.dataBoundClumn = cell.dataColumn;
+
+									cell.style['text-align'] = cell.dataColumn.align;
+									if(cell.dataColumn.cellStyle.length > 0){
+										cell.setAttribute('style', cell.dataColumn.cellStyle);
 									}else{
 										cell.setAttribute('style', '');
 									}
-									cell.style['text-align'] = this._columns[cellI].align;
 
-									if(this._columns[cellI].template && !this._columns[cellI].dialog){
-										var instance = this._columns[cellI].createCellInstance(
+									if(cell.dataColumn.template && !cell.dataColumn.dialog){
+										var instance = cell.dataColumn.createCellInstance(
 												rowData,
 												row.dataset.key
 										);
@@ -652,11 +674,12 @@ Mixins
 										cell.innerHTML = '';
 										cell.appendChild(instance.root);
 									}else{
-										cell.querySelector('span').innerHTML = this._columns[cellI]._formatValue(data)
+										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
 										//cell.textContent = data;
 									}
 								}
-							}
+							});
+
 						}
 					});
 
