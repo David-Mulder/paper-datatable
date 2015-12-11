@@ -113,10 +113,9 @@
 				<span>Rows per page:</span>
 				<paper-dropdown-menu no-label-float style="width: 68px;">
 					<paper-menu class="dropdown-content" selected="{{pageSize}}" attr-for-selected="value">
-						<paper-item value="5">5</paper-item>
-						<paper-item value="10">10</paper-item>
-						<paper-item value="25">25</paper-item>
-						<paper-item value="100">100</paper-item>
+						<template is="dom-repeat" items="{{pageSizeOptions}}">
+							<paper-item value="{{item}}">{{item}}</paper-item>
+						</template>
 					</paper-menu>
 				</paper-dropdown-menu>
 				<span>
@@ -227,13 +226,25 @@ Mixins
 					/**
 					 * Number of items per page
 					 *
-					 * @attribute Number
+					 * @attribute pageSize
 					 * @default 10
-					 * @type Object
+					 * @type Number
 					 */
 					pageSize: {
 						type: Number,
 						value: 10,
+						notify: true
+					},
+					/**
+					 * Possible number of items per page
+					 *
+					 * @attribute pageSizeOptions
+					 * @default [5, 10, 25, 100]
+					 * @type Array
+					 */
+					pageSizeOptions: {
+						type: Array,
+						value: [5, 10, 25, 100],
 						notify: true
 					},
 					/**
