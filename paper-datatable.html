@@ -598,14 +598,17 @@ Mixins
 					var columns = this.queryAllEffectiveChildren('paper-datatable-column');
 					columns.forEach((column) => {
 						if(!column.beenAttached.state.ready){
-							console.log('attaching', column);
 							column.parentNodeRef = this;
 							this.async(function(){
+								column._registerEvilFunctions();
 								column.beenAttached.ready();
 							});
 						}
 					});
 					this.set('_columns', columns.filter((column) => !column.inactive));
+					this.async(function(){
+						this._applySortedIndicatorsToDOM();
+					});
 				},
 
 				_setRowKeys: function(){
@@ -623,6 +626,7 @@ Mixins
 
 					}.bind(this));
 					this.set("_rowKeys", rowKeys);
+					//why again was this necessary?
 					this._internalSort(this.get('_currentlySortedColumn'));
 				},
 
@@ -635,8 +639,6 @@ Mixins
 					this.debounce('restructure data', function(){
 
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
-						var columnCollection = Polymer.Collection.get(this._columns);
-
 						// loop through the rows
 						for(var rowI=0; rowI<rows.length; rowI++){
 							var row = rows[rowI];
@@ -649,6 +651,7 @@ Mixins
 								var isEmpty = cell.hasAttribute('data-empty');
 								var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
 								var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
+
 								if(isEmpty || isWrongRow || isWrongColumn){
 									cell.removeAttribute('data-empty');
 									var prop = cell.dataColumn.property;
@@ -672,8 +675,8 @@ Mixins
 										);
 										cell.instance = instance;
 										cell.instanceType = 'inline';
-										cell.innerHTML = '';
-										cell.appendChild(instance.root);
+										cell.querySelector('span').innerHTML = '';
+										cell.querySelector('span').appendChild(instance.root);
 									}else{
 										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
 										//cell.textContent = data;
@@ -878,30 +881,15 @@ Mixins
 
 				sort: function(column){
 					this.async(function(){
-						var sortedColumn = this._columns.find(function(aColumn){
-							return aColumn.sorted && aColumn !== column;
-						});
-						if(sortedColumn){
-							sortedColumn.set('sorted', false);
-
-							var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
-								return el.dataColumn === sortedColumn;
-							});
-
-							th.removeAttribute('data-sorted');
-						}
-						var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
-							return el.dataColumn === column;
-						});
-
-						th.setAttribute('data-sorted', true);
-						th.setAttribute('data-sort-direction', column.sortDirection);
 
 						var triggeredEvent = this.fire('sort', {sort: {
 							property: column.property,
 							direction: column.sortDirection
 						}, column: column}, {cancelable: true});
+
 						this.set('_currentlySortedColumn', column);
+
+						this._applySortedIndicatorsToDOM();
 
 						if(triggeredEvent.defaultPrevented){
 							this._internalSortEnabled = false;
@@ -910,6 +898,26 @@ Mixins
 							this._internalSort(column);
 						}
 					});
+				},
+
+				_applySortedIndicatorsToDOM: function(){
+					var previouslySortedTh = Polymer.dom(this.root).querySelector("th[data-sorted]");
+					if(previouslySortedTh)
+						previouslySortedTh.removeAttribute('data-sorted');
+
+					var column = this.get('_currentlySortedColumn');
+
+					if(column){
+						var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
+							return el.dataColumn === column;
+						});
+
+						//column might have been removed or made inactive
+						if(th){
+							th.setAttribute('data-sorted', true);
+							th.setAttribute('data-sort-direction', column.sortDirection);
+						}
+					}
 				},
 
 				_internalSort: function(column){
@@ -1076,7 +1084,6 @@ Mixins
 						var ths = Polymer.dom(this.root).querySelectorAll('th');
 						ths.forEach((th) => {
 							if(th.dataColumn){
-								console.dir(th);
 								var column = th.dataColumn;
 								if(th.scrollWidth > th.offsetWidth){
 									column.set('tooltip', column.header);

@@ -49,7 +49,7 @@
 
 				<paper-card heading="Just a normal data table">
 					<paper-datatable data="{{data}}" selectable multi-selection>
-						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable></paper-datatable-column>
+						<paper-datatable-column id="titleColumn" header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable></paper-datatable-column>
 						<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." sorted></paper-datatable-column>
 						<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
 						<paper-datatable-column header="Carbs (g)" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
@@ -61,8 +61,24 @@
 				</paper-card>
 
 				<paper-card heading="Actions">
-					<paper-button on-tap="doInsert" raised>Insert column</paper-button>
-					<paper-button on-tap="doEditableInsert" raised>Insert editable column</paper-button>
+					<div style="padding:0px 20px 20px 20px;">
+						<paper-button on-tap="doInsert" raised style="display:inline-flex;align-items:center;">
+							<iron-icon icon="add"></iron-icon>
+							&nbsp;Insert column
+						</paper-button>
+						<paper-button on-tap="doEditableInsert" raised style="display:inline-flex;align-items:center;">
+							<iron-icon icon="add"></iron-icon>
+							&nbsp;Insert editable column
+						</paper-button>
+						<paper-button on-tap="doDelete" raised style="display:inline-flex;align-items:center;">
+							<iron-icon icon="delete"></iron-icon>
+							&nbsp;Insert column
+						</paper-button>
+						<paper-button on-tap="toggleInactive" raised style="display:inline-flex;align-items:center;">
+							<iron-icon icon="cached"></iron-icon>
+							&nbsp;Toggle [inactive] on title column
+						</paper-button>
+					</div>
 				</paper-card>
 
 		</template>
@@ -76,7 +92,6 @@
 				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
 				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},
 				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0}
-
 			];
 			app.toFixedOne = function(value){
 				return value.toFixed(1);
@@ -97,9 +112,19 @@
 			app.doEditableInsert = function(){
 				var div = document.createElement('div');
 				div.innerHTML = '<paper-datatable-column header="Fat (dyn)" property="fat" type="Number" align="right" editable sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>';
-				div.childNodes[0].formatValue = app.toFixedOne;
 				var columns = Polymer.dom(document).querySelectorAll('paper-datatable-column');
 				columns[3].parentNode.insertBefore(div.childNodes[0], columns[3]);
+			};
+			app.doDelete = function(){
+				var columns = Polymer.dom(document).querySelectorAll('paper-datatable-column');
+				columns[3].parentNode.removeChild(columns[3]);
+			}
+			app.toggleInactive = function(){
+				if(app.$.titleColumn.inactive){
+					app.$.titleColumn.inactive = false;
+				}else{
+					app.$.titleColumn.inactive = true;
+				}
 			};
 		</script>
 

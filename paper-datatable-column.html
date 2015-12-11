@@ -403,13 +403,16 @@ Styling
 					return this;
 				},*/
 				_registerEvilFunctions: function(){
-					if(typeof this.dataHost === 'undefined') {
+					if(typeof this.dataHost === 'undefined' || typeof this.parentNodeRef.dataHost !== 'undefined') {
+						this.dataHost = this.parentNodeRef.dataHost;
+					}else if(typeof this.dataHost === 'undefined'){
 						console.warn('A hack is used to support some functionality of the `[editable]` and [`array-display-prop`] attribute. ' +
 								'This however requires the element to be located in a polymer element or `dom-bind`.')
-					}else{
-						this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
-						this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
 					}
+
+					this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
+					this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
+
 				},
 				_getArrayItemLabel: function(column, value){
 					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
