@@ -250,13 +250,13 @@ Styling
 				ready: function() {
 
 					var template = Polymer.dom(this).querySelector('template');
-					if(!template && this.type.toLowerCase() == "array"){
+					if(!template && this.type.toLowerCase() == 'array'){
 						var template = this.$.arrayTemplate;
-					}else if(!template && this.editable && this.type.toLowerCase() == "string"){
+					}else if(!template && this.editable && this.type.toLowerCase() == 'string'){
 						var template = this.$.editableInputTemplate;
-					}else if(!template && this.editable && this.type.toLowerCase() == "number"){
+					}else if(!template && this.editable && this.type.toLowerCase() == 'number'){
 						var template = this.$.editableInputTemplate;
-					}else if(!template && this.editable && this.type.toLowerCase() == "boolean"){
+					}else if(!template && this.editable && this.type.toLowerCase() == 'boolean'){
 						var template = this.$.editableBooleanTemplate;
 					}
 
@@ -272,16 +272,6 @@ Styling
 					}
 
 
-				},
-
-				attached: function() {
-					return false;
-					Polymer.dom(this).parentNode.push('_columns', this);
-					this.parentNodeRef = Polymer.dom(this).parentNode;
-					this._registerEvilFunctions();
-					this.async(function(){
-						this.beenAttached.ready();
-					});
 				},
 
 				createCellInstance: function(model, notificationKey){

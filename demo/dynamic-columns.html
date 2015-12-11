@@ -62,6 +62,7 @@
 
 				<paper-card heading="Actions">
 					<paper-button on-tap="doInsert" raised>Insert column</paper-button>
+					<paper-button on-tap="doEditableInsert" raised>Insert editable column</paper-button>
 				</paper-card>
 
 		</template>
@@ -84,15 +85,21 @@
 				return Math.round(value * 10000)/100 + '%';
 			};
 			app.doInsert = function(){
-				var column = document.createElement('paper-input');
-				Polymer.dom(app).appendChild(column);
-				console.log(column.dataHost);
 				var column = document.createElement('paper-datatable-column');
-				column.header = "Fat";
-				column.property = "fat";
+				column.header = 'Fat (dyn)';
+				column.property = 'fat';
+				column.type = 'number';
+				column.align = 'right';
+				column.formatValue = app.toFixedOne;
 				var columns = Polymer.dom(document).querySelectorAll('paper-datatable-column');
 				columns[3].parentNode.insertBefore(column, columns[3]);
-				console.log(columns);
+			};
+			app.doEditableInsert = function(){
+				var div = document.createElement('div');
+				div.innerHTML = '<paper-datatable-column header="Fat (dyn)" property="fat" type="Number" align="right" editable sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>';
+				div.childNodes[0].formatValue = app.toFixedOne;
+				var columns = Polymer.dom(document).querySelectorAll('paper-datatable-column');
+				columns[3].parentNode.insertBefore(div.childNodes[0], columns[3]);
 			};
 		</script>
 

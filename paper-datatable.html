@@ -657,12 +657,13 @@ Mixins
 									cell.setAttribute('data-row-key', row.dataset.key);
 									cell.dataBoundClumn = cell.dataColumn;
 
-									cell.style['text-align'] = cell.dataColumn.align;
 									if(cell.dataColumn.cellStyle.length > 0){
 										cell.setAttribute('style', cell.dataColumn.cellStyle);
 									}else{
 										cell.setAttribute('style', '');
 									}
+									//todo: do not overwrite
+									cell.style['text-align'] = cell.dataColumn.align;
 
 									if(cell.dataColumn.template && !cell.dataColumn.dialog){
 										var instance = cell.dataColumn.createCellInstance(
@@ -718,7 +719,7 @@ Mixins
 						var cells = row.querySelectorAll('td.bound-cell');
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
-							var prop = cell.dataProp;
+							var prop = cell.dataColumn.property;
 
 							if(prop == path[0]){
 								if(cell.instance){
