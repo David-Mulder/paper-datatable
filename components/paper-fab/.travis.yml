@@ -11,7 +11,7 @@ env:
     - secure: IPGL6X6NaL5HmkZ9c0Xb8N539NJ7wnWlxbOCAtzgq2IiDj9tQPR+T7o1BOHEWJttnRceniM6bEkeQU2i0VThwnLDs5zEq5HkJ4FJHCCQOpgIG3V9VRnbou5OUTYx32bRR/TlAgfFDTu220fczfzFlLFk5PEeuZuMQb2OeqNaf5pppl8lu+F08O8XO9vsLXZzXbPYrBwrv6vR6VlhEcpqhW7Yr05q1nnuevak6kMv5O9rWX0zhDfa1u5D40njQ5wVP5txVykoJtyKYaB3SoXXhqfJ0xtdDnAGD+dTWjTbzS6GzUY+WcSx9Lc9agYy9vnhGgpPzMm7LY2vaegJjFYlO//x2CN7caXNjRtZGnUVAyfCq4l5GBgr038MNhiSvSyrghpaoxih6gqEai5iFoDUXYLYwwzhPpAUu+53l6p+EVQPwpvBGshocmTXkf45+RKJL2uLFdUwI0GX0+g4yeBabDAl/KqQyGhBUQSIRIXjEj4A86JajkFcdBEN7MUgYDVoR+XVCqQLdUVGSFovEE5r7+3OAHMpt2lfVp+q+s6LBR2LLuP270inVGCA/+1gaelKbf5Sf24pwaaofkMU36IJcnUOUczkdNUvYfUqHgDwkrf4rDBSUqZVa82ZjkWV9BPkVItCMUc2HT4zQikGmHr0m8mD1uPdYQftENLHDK0Su0Y=
 node_js: 4
 addons:
-  firefox: '42.0'
+  firefox: latest
   apt:
     sources:
       - google-chrome
