@@ -203,11 +203,12 @@
 				width: 100%;
 			}
 			paper-checkbox{
+				--paper-checkbox-unchecked-color: rgba(0,0,0,.54);
 				@apply(--paper-datatable-checkbox);
 			}
 			th paper-checkbox{
 				@apply(--paper-datatable-header-checkbox);
-				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, --primary-text-color);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, rgba(0,0,0,.54));
 			}
 			.partialSelectionContainer{
 				width:18px;
@@ -220,7 +221,7 @@
 			.partialSelection{
 				width:6px;
 				height:2px;
-				background: var(--paper-datatable-header-checkbox-color, --primary-text-color);
+				background: var(--paper-datatable-header-checkbox-color, rgba(0,0,0,.54));
 				border-radius:1px;
 				transition: transform .1s linear;
 				transform: scale(0) rotate(-45deg);

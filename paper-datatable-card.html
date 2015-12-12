@@ -29,6 +29,9 @@
 				background: var(--paper-datatable-selection-toolbar-color, --paper-pink-50);
 				padding:0px 12px 0px 24px;
 			}
+			#selectionToolbar .selectionHeader{
+				color: var(--paper-datatable-selection-toolbar-text-color, --accent-color);
+			}
 			#selectionToolbar[data-visible]{
 				display: flex;
 			}
@@ -37,6 +40,11 @@
 			}
 			#selectionToolbar .toolbar[data-visible]{
 				display: flex;
+			}
+			#selectionToolbar > ::content paper-icon-button, #toolbar-main > ::content paper-icon-button, .toolbar > ::content paper-icon-button,
+			#selectionToolbar > ::content paper-icon, #toolbar-main > ::content paper-icon, .toolbar > ::content paper-icon,
+			#selectionToolbar > ::content iron-icon, #toolbar-main > ::content iron-icon, .toolbar > ::content iron-icon{
+				color: var(--paper-datatable-toolbar-icon-color, rgba(0,0,0,.54));
 			}
 			#toolbar-main{
 				padding-right: 12px;
