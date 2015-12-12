@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title></title>
+
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-card/paper-card.html">
+		<link rel="import" href="../paper-datatable-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="./demo-menu.html">
+
+		<style is="custom-style">
+
+			:root{
+			}
+			body{
+				overflow:hidden;
+			}
+
+			paper-card{
+				display:block;
+			}
+
+		</style>
+
+	</head>
+	<body>
+
+		<template is="dom-bind" id="app">
+
+			<demo-menu>
+				<style is="custom-style">
+					paper-card {
+						--paper-card-header-text: {
+							font-family: 'Roboto', 'Noto', sans-serif;
+							font-weight: normal;
+							font-size: 20px;
+						}
+					}
+				</style>
+
+				<paper-card heading="Race rankings">
+					<paper-datatable data="{{data}}" selectable multi-selection>
+						<paper-datatable-column header="Contestant" property="name" type="String" sortable></paper-datatable-column>
+						<template is="dom-repeat" items="{{legs}}">
+							<paper-datatable-column header="Leg {{item}} Rank" property="leg-{{item}}" type="Object" sortable sort="{{customSortByRank}}">
+								<template>
+									<span>{{value.rank}}</span>
+								</template>
+							</paper-datatable-column>
+							<paper-datatable-column header="Leg {{item}} Time" property="leg-{{item}}" type="Object" sortable sort="{{customSortByTime}}">
+								<template>
+									<span>{{value.time}}</span>
+								</template>
+							</paper-datatable-column>
+						</template>
+					</paper-datatable>
+				</paper-card>
+
+		</template>
+
+		<script>
+			var app = document.querySelector('#app');
+			var data = [
+				{
+					name: 'Me',
+					legs: [
+						{ time: 45, rank: 1},
+						{ time: 30, rank: 2},
+						{ time: 35, rank: 2}
+					]
+				},
+				{
+					name: 'You',
+					legs: [
+						{ time: 50, rank: 2},
+						{ time: 20, rank: 1},
+						{ time: 20, rank: 1}
+					]
+				}
+			];
+			var legs = [];
+			data[0].legs.forEach(function(leg, i){
+				data.forEach(function(contestant){
+					contestant['leg-'+(i+1)] = contestant.legs[i];
+				});
+				legs.push(i+1);
+			});
+			app.legs = legs;
+			app.data = data;
+			app.customSortByRank = function(a,b){
+				return a.rank < b.rank;
+			};
+			app.customSortByTime = function(a,b){
+				return a.time < b.time;
+			};
+		</script>
+
+	</body>
+</html>

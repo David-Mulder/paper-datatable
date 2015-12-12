@@ -40,11 +40,11 @@
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#~1.1.0",
     "paper-input": "PolymerElements/paper-input#~1.0.18"
   },
-  "_release": "eeecdedea1",
+  "_release": "89595b71da",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "eeecdedea192590e78cea0b9024912f33a399042"
+    "commit": "89595b71da10c7ddb3b92ccc8ebf0a9a32b07e63"
   },
   "_source": "git://github.com/David-Mulder/paper-datatable.git",
   "_target": "master",

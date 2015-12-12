@@ -15,12 +15,12 @@
     "test",
     "tests"
   ],
-  "version": "0.0.1",
-  "_release": "0.0.1",
+  "version": "0.0.2",
+  "_release": "0.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "0.0.1",
-    "commit": "f4e3387f728a4a5398bfb569d1dff4400fd552f3"
+    "tag": "0.0.2",
+    "commit": "d0a6efa2827627c67743eb0f248a981b69a0d68a"
   },
   "_source": "git://github.com/David-Mulder/whenever.js.git",
   "_target": "~0.0.1",

@@ -225,7 +225,7 @@
 				transform: scale(1) rotate(0deg);
 			}
 		</style>
-		<content select="paper-datatable-column"></content>
+		<!--<content select="paper-datatable-column"></content>-->
 		<paper-datatable-edit-dialog id="dialog"></paper-datatable-edit-dialog>
 		<div id="container">
 			<table>
@@ -277,8 +277,8 @@
 										<!-- </template> -->
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
 											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
@@ -297,8 +297,8 @@
 										<!-- </template> -->
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" index-as="i" on-dom-change="_restructureData">
-									<td data-column-i$="{{i}}" data-empty class="bound-cell" data-prop="{{column.property}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
 											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
@@ -587,6 +587,28 @@ Mixins
 				ready: function() {
 					this.set('_columns', []);
 					this.set('selectedKeys', []);
+					this._observer = Polymer.dom(this).observeNodes(function(info) {
+						this._queryAndSetColumns();
+						//this.processNewNodes(info.addedNodes);
+						//this.processRemovedNodes(info.removedNodes);
+					});
+				},
+
+				_queryAndSetColumns: function(){
+					var columns = this.queryAllEffectiveChildren('paper-datatable-column');
+					columns.forEach((column) => {
+						if(!column.beenAttached.state.ready){
+							column.parentNodeRef = this;
+							this.async(function(){
+								column._registerEvilFunctions();
+								column.beenAttached.ready();
+							});
+						}
+					});
+					this.set('_columns', columns.filter((column) => !column.inactive));
+					this.async(function(){
+						this._applySortedIndicatorsToDOM();
+					});
 				},
 
 				_setRowKeys: function(){
@@ -604,6 +626,7 @@ Mixins
 
 					}.bind(this));
 					this.set("_rowKeys", rowKeys);
+					//why again was this necessary?
 					this._internalSort(this.get('_currentlySortedColumn'));
 				},
 
@@ -616,47 +639,51 @@ Mixins
 					this.debounce('restructure data', function(){
 
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
-
 						// loop through the rows
 						for(var rowI=0; rowI<rows.length; rowI++){
 							var row = rows[rowI];
 							//find the data that belongs with the row
 							var rowData = this.get(['data',row.dataset.key]);
-							//console.log(row.dataset.key, row, rowI, rows.length, rowData);
 
-							//get all cells in the row
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
-							for(var cellI=0;cellI<cells.length;cellI++){
-								var cell = cells[cellI];
-								if(cell.hasAttribute('data-empty') || cell.getAttribute('data-row-key') !== row.dataset.key){
+
+							cells.forEach((cell) => {
+								var isEmpty = cell.hasAttribute('data-empty');
+								var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
+								var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
+
+								if(isEmpty || isWrongRow || isWrongColumn){
 									cell.removeAttribute('data-empty');
-
-									var prop = this._columns[cellI].property;
+									var prop = cell.dataColumn.property;
 									var data = rowData[prop];
-									cell.setAttribute('data-row-key', row.dataset.key);
 
-									if(this._columns[cellI].cellStyle.length > 0){
-										cell.setAttribute('style', this._columns[cellI].cellStyle);
+									cell.setAttribute('data-row-key', row.dataset.key);
+									cell.dataBoundColumn = cell.dataColumn;
+
+									if(cell.dataColumn.cellStyle.length > 0){
+										cell.setAttribute('style', cell.dataColumn.cellStyle);
 									}else{
 										cell.setAttribute('style', '');
 									}
-									cell.style['text-align'] = this._columns[cellI].align;
+									//todo: do not overwrite
+									cell.style['text-align'] = cell.dataColumn.align;
 
-									if(this._columns[cellI].template && !this._columns[cellI].dialog){
-										var instance = this._columns[cellI].createCellInstance(
+									if(cell.dataColumn.template && !cell.dataColumn.dialog){
+										var instance = cell.dataColumn.createCellInstance(
 												rowData,
 												row.dataset.key
 										);
 										cell.instance = instance;
 										cell.instanceType = 'inline';
-										cell.innerHTML = '';
-										cell.appendChild(instance.root);
+										cell.querySelector('span').innerHTML = '';
+										cell.querySelector('span').appendChild(instance.root);
 									}else{
-										cell.querySelector('span').innerHTML = this._columns[cellI]._formatValue(data)
+										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
 										//cell.textContent = data;
 									}
 								}
-							}
+							});
+
 						}
 					});
 
@@ -695,7 +722,7 @@ Mixins
 						var cells = row.querySelectorAll('td.bound-cell');
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
-							var prop = cell.dataProp;
+							var prop = cell.dataColumn.property;
 
 							if(prop == path[0]){
 								if(cell.instance){
@@ -854,30 +881,15 @@ Mixins
 
 				sort: function(column){
 					this.async(function(){
-						var sortedColumn = this._columns.find(function(aColumn){
-							return aColumn.sorted && aColumn !== column;
-						});
-						if(sortedColumn){
-							sortedColumn.set('sorted', false);
-
-							var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
-								return el.dataColumn === sortedColumn;
-							});
-
-							th.removeAttribute('data-sorted');
-						}
-						var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
-							return el.dataColumn === column;
-						});
-
-						th.setAttribute('data-sorted', true);
-						th.setAttribute('data-sort-direction', column.sortDirection);
 
 						var triggeredEvent = this.fire('sort', {sort: {
 							property: column.property,
 							direction: column.sortDirection
 						}, column: column}, {cancelable: true});
+
 						this.set('_currentlySortedColumn', column);
+
+						this._applySortedIndicatorsToDOM();
 
 						if(triggeredEvent.defaultPrevented){
 							this._internalSortEnabled = false;
@@ -886,6 +898,26 @@ Mixins
 							this._internalSort(column);
 						}
 					});
+				},
+
+				_applySortedIndicatorsToDOM: function(){
+					var previouslySortedTh = Polymer.dom(this.root).querySelector("th[data-sorted]");
+					if(previouslySortedTh)
+						previouslySortedTh.removeAttribute('data-sorted');
+
+					var column = this.get('_currentlySortedColumn');
+
+					if(column){
+						var th = Polymer.dom(this.root).querySelectorAll("th").find(function(el){
+							return el.dataColumn === column;
+						});
+
+						//column might have been removed or made inactive
+						if(th){
+							th.setAttribute('data-sorted', true);
+							th.setAttribute('data-sort-direction', column.sortDirection);
+						}
+					}
 				},
 
 				_internalSort: function(column){
@@ -1052,7 +1084,6 @@ Mixins
 						var ths = Polymer.dom(this.root).querySelectorAll('th');
 						ths.forEach((th) => {
 							if(th.dataColumn){
-								console.dir(th);
 								var column = th.dataColumn;
 								if(th.scrollWidth > th.offsetWidth){
 									column.set('tooltip', column.header);

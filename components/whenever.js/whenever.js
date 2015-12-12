@@ -3,12 +3,20 @@ var Whenever = function(){
 	var ready = false;
 	var args;
 	return {
+		get state(){
+			return {
+				ready: ready,
+				args: args,
+				pendingCallbacks: callbacks.length
+			};
+		},
 		ready: function(){
 			args = arguments;
 			callbacks.forEach(function(callback){
 				callback.apply(this, args);
 			});
-			ready = this;
+			callbacks = [];
+			ready = true;
 		},
 		whenReady: function(callback){
 			if(ready){
