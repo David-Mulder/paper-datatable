@@ -401,11 +401,10 @@ Mixins
 					if(this.dataSource) {
 						ev.preventDefault();
 						this.firstPage();
-						var sortedColumn = Polymer.dom(this).querySelector('paper-datatable-column[sorted]');
-						if(sortedColumn){
-							this._sortProperty = sortedColumn.property;
-							this._sortDirection = sortedColumn.sortDirection;
-						}
+						console.log(ev.detail);
+						this._sortProperty = ev.detail.sort.property;
+						this._sortDirection = ev.detail.sort.direction;
+
 						//this.retrieveVisibleData();
 					}
 				},
