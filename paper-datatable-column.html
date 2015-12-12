@@ -12,7 +12,7 @@
 			</template>
 		</template>
 		<template id="editableInputTemplate">
-			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_pdt_getValidRegexForInput(column.type)]]" no-label-float></paper-input>
+			<paper-input type="[[_pdt_getCorrectTypeForInput(column.type)]]" value="{{value}}" step="any" no-label-float></paper-input>
 		</template>
 		<template id="editableBooleanTemplate">
 			<paper-checkbox checked="{{value}}"></paper-checkbox>
@@ -304,7 +304,7 @@ Styling
 						}
 						return value.getUTCFullYear() +'/'+ prependZero(value.getUTCMonth()+1) +'/'+ prependZero(value.getUTCDate()) + '&nbsp;' + prependZero(value.getUTCHours()) + ':' + prependZero(value.getUTCMinutes()) + ':' + prependZero(value.getUTCSeconds());
 					}else{
-						console.warn('Complex objects should implement their own template.', data);
+						console.warn('Complex objects should implement their own template or format-value function.', data);
 						return '?';
 					}
 				},
@@ -411,17 +411,17 @@ Styling
 					}
 
 					this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
-					this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
+					this.dataHost._pdt_getCorrectTypeForInput = this._getCorrectTypeForInput;
 
 				},
 				_getArrayItemLabel: function(column, value){
 					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
 				},
-				_getValidRegexForInput: function(type){
+				_getCorrectTypeForInput: function(type){
 					if(type.toLowerCase() == 'string'){
-						return undefined;
+						return 'string';
 					}else if(type.toLowerCase() == 'number'){
-						return '[0-9.,]';
+						return 'number';
 					}
 				}
 
