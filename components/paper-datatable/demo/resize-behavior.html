@@ -70,24 +70,40 @@
 					</paper-datatable>
 				</paper-card>
 
+				<paper-card heading="'dynamic-columns' resize behavior">
+					<paper-datatable data="{{data}}" selectable multi-selection resize-behavior="dynamic-columns">
+						<paper-datatable-column header="Dessert (100g serving)" resize-priority="-1" width="126" property="title" type="String" sortable></paper-datatable-column>
+						<paper-datatable-column header="Calories" resize-priority="1" width="72" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." sorted></paper-datatable-column>
+						<paper-datatable-column header="Fat (g)" resize-priority="1" width="72" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Carbs (g)" resize-priority="1" width="72" property="carbs" type="Number" align="right" sortable tooltip="The total amount of carbs in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Protein (g)" resize-priority="1" width="72" property="protein" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of protein in the given serving size."></paper-datatable-column>
+						<paper-datatable-column header="Sodium (mg)" resize-priority="1" width="72" property="sodium" type="Number" align="right" sortable tooltip="The amount of sodium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Calcium (%)" resize-priority="1" width="72" property="calcium" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of calcium as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Iron (%)" resize-priority="1" width="72" property="iron" type="Number" align="right" format-value="[[toPercentage]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount."></paper-datatable-column>
+						<paper-datatable-column header="Grade" resize-priority="2" width="72" property="grade" type="Number" align="right" format-value="[[outOfTen]]" sortable tooltip="The amount of iron as a percentage of the recommended daily amount." cell-style="font-weight:bold;"></paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
+
 		</template>
 
 		<script>
 			var app = document.querySelector('#app');
 			app.data = [
-				{id: 0, title: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4, sodium: 87, calcium:.14, iron: .01},
-				{id: 1, title: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3, sodium: 129, calcium:.08, iron: .01},
-				{id: 2, title: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6, sodium: 337, calcium:.06, iron: .07},
-				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08},
-				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16},
-				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0}
-
+				{id: 0, title: 'Frozen yogurt', calories: 159, fat: 6, carbs: 24, protein: 4, sodium: 87, calcium:.14, iron: .01, grade: 5},
+				{id: 1, title: 'Ice cream sandwich', calories: 237, fat: 9, carbs: 37, protein: 4.3, sodium: 129, calcium:.08, iron: .01, grade: 7},
+				{id: 2, title: 'Eclair', calories: 262, fat: 16, carbs: 24, protein: 6, sodium: 337, calcium:.06, iron: .07, grade: 7},
+				{id: 3, title: 'Cupcake', calories: 305, fat: 3.7, carbs: 67, protein: 4.3, sodium: 413, calcium:.03, iron: .08, grade: 7},
+				{id: 4, title: 'Gingerbread', calories: 356, fat: 16, carbs: 49, protein: 3.9, sodium: 327, calcium:.07, iron: .16, grade: 8},
+				{id: 5, title: 'Jelly bean', calories: 373, fat: 0, carbs: 94, protein: 0, sodium: 50, calcium:0, iron: 0, grade: 6}
 			];
 			app.toFixedOne = function(value){
 				return value.toFixed(1);
 			};
 			app.toPercentage = function(value){
 				return Math.round(value * 10000)/100 + '%';
+			};
+			app.outOfTen = function(value){
+				return value + '/10';
 			};
 		</script>
 

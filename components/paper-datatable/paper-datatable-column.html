@@ -12,7 +12,7 @@
 			</template>
 		</template>
 		<template id="editableInputTemplate">
-			<paper-input value="{{value}}" prevent-invalid-input pattern="[[_pdt_getValidRegexForInput(column.type)]]" no-label-float></paper-input>
+			<paper-input type="[[_pdt_getCorrectTypeForInput(column.type)]]" value="{{value}}" step="any" no-label-float></paper-input>
 		</template>
 		<template id="editableBooleanTemplate">
 			<paper-checkbox checked="{{value}}"></paper-checkbox>
@@ -162,28 +162,6 @@ Styling
 						value: ''
 					},
 					/**
-					 * Style to be applied to the header.
-					 *
-					 * @attribute style
-					 * @type String
-					 */
-					_styleString: {
-						type: String,
-						value: function(){
-							var alignment = this.align || this.getAttribute('align') || 'left';
-							var styleString = this.getAttribute('style') || '';
-							return 'text-align:'+alignment+';'+styleString;
-						}
-					},
-					/**
-					 * If you have `undefined`'s in your `data` this method can be used to
-					 * set a default, thus preventing auto-saves from triggering.
-					 *
-					 * @attribute default
-					 * @type Object
-					 */
-					default: Object,
-					/**
 					 * Convenience attribute to align the header and cell content (e.g. 'center')
 					 *
 					 * @attribute align
@@ -194,6 +172,30 @@ Styling
 						type: String,
 						value: 'left'
 					},
+					/**
+					 * Style to be applied to the header.
+					 *
+					 * @attribute style
+					 * @type String
+					 */
+					_styleString: {
+						type: String,
+						value: function(){
+							var alignment = this.align || this.getAttribute('align') || 'left';
+							var minWidth = this.width || this.getAttribute('width') || 0;
+							minWidth += parseFloat(minWidth).toString() === minWidth ? 'px' : '';
+							var styleString = this.getAttribute('style') || '';
+							return 'text-align:'+alignment+';min-width:'+minWidth+';'+styleString;
+						}
+					},
+					/**
+					 * If you have `undefined`'s in your `data` this method can be used to
+					 * set a default, thus preventing auto-saves from triggering.
+					 *
+					 * @attribute default
+					 * @type Object
+					 */
+					default: Object,
 					/**
 					 * Can be overwritten to manually format the value in a non-editable state
 					 *
@@ -234,10 +236,36 @@ Styling
 					editIcon: {
 						type: Boolean
 					},
+
+					/**
+					 * Removing and adding columns entirely from the DOM is a bit hard, so instead there is this
+					 * convenience method to entirely disable a column.
+					 *
+					 * @attribute inactive
+					 * @type Boolean
+					 * @default false
+					 */
 					inactive: {
 						type: Boolean,
 						observer: '_requeryColumnList'
-					}
+					},
+					/**
+					 * If you're using the `dynamic-columns` resize behavior this attribute is used to determining
+					 * how important the column is when columns have to be hidden due to the window size. Set to -1
+					 * if the column should always be shown. If columns have the same priority they will be assumed to
+					 * be ordered by importance from left to right.
+					 */
+					resizePriority: {
+						type: Number,
+						value: 0
+					},
+					/**
+					 * Mostly just a convenience attribute to set min-width, but required in conjuction with
+					 * the `dynamic-columns` resize behavior
+					 *
+					 * @type Number in px or String
+					 */
+					width: Object
 				},
 				behaviors: [
 					Polymer.Templatizer
@@ -304,7 +332,7 @@ Styling
 						}
 						return value.getUTCFullYear() +'/'+ prependZero(value.getUTCMonth()+1) +'/'+ prependZero(value.getUTCDate()) + '&nbsp;' + prependZero(value.getUTCHours()) + ':' + prependZero(value.getUTCMinutes()) + ':' + prependZero(value.getUTCSeconds());
 					}else{
-						console.warn('Complex objects should implement their own template.', data);
+						console.warn('Complex objects should implement their own template or format-value function.', data);
 						return '?';
 					}
 				},
@@ -411,17 +439,17 @@ Styling
 					}
 
 					this.dataHost._pdt_getArrayItemLabel = this._getArrayItemLabel;
-					this.dataHost._pdt_getValidRegexForInput = this._getValidRegexForInput;
+					this.dataHost._pdt_getCorrectTypeForInput = this._getCorrectTypeForInput;
 
 				},
 				_getArrayItemLabel: function(column, value){
 					return column.arrayDisplayProp ? value[column.arrayDisplayProp] : value;
 				},
-				_getValidRegexForInput: function(type){
+				_getCorrectTypeForInput: function(type){
 					if(type.toLowerCase() == 'string'){
-						return undefined;
+						return 'string';
 					}else if(type.toLowerCase() == 'number'){
-						return '[0-9.,]';
+						return 'number';
 					}
 				}
 

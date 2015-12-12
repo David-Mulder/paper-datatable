@@ -20,6 +20,9 @@
 			:host([resize-behavior='overflow']) #container{
 				overflow: auto;
 			}
+			:host([resize-behavior='dynamic-columns']) #container{
+				overflow: auto;
+			}
 			:host([resize-behavior='fixed']) table{
 				table-layout: fixed;
 			}
@@ -130,6 +133,7 @@
 				--paper-input-container-input: {
 					font-size: 13px;
 					line-height: 1.4em;
+
 				};
 			}
 			tr td:first-child, tr th:first-child{
@@ -535,7 +539,7 @@ Mixins
 						value: false
 					},
 					/**
-					 * Overflow or fixed
+					 * Overflow, fixed or 'dynamic-columns'
 					 *
 					 * @attribute resizeBehavior
 					 * @type String
@@ -581,7 +585,7 @@ Mixins
 
 				listeners: {
 					'container.scroll': '_triggerDialogResize',
-					'iron-resize': '_renderTooltipsIfOverflow'
+					'iron-resize': '_resizeListener'
 				},
 
 				ready: function() {
@@ -665,8 +669,12 @@ Mixins
 									}else{
 										cell.setAttribute('style', '');
 									}
-									//todo: do not overwrite
-									cell.style['text-align'] = cell.dataColumn.align;
+									if(cell.style['text-align'] == '' && cell.dataColumn.align){
+										cell.style['text-align'] = cell.dataColumn.align;
+									}
+									//if(cell.style['min-width'] == '' && cell.dataColumn.width){
+									//	cell.style['min-width'] = cell.dataColumn.width;
+									//}
 
 									if(cell.dataColumn.template && !cell.dataColumn.dialog){
 										var instance = cell.dataColumn.createCellInstance(
@@ -749,7 +757,6 @@ Mixins
 					var triggeredEvent = this.fire('toggle-all', {}, {cancelable: true});
 
 					if(!triggeredEvent.defaultPrevented){
-						// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
 						var allChecked = this._allChecked();
 						this.data.forEach(function(item){
 							if(allChecked){
@@ -922,7 +929,6 @@ Mixins
 
 				_internalSort: function(column){
 					if(this._internalSortEnabled) {
-						//todo: move function to paper-datatable-column.html
 						this._rowKeys.sort(function(a, b){
 							if(column.sortDirection == 'desc'){
 								var c = a;
@@ -1068,30 +1074,69 @@ Mixins
 				},
 
 				_columnsRendered: function(){
-					this._renderTooltipsIfOverflow();
+					this._resizeListener();
 				},
 
 				_setPartialSelection: function(){
 					this.set('_partialSelection', this._someChecked());
 				},
+				_resizeListener: function(){
+					this._renderTooltipsIfOverflow();
+					this._setDynamicColumnsBySize();
+				},
+				_setDynamicColumnsBySize: function(){
+					//todo: still needs to be made in to a proper property
+					var padding = 28;
+					var selectable = this.selectable ? 56 : 0;
+					if(this.resizeBehavior == 'dynamic-columns'){
+						var allColumns = this.queryAllEffectiveChildren('paper-datatable-column');
 
+						if(allColumns.length > 0) {
+							var maxWidth = this.$.container.clientWidth;
+
+							allColumns.sort(function (a, b) {
+								if(a.resizePriority === -1 && b.resizePriority === -1){
+									return 0;
+								}else if(a.resizePriority === -1){
+									return -1;
+								}else if(b.resizePriority === -1){
+									return 1;
+								}
+								return b.resizePriority - a.resizePriority;
+							});
+
+							var widthSoFar = selectable - 2 * padding;
+							allColumns.forEach(function (column) {
+								if(!column.width){
+									console.error('For dynamic columns to work you have to set the `width` attribute of every column.');
+								}
+								widthSoFar += parseFloat(column.width) + padding * 2;
+								if (widthSoFar > maxWidth && column.resizePriority !== -1) {
+									column.set('inactive', true);
+								} else {
+									column.set('inactive', false);
+								}
+							});
+						}
+					}
+				},
 				_renderTooltipsIfOverflow: function(){
 					if(this.resizeBehavior == 'fixed'){
-						//todo: this function is terribly inefficient as it's triggered once for every column yet loops all
-						// all columns up to the currently initialized one during initialization.
-						// see: console.log(this._columns.length);
+						if(this._columns.length > 0){
 
-						var ths = Polymer.dom(this.root).querySelectorAll('th');
-						ths.forEach((th) => {
-							if(th.dataColumn){
-								var column = th.dataColumn;
-								if(th.scrollWidth > th.offsetWidth){
-									column.set('tooltip', column.header);
-								}else{
-									column.set('tooltip', '');
+							var ths = Polymer.dom(this.root).querySelectorAll('th');
+							ths.forEach((th) => {
+								if(th.dataColumn){
+									var column = th.dataColumn;
+									if(th.scrollWidth > th.offsetWidth){
+										column.set('tooltip', column.header);
+									}else{
+										column.set('tooltip', '');
+									}
 								}
-							}
-						});
+							});
+
+						}
 					}
 				}
 
