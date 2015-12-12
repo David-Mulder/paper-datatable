@@ -705,21 +705,6 @@ Mixins
 					if(path.length >= 3){
 						var object = path.shift();
 						var rowKey = path.shift();
-						if(path[0] == 'id'){
-							console.warn('re-implement');
-							// more `<paper-datatable-card>` specific hacks :/
-							/*console.info('id property changed, new id is', change.value);
-							var cells = Polymer.dom(this.root).querySelectorAll('tbody tr[data-id=\'__new__\'] td.bound-cell');
-							for(var i=0; i<cells.length;i++) {
-								var cell = cells[i];
-								if(cell.instance){
-									cell.instance.set('_dataId', change.value);
-								}
-							}
-							return;*/
-						}
-						//var id = this.get('data.'+rowI+'.'+this.idProperty);
-						//var id = this.data[rowI][this.idProperty];
 
 						var row = Polymer.dom(this.root).querySelector('tbody tr[data-key=\''+rowKey+'\']');
 
@@ -733,7 +718,7 @@ Mixins
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
 							var prop = cell.dataColumn.property;
-							console.log(cell, prop);
+
 							if(prop == path[0]){
 								if(cell.instance){
 									var localPath = path.slice();
