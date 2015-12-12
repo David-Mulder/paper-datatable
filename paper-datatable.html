@@ -757,7 +757,6 @@ Mixins
 					var triggeredEvent = this.fire('toggle-all', {}, {cancelable: true});
 
 					if(!triggeredEvent.defaultPrevented){
-						// todo: trigger event that will be caught by paper-datatable-card that will override this behaviour
 						var allChecked = this._allChecked();
 						this.data.forEach(function(item){
 							if(allChecked){
@@ -930,7 +929,6 @@ Mixins
 
 				_internalSort: function(column){
 					if(this._internalSortEnabled) {
-						//todo: move function to paper-datatable-column.html
 						this._rowKeys.sort(function(a, b){
 							if(column.sortDirection == 'desc'){
 								var c = a;
@@ -1124,21 +1122,21 @@ Mixins
 				},
 				_renderTooltipsIfOverflow: function(){
 					if(this.resizeBehavior == 'fixed'){
-						//todo: this function is terribly inefficient as it's triggered once for every column yet loops
-						// all columns up to the currently initialized one during initialization.
-						// see: console.log(this._columns.length);
+						if(this._columns.length > 0){
 
-						var ths = Polymer.dom(this.root).querySelectorAll('th');
-						ths.forEach((th) => {
-							if(th.dataColumn){
-								var column = th.dataColumn;
-								if(th.scrollWidth > th.offsetWidth){
-									column.set('tooltip', column.header);
-								}else{
-									column.set('tooltip', '');
+							var ths = Polymer.dom(this.root).querySelectorAll('th');
+							ths.forEach((th) => {
+								if(th.dataColumn){
+									var column = th.dataColumn;
+									if(th.scrollWidth > th.offsetWidth){
+										column.set('tooltip', column.header);
+									}else{
+										column.set('tooltip', '');
+									}
 								}
-							}
-						});
+							});
+
+						}
 					}
 				}
 
