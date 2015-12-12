@@ -686,6 +686,8 @@ Mixins
 										cell.querySelector('span').innerHTML = '';
 										cell.querySelector('span').appendChild(instance.root);
 									}else{
+										if(cell.instance)
+											delete cell.instance;
 										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
 										//cell.textContent = data;
 									}
@@ -731,7 +733,7 @@ Mixins
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
 							var prop = cell.dataColumn.property;
-
+							console.log(cell, prop);
 							if(prop == path[0]){
 								if(cell.instance){
 									var localPath = path.slice();
