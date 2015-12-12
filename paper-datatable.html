@@ -281,7 +281,7 @@
 										<!-- </template> -->
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
 									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
@@ -295,13 +295,10 @@
 							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
 								<template is="dom-if" if="{{selectable}}">
 									<td on-tap="_cellTapped">
-										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
-										<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
-											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
-										<!-- </template> -->
+										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
 									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
@@ -638,6 +635,25 @@ Mixins
 					this._setRowKeys();
 				},
 
+				reset: function(){
+					this.set('data', []);
+					this._reset();
+				},
+
+				_reset: function(){
+					var cells = Polymer.dom(this.root).querySelectorAll('.bound-cell');
+					cells.forEach(this._resetCell.bind(this));
+					this.$.rowRepeat.render();
+					Polymer.dom(this.root).querySelectorAll('#cellRepeat').forEach((cr) => cr.render());
+				},
+
+				_resetCell: function(cell){
+					cell.setAttribute('data-empty', true);
+					cell.removeAttribute('data-row-key');
+					delete cell.dataColumn;
+					delete cell.instance;
+				},
+
 				_restructureData: function(){
 
 					this.debounce('restructure data', function(){
@@ -652,6 +668,11 @@ Mixins
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
 
 							cells.forEach((cell) => {
+
+								if(!cell.dataColumn){
+									console.log(cell);
+								}
+
 								var isEmpty = cell.hasAttribute('data-empty');
 								var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
 								var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
@@ -700,6 +721,14 @@ Mixins
 				},
 
 				_notifyPathOnInstances: function(change){
+					if(change.path === 'data'){
+						//not too happy about this 'hack', but it will have to do for the moment
+						var cells = Polymer.dom(this.root).querySelectorAll('.bound-cell');
+						if(cells.length > 0){
+							cells.forEach((cell) => cell.setAttribute('data-row-key', ''));
+							this._restructureData();
+						}
+					}
 					var path = change.path.split('.');
 					//console.log('_notifyPathOnInstances', path, change);
 					if(path.length >= 3){
