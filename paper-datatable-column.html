@@ -234,6 +234,15 @@ Styling
 					editIcon: {
 						type: Boolean
 					},
+
+					/**
+					 * Removing and adding columns entirely from the DOM is a bit hard, so instead there is this
+					 * convenience method to entirely disable a column.
+					 *
+					 * @attribute inactive
+					 * @type Boolean
+					 * @default false
+					 */
 					inactive: {
 						type: Boolean,
 						observer: '_requeryColumnList'
