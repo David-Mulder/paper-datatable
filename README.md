@@ -82,11 +82,13 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-If you need it under different terms do contact me personally.
+This project uses a fair share license construction, if you wish to use this project commercially you will likely want to
+continue reading [here](https://github.com/David-Mulder/fair-share-license/blob/master/CONTRIBUTING.md). If you wish to
+donate please contact me personally.
 
 ## Contributing
 
-I absolutely HATE HATE HATE rejecting pull requests, so let me just outline some advice:
+I absolutely HATE rejecting pull requests, so let me just outline some advice:
 
  1. If you are planning on doing anything except a quick fix, it's a wise idea to open an issue first with your plans. That
     way we can talk it through and check whether it might not already be easily possible and whether it fits with the
@@ -94,3 +96,5 @@ I absolutely HATE HATE HATE rejecting pull requests, so let me just outline some
  2. You absolutely *must* make every feature you work on at least a separate commit and ideally a separate pull request.
     This both makes it clearer to me what is what, makes it easier to pull only the relevant parts and prevents situations
     where I can't give credits to the good parts, because of the bad parts.
+ 3. You have to explicitly agree in your pull request to the terms described in the
+    [fair share license construction](https://github.com/David-Mulder/fair-share-license/blob/master/CONTRIBUTING.md).
