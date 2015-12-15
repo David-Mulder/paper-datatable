@@ -26,27 +26,6 @@
 			/*
 This element is used inside of `<paper-datatable>` to declare the columns to be shown in the datatable.
 
-Editable columns
----
-There are two ways to define editable columns, the easiest way is to just set the `editable` attribute like
-
-	<paper-datatable-column header="Author" property="title" type="String" editable></paper-datatable-column>
-
-which which is internally equal to the second way
-
-	<paper-datatable-column header="Author" property="title">
-		<template>
-			 <paper-input value="{{value}}" no-label-float></paper-input>
-		</template>
-	</paper-datatable-column>
-
-Additionally you can prefer setting it in a `[dialog]` which will `on-tap` load up a dialog hovering above the cell with
-the `<template>` content. The big advantage of this is performance as not every cell needs to be initalized.
-
-Styling
----
-&nbsp;*See the documentation for `<paper-datatable>`. *
-
 @element paper-datatable-column
 			*/
 

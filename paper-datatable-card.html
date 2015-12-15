@@ -142,70 +142,8 @@
 			'use strict';
 
 /*
-This documentation still isn't as complete as I would like it to be, so if anything is unclear please check the source
-code from the demo's.
+A [material design implementation of the tables within cards spec](https://www.google.com/design/spec/components/data-tables.html#data-tables-tables-within-cards).
 
-Data sources
----
-This component uses an object with a set number of functions to retrieve and save data. A `data-source` looks like
-
-    {
-        get: function(sort, page, pageSize){ return new Promise(...) },
-        set: function(item, property, value){ return new Promise(...) },
-        length: Number
-    }
-
-Alternatively you can use `queryForIds(sort, page, pageSize)` which returns an array of `ids` + `getByIds(ids)` instead
-of a simple `get`. Advantages are better caching, better cross page selections, but the big disadvantage is that you
-have two do two AJAX requests and the added complexity of the API calls.
-
-Note: If you wonder why the functions aren't directly available to the element and instead are grouped like this, the
-reason for this is that this allows you to create a
-
-    <my-api-datasource for="users" data-source="{{dataSource}}"></my-api-datasource>
-
-object which in turn you bind to this element. I have however been considering allowing manual binding directly as well.
-
-Main toolbar
----
-The main toolbar is located to the right of the heading and can be filled by specifying an element with `[toolbar-main]`.
-
-	<div toolbar-main>
-	 	<paper-input value="{{searchQuery}}">
-		<paper-icon-button icon="search" on-tap="search"></paper-icon-button>
-	</div>
-
-Selection toolbar
----
-The selection toolbar is shown when any items are selected and shows the number of selected items. Items in the toolbar
-can be specified by adding an element with `[toolbar-select]`. Additionally it's often required to show different icons
-when a single item is selected from when multiple items are selected. For this there exists `[toolbar-select-single]`
-and `[toolbar-select-multi]`
-
-	<div toolbar-select-single>
-		<paper-icon-button icon="info" on-tap="info"></paper-icon-button>
-	</div>
-	<div toolbar-select>
-		<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
-	</div>
-
-Theming
-===
-Variables
----
- Custom property | Description | Default
- ----------------|-------------|----------
- `--paper-datatable-divider-color` | divider color is used to draw the bottom line | --divider-color
- `--paper-datatable-selection-toolbar-color` | color of selected toolbar, should be 50 of the secondary color | --paper-pink-50
- `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar
-
-Mixins
----
-
- Mixin | Description
- ------|-------------
- `--paper-datatable-card` | applied to the main card
- `--paper-datatable-navigation-bar` | applied to the bottom bar containing the navigation
 
 @element paper-datatable-card
 @demo demo/users-card.html Polished demo
