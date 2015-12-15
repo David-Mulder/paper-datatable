@@ -25,8 +25,16 @@
 
 			paper-card{
 				display:block;
+				max-width: 800px;
+				margin: auto;
+				padding: 20px;
 			}
 
+			table{
+				max-width: 800px;
+				margin: auto;
+				margin-bottom: 20px;
+			}
 		</style>
 
 	</head>
@@ -53,6 +61,15 @@
 						</tr>
 					</tbody>
 				</table>
+
+				<paper-card>
+					The above is a simple <code>&lt;table&gt;</code> element after including
+					<code>paper-datable-styles</code> using:
+
+					<pre style="margin-left:20px;"><code>&lt;style is="custom-style" include="paper-datatable-styles"&gt;&lt;/style&gt;</code></pre>
+
+					with <code>class="card"</code> added for a simple MD card design.
+				</paper-card>
 			</demo-menu>
 
 

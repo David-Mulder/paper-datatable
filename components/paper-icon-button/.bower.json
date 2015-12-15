@@ -44,6 +44,6 @@
     "commit": "35347d81939093cd2abe2783ac1b17fa57b7b303"
   },
   "_source": "git://github.com/PolymerElements/paper-icon-button.git",
-  "_target": "~1.0.5",
+  "_target": "^1.0.0",
   "_originalSource": "PolymerElements/paper-icon-button"
 }

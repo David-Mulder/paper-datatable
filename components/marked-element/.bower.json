@@ -31,14 +31,14 @@
     "web-component-tester": "*",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
-  "homepage": "https://github.com/PolymerElements/marked-element",
+  "homepage": "https://github.com/polymerelements/marked-element",
   "_release": "1.1.1",
   "_resolution": {
     "type": "version",
     "tag": "v1.1.1",
     "commit": "fa4486975c593c6943f4b3962d88ad87da920184"
   },
-  "_source": "git://github.com/PolymerElements/marked-element.git",
+  "_source": "git://github.com/polymerelements/marked-element.git",
   "_target": "^1.0.0",
-  "_originalSource": "PolymerElements/marked-element"
+  "_originalSource": "polymerelements/marked-element"
 }
