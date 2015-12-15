@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+
+		<title></title>
+
+		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script>
+			window.Polymer = window.Polymer || {};
+			window.Polymer.dom = 'shadow';
+		</script>
+		<link rel="import" href="../../polymer/polymer.html">
+		<link rel="import" href="../../paper-card/paper-card.html">
+		<link rel="import" href="../paper-datatable.html">
+		<link rel="import" href="./demo-menu.html">
+		<link rel="import" href="../../iron-component-page/iron-component-page.html">
+
+
+	</head>
+	<body>
+
+		<demo-menu>
+			<iron-component-page id="ironComponentPage" catalog></iron-component-page>
+		</demo-menu>
+
+		<script>
+			var element = location.search.replace('?', '');
+			var icp = document.getElementById('ironComponentPage');
+			icp.setAttribute('active', 'paper-'+element);
+			icp.setAttribute('src', '../paper-'+element+'.html');
+		</script>
+
+	</body>
+</html>

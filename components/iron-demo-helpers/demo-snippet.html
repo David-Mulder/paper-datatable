@@ -116,7 +116,7 @@ Custom property | Description | Default
 
         // TODO(noms): When marked-element/issues/23 lands, this will become
         // a public method and will need to be updated.
-        var snippet = this.$.marked._unindent(Polymer.domInnerHTML.getInnerHTML(template));
+        var snippet = this.$.marked._unindent(template.innerHTML);
 
         // Boolean properties are displayed as checked="", so remove the ="" bit.
         snippet = snippet.replace(/=""/g, '');

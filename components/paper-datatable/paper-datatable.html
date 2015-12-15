@@ -203,11 +203,12 @@
 				width: 100%;
 			}
 			paper-checkbox{
+				--paper-checkbox-unchecked-color: rgba(0,0,0,.54);
 				@apply(--paper-datatable-checkbox);
 			}
 			th paper-checkbox{
 				@apply(--paper-datatable-header-checkbox);
-				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, --primary-text-color);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, rgba(0,0,0,.54));
 			}
 			.partialSelectionContainer{
 				width:18px;
@@ -220,7 +221,7 @@
 			.partialSelection{
 				width:6px;
 				height:2px;
-				background: var(--paper-datatable-header-checkbox-color, --primary-text-color);
+				background: var(--paper-datatable-header-checkbox-color, rgba(0,0,0,.54));
 				border-radius:1px;
 				transition: transform .1s linear;
 				transform: scale(0) rotate(-45deg);
@@ -281,7 +282,7 @@
 										<!-- </template> -->
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
 									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
@@ -295,13 +296,10 @@
 							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
 								<template is="dom-if" if="{{selectable}}">
 									<td on-tap="_cellTapped">
-										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
-										<!-- <template is="dom-if" if="{{!_isEqual(rowKey, '__new__')}}"> -->
-											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
-										<!-- </template> -->
+										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
 									</td>
 								</template>
-								<template is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
 									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
@@ -326,98 +324,6 @@
 # Paper Datatable
 
 A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html).
-
-## Installation
-
-The element can be installed using bower using
-
-	bower install --save paper-datatable
-
-Important: If you wish to use `<paper-datatable-card>` you need the paper elements listed in `devDependencies` as well. They are not listed as normal dependencies to prevent them from being pulled in on production if you do not need them.
-
-
-Getting started
-===
-First of all you have to set up a `<paper-datatable>` element. You provide it with a
-`data` attribute which should be an array of `object`'s. Additionally you decide
-whether you want the `data-table` to be `selectable`. At this point we get something
-like
-
-	<paper-datatable data="{{data}}" selectable multi-selection>
-	</paper-datatable>
-
-Next we have to define our columns, this is done by adding child elements of the type
-`<paper-datatable-column>`. A fairly minimal example would be
-
-	<paper-datatable data="{{data}}" selectable multi-selection>
-		<paper-datatable-column header="Title" property="title" sortable>
-		</paper-datatable-column>
-	</paper-datatable>
-
-If we want to format our content in a custom way we can easily do this by adding a `<template>`
-element, which exposes `{{value}}`, `{{item}}` (the entire row) and `{{column}}` bindings.
-
-	<paper-datatable data="{{data}}" selectable multi-selection>
-		<paper-datatable-column header="Title" property="title" sortable editable>
-			<template>
-				<paper-input value="{{value}}">
-			</template>
-		</paper-datatable-column>
-	</paper-datatable>
-
-Note that we also added an `[editable]` attribute which indicates to the system that the custom
-template doesn't just style the content differently, but actually also allows interaction with the
-content.
-
-For more information please check out the demo's and keep on reading the `<paper-datatable-column>`
-documentation that can be found in the top left menu.
-
-Styling
-===
-The biggest difficulty is styling, because the way Polymer and the shadow DOM works it's incredibly hard to style elements that are hidden in the shadow DOM, as is the case for the cells. Dynamically setting up mixins isn't possible either however, so in the end the following compromise was reached:
-
-Header cell and Row cell styling
----
-It is possible to define a css string that will be applied to the header cell and all cells in a column like
-
-	<paper-datatable-column [...] style="color:green;" cell-style="color:red;"></paper-datatable-column>
-
-Which would make the header `green` and the content in each cell in the column `red`. This is especially useful to set a `min-width` on the header. There is also a convenience attribute `align='center'` to center columns (both the header and cells).
-
-Events
-===
-There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell. `cell-tap` can be listened for both on `paper-datatable` and `paper-datatable-column`.
-
-Theming
-===
-Tip: Check the `theming.html` demo for a live demonstration.
-
-Variables
----
-
- Custom property | Description | Default
- ----------------|-------------|----------
- `--paper-datatable-divider-color` | Divider color between rows | `--divider-color`
- `--paper-datatable-row-selection-color` | Divider color between rows | `--paper-grey-100`
- `--paper-datatable-row-hover-color` | Color of hovered row | `--paper-grey-200`
- `--paper-datatable-header-checkbox-color` | Checkbox color | `--primary-text-color`
-
-Mixins
----
-
- Mixin | Description
- ------|-------------
- `--paper-datatable-column-header` | Column header style applied to text headers
- `--paper-datatable-cell` | Applied to all data cells
- `--paper-datatable-cell-last` | Applied to the last cell of each row (used to increase the `padding-right` if you overwrite it in `--paper-datatable-cell`)
- `--paper-datatable-column-header-sorted` | Applied to the sort icon
- `--paper-datatable-column-header-sort-icon-hover` | Applied to the sort icon when hovered
- `--paper-datatable-array-item` | Only works when using the proper Shadow DOM and is applied to columns using the `array-display-prop` attribute.
- `--paper-datatable-class-1` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-1'`.
- `--paper-datatable-class-2` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-2'`.
- `--paper-datatable-class-3` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-3'`.
- `--paper-datatable-class-4` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-4'`.
- `--paper-datatable-class-5` | Only works when using the proper Shadow DOM and is applied to any content in cells with `class='class-5'`.
 
 @element paper-datatable
 @demo demo/simple.html Simple clear example
@@ -638,6 +544,25 @@ Mixins
 					this._setRowKeys();
 				},
 
+				reset: function(){
+					this.set('data', []);
+					this._reset();
+				},
+
+				_reset: function(){
+					var cells = Polymer.dom(this.root).querySelectorAll('.bound-cell');
+					cells.forEach(this._resetCell.bind(this));
+					this.$.rowRepeat.render();
+					Polymer.dom(this.root).querySelectorAll('#cellRepeat').forEach((cr) => cr.render());
+				},
+
+				_resetCell: function(cell){
+					cell.setAttribute('data-empty', true);
+					cell.removeAttribute('data-row-key');
+					delete cell.dataColumn;
+					delete cell.instance;
+				},
+
 				_restructureData: function(){
 
 					this.debounce('restructure data', function(){
@@ -652,6 +577,11 @@ Mixins
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
 
 							cells.forEach((cell) => {
+
+								if(!cell.dataColumn){
+									console.log(cell);
+								}
+
 								var isEmpty = cell.hasAttribute('data-empty');
 								var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
 								var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
@@ -686,6 +616,8 @@ Mixins
 										cell.querySelector('span').innerHTML = '';
 										cell.querySelector('span').appendChild(instance.root);
 									}else{
+										if(cell.instance)
+											delete cell.instance;
 										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
 										//cell.textContent = data;
 									}
@@ -698,26 +630,19 @@ Mixins
 				},
 
 				_notifyPathOnInstances: function(change){
+					if(change.path === 'data'){
+						//not too happy about this 'hack', but it will have to do for the moment
+						var cells = Polymer.dom(this.root).querySelectorAll('.bound-cell');
+						if(cells.length > 0){
+							cells.forEach((cell) => cell.setAttribute('data-row-key', ''));
+							this._restructureData();
+						}
+					}
 					var path = change.path.split('.');
 					//console.log('_notifyPathOnInstances', path, change);
 					if(path.length >= 3){
 						var object = path.shift();
 						var rowKey = path.shift();
-						if(path[0] == 'id'){
-							console.warn('re-implement');
-							// more `<paper-datatable-card>` specific hacks :/
-							/*console.info('id property changed, new id is', change.value);
-							var cells = Polymer.dom(this.root).querySelectorAll('tbody tr[data-id=\'__new__\'] td.bound-cell');
-							for(var i=0; i<cells.length;i++) {
-								var cell = cells[i];
-								if(cell.instance){
-									cell.instance.set('_dataId', change.value);
-								}
-							}
-							return;*/
-						}
-						//var id = this.get('data.'+rowI+'.'+this.idProperty);
-						//var id = this.data[rowI][this.idProperty];
 
 						var row = Polymer.dom(this.root).querySelector('tbody tr[data-key=\''+rowKey+'\']');
 

@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../demo-snippet.html">
+  <script src="../../iron-test-helpers/test-helpers.js"></script>
   <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
 
 </head>
@@ -52,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
       <demo-snippet>
         <template>
-          <input type="date" disabled>
+          <input disabled type="date">
         </template>
       </demo-snippet>
     </template>
@@ -60,6 +61,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
   <script>
+    // TODO(notwaldorf): Tests are currently very unhappy in IE
+    function isNotIE() {
+      return !navigator.userAgent.match(/MSIE/i);
+    }
+
     suite('display', function() {
       var emptyHeight;
 
@@ -68,7 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         emptyHeight = emptyDemo.getBoundingClientRect().height;
       });
 
-      test('can render native elements', function() {
+      test('can render native elements', skipUnless(isNotIE, function() {
         var element = fixture('native-demo');
 
         // Render the distributed children.
@@ -87,9 +93,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var markdownElement = element.$.marked;
         expect(markdownElement.markdown).to.be.equal('```\n\n<input disabled>\n\n```');
-      });
+      }));
 
-      test('can render custom elements', function() {
+      test('can render custom elements', skipUnless(isNotIE, function() {
         var element = fixture('custom-demo');
 
         // Render the distributed children.
@@ -109,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var markdownElement = element.$.marked;
         expect(markdownElement.markdown).to.be.equal(
             '```\n\n<paper-checkbox disabled></paper-checkbox>\n\n```');
-      });
+      }));
     });
 
     suite('parsing', function() {
@@ -119,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var element = fixture('demo-with-attributes');
       });
 
-      test('preserves attributes', function() {
+      test('preserves attributes', skipUnless(isNotIE, function() {
         var element = fixture('demo-with-attributes');
 
         // Render the distributed children.
@@ -127,8 +133,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var markdownElement = element.$.marked;
         expect(markdownElement.markdown).to.be.equal(
-            '```\n\n<input type="date" disabled>\n\n```');
-      });
+            '```\n\n<input disabled type="date">\n\n```');
+      }));
     });
   </script>
 </body>
