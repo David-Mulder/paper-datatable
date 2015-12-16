@@ -58,7 +58,7 @@ And you can find the full documentation [here](http://david-mulder.github.io/pap
   <!-- an editable column -->
   <paper-datatable-column header="Author" property="title" editable></paper-datatable-column>
   <!-- a custom column -->
-  <paper-datatable-column header="Page" property="page">
+  <paper-datatable-column header="Page" property="page" editable>
 	<template>
 	  <!--
 		this template is used for every cell in this column, you have access to:
