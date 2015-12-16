@@ -45,6 +45,12 @@
 							font-size: 20px;
 						}
 					}
+					#actions paper-button{
+						display:inline-flex;
+						align-items:center;
+						background: #3F51B5;
+						color:white;
+					}
 				</style>
 
 				<paper-card heading="Just a normal data table">
@@ -60,21 +66,21 @@
 					</paper-datatable>
 				</paper-card>
 
-				<paper-card heading="Actions">
+				<paper-card heading="Actions" id="actions">
 					<div style="padding:0px 20px 20px 20px;">
-						<paper-button on-tap="doInsert" raised style="display:inline-flex;align-items:center;">
+						<paper-button raised on-tap="doInsert" style="">
 							<iron-icon icon="add"></iron-icon>
 							&nbsp;Insert column
 						</paper-button>
-						<paper-button on-tap="doEditableInsert" raised style="display:inline-flex;align-items:center;">
+						<paper-button raised on-tap="doEditableInsert">
 							<iron-icon icon="add"></iron-icon>
 							&nbsp;Insert editable column
 						</paper-button>
-						<paper-button on-tap="doDelete" raised style="display:inline-flex;align-items:center;">
+						<paper-button raised on-tap="doDelete">
 							<iron-icon icon="delete"></iron-icon>
-							&nbsp;Insert column
+							&nbsp;Delete fourth column
 						</paper-button>
-						<paper-button on-tap="toggleInactive" raised style="display:inline-flex;align-items:center;">
+						<paper-button raised on-tap="toggleInactive">
 							<iron-icon icon="cached"></iron-icon>
 							&nbsp;Toggle [inactive] on title column
 						</paper-button>
