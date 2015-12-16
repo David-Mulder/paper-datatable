@@ -4192,8 +4192,8 @@ keys.push(c.getKey(items[i]));
 }
 var self = this;
 if (this._filterFn) {
-keys = keys.filter(function (a, i) {
-return self._filterFn(c.getItem(a), i);
+keys = keys.filter(function (a) {
+return self._filterFn(c.getItem(a));
 });
 }
 if (this._sortFn) {
@@ -4258,8 +4258,8 @@ this._detachAndRemoveInstance(idx);
 var self = this;
 if (addedKeys.length) {
 if (this._filterFn) {
-addedKeys = addedKeys.filter(function (a, i) {
-return self._filterFn(c.getItem(a), i);
+addedKeys = addedKeys.filter(function (a) {
+return self._filterFn(c.getItem(a));
 });
 }
 addedKeys.sort(function (a, b) {

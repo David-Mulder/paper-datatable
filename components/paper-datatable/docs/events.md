@@ -1,16 +1,20 @@
 Events
 ===
-All properties with a `notifies` label in the API reference will trigger a `propertyName-changed` event. Beyond that the
-element also exposes a fair number of custom events which are documented here. One of the best ways to find events is
+All properties with a `notifies` label in the API references will trigger a `propertyName-changed` event. Beyond that the
+element also exposes a few custom events which are documented here. One of the best ways to find events is
 simply be exploring the [event explorer](events.html).
 
 `<paper-datatable>` and `<paper-datatable-column>`
 ===
 Taps
 ---
-There is a `row-tap` event for when a users taps on a row, and a `cell-tap` event for a specific cell. `cell-tap` can be
-listened for both on `paper-datatable` and `paper-datatable-column`. Row tap can be cancelled using
-`event.preventDefault()` which will prevent the row from getting selected.
+
+ - `row-tap` is triggered when a user taps anywhere on a row. The `item` of the row can be found in the `detail` object.
+   This event can be cancelled using `event.preventDefault()` which will prevent the row from getting selected. 
+ - `cell-tap` on `<paper-datatable>` is triggered whenever any cell is tapped containing both the `item` and `column` in
+   the `detail` object.
+ - `cell-tap` on `<paper-datatable-column>` is triggered whenever a cell in that column is tapped. It contains only the 
+   `item` of the current row.
 
 Selections
 ---

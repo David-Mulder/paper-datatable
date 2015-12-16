@@ -5,17 +5,13 @@
 		<title>Documentation</title>
 
 		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-		<script>
-			window.Polymer = window.Polymer || {};
-			window.Polymer.dom = 'shadow';
-		</script>
 		<link rel="import" href="../../polymer/polymer.html">
 		<link rel="import" href="../../paper-card/paper-card.html">
 		<link rel="import" href="../../marked-element/marked-element.html">
 		<link rel="import" href="../../prism-element/prism-highlighter.html">
 		<link rel="import" href="../paper-datatable-card.html">
 		<link rel="import" href="../paper-datatable.html">
-		<link rel="import" href="./demo-menu.html">
+		<link rel="import" href="../documentation-menu.html">
 		<link rel="import" href="../paper-datatable-styles.html">
 
 		<style is="custom-style">
@@ -39,11 +35,16 @@
 					@apply(--paper-font-title);
 				};
 			}
+			h1{
+				@apply(--paper-font-title);
+				margin: 15px 20px 30px 15px;
+			}
 			h2{
 				margin-top: 30px;
 				@apply(--paper-font-subhead);
 			}
 			paper-card p{
+
 			}
 			paper-card code{
 				display: inline-block;
@@ -75,6 +76,14 @@
 			th{
 				min-width: 150px;
 			}
+			h1 .hash{
+				color: rgba(0,0,0,0);
+				text-decoration: none;
+				transition: .3s linear color;
+			}
+			h1:hover .hash{
+				color: rgba(0,0,0,.4);
+			}
 
 		</style>
 
@@ -86,8 +95,9 @@
 		<template is="dom-bind" id="app">
 
 			<demo-menu>
-				<template is="dom-repeat" items="{{sections}}">
-					<paper-card heading="{{item.title}}">
+				<template is="dom-repeat" items="{{sections}}" on-dom-change="_figureOutHash">
+					<paper-card>
+						<h1 id="{{item.anchor}}">{{item.title}} <a href="#{{item.anchor}}" class="hash">#</a></h1>
 						<div>
 							<marked-element markdown="{{item.body}}">
 								<div class="markdown-html"></div>
@@ -121,8 +131,9 @@
 							currentSectionLines.pop();
 						}
 						return {
-							title: lastLineOfPrevSection,
-							body: currentSectionLines.join("\n")
+							title: lastLineOfPrevSection.replace(/[`]/g,''),
+							body: currentSectionLines.join("\n"),
+							anchor: lastLineOfPrevSection.replace(/[\<\>\n\r]/g,'').replace(/ /g,'-').toLowerCase()
 						};
 					}).filter((section) => typeof section !== 'undefined');
 					console.log(app.sections);
@@ -132,6 +143,18 @@
 		var page = location.search.replace('?', '');
 		httpRequest.open('GET', '../docs/'+page+'.md');
 		httpRequest.send();
+
+
+		app._figureOutHash = function(){
+			setTimeout(function(){
+				var hash = location.hash.replace('#', '');
+				if(hash.length > 0){
+					var target = document.getElementById(hash);
+					target.scrollIntoView(true);
+				}
+			},0);
+		};
+
 	</script>
 
 	</body>

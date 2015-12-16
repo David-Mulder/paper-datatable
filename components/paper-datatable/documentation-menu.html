@@ -1,13 +1,13 @@
-<link rel="import" href="../../paper-drawer-panel/paper-drawer-panel.html">
-<link rel="import" href="../../iron-icon/iron-icon.html">
-<link rel="import" href="../../iron-icons/iron-icons.html">
-<link rel="import" href="../../paper-input/paper-input.html">
-<link rel="import" href="../../paper-item/paper-item.html">
-<link rel="import" href="../../paper-menu/paper-menu.html">
-<link rel="import" href="../../paper-menu/paper-submenu.html">
-<link rel="import" href="../../paper-styles/paper-styles.html">
-<link rel="import" href="../../paper-header-panel/paper-header-panel.html">
-<link rel="import" href="../../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-drawer-panel/paper-drawer-panel.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-menu/paper-submenu.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
 
 <dom-module id="demo-menu">
 	<style>
@@ -85,34 +85,34 @@
 					</div>
 				</paper-toolbar>
 				<paper-menu id="menu" selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
-					<paper-item data-url="docs.html?getting-started" data-keywords='["editable", "edit", "columns", "tutorial", "docs"]'>
+					<paper-item data-url="docs/docs.html?getting-started" data-keywords='["editable", "edit", "columns", "tutorial", "docs"]'>
 						<iron-icon icon="book"></iron-icon>Getting started</span>
 					</paper-item>
-					<paper-item data-url="simple.html" class="indent" data-keywords='["tutorial", "simple", "example", "demo"]'>
+					<paper-item data-url="demo/paper-datatable/" class="indent" data-keywords='["tutorial", "simple", "example", "demo"]'>
 						<iron-icon icon="favorite"></iron-icon><span>Simple <code>&lt;datatable&gt;</code></span>
 					</paper-item>
-					<paper-item data-url="editable.html" class="indent" data-keywords='["editable", "tutorial", "simple", "example", "demo", "dialog"]'>
+					<paper-item data-url="demo/paper-datatable/editable.html" class="indent" data-keywords='["editable", "tutorial", "simple", "example", "demo", "dialog"]'>
 						<iron-icon icon="favorite"></iron-icon><span>Editable <code>&lt;datatable&gt;</code></span>
 					</paper-item>
-					<paper-item data-url="docs.html?getting-started-with-data-table-cards" data-keywords='["pagination", "pages", "card", "cards", "docs"]'>
+					<paper-item data-url="docs/docs.html?getting-started-with-data-table-cards" data-keywords='["pagination", "pages", "card", "cards", "docs"]'>
 						<iron-icon icon="book"></iron-icon>Data tables in cards</span>
 					</paper-item>
-					<paper-item data-url="users-card.html" class="indent" data-keywords='["pagination", "pages", "card", "cards", "demo"]'>
+					<paper-item data-url="demo/paper-datatable-card/" class="indent" data-keywords='["pagination", "pages", "card", "cards", "demo"]'>
 						<iron-icon icon="explore"></iron-icon><span>Simple <code>&lt;datatable-card&gt;</code></span>
 					</paper-item>
-					<paper-item data-url="complex-paper-datatable-card.html" class="indent" data-keywords='["pagination", "pages", "card", "cards", "demo", "data-source", "datasource", "data source", "search"]'>
+					<paper-item data-url="demo/paper-datatable-card/full-implementation.html" class="indent" data-keywords='["pagination", "pages", "card", "cards", "demo", "data-source", "datasource", "data source", "search"]'>
 						<iron-icon icon="favorite"></iron-icon><span><code>&lt;datatable-card&gt;</code> full impl.</span>
 					</paper-item>
-					<paper-item data-url="docs.html?styling" data-keywords='["docs", "theming", "styling", "css", "variables", "mixins"]'>
+					<paper-item data-url="docs/docs.html?styling" data-keywords='["docs", "theming", "styling", "css", "variables", "mixins"]'>
 						<iron-icon icon="book"></iron-icon>Styling</span>
 					</paper-item>
-					<paper-item data-url="theming.html" class="indent" data-keywords='["demo", "theming", "styling", "css", "variables", "mixins"]'>
+					<paper-item data-url="demo/miscellaneous/theming.html" class="indent" data-keywords='["demo", "theming", "styling", "css", "variables", "mixins"]'>
 						<iron-icon icon="explore"></iron-icon><span>Theming options</span>
 					</paper-item>
-					<paper-item data-url="docs.html?events" data-keywords='["docs", "events", "event"]'>
+					<paper-item data-url="docs/docs.html?events" data-keywords='["docs", "events", "event"]'>
 						<iron-icon icon="book"></iron-icon>Events</span>
 					</paper-item>
-					<paper-item data-url="events.html" class="indent" data-keywords='["demo", "events", "event"]'>
+					<paper-item data-url="demo/miscellaneous/events.html" class="indent" data-keywords='["demo", "events", "event"]'>
 						<iron-icon icon="explore"></iron-icon><span>Event explorer</span>
 					</paper-item>
 
@@ -123,43 +123,43 @@
 							<iron-icon icon="menu"></iron-icon><span>Miscellaneous demo's</span>
 						</paper-item>
 						<paper-menu class="menu-content" selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
-							<paper-item data-url="bindings.html" data-keywords='["data binding", "binding", "selected", "selectedItem", "editable", "demo", "item", "value"]'>
+							<paper-item data-url="demo/paper-datatable/bindings.html" data-keywords='["data binding", "binding", "selected", "selectedItem", "editable", "demo", "item", "value"]'>
 								<iron-icon icon="explore"></iron-icon><span>The magic of data bindings</span>
 							</paper-item>
-							<paper-item data-url="sorting.html" data-keywords='["sorting", "sortable", "demo"]'>
+							<paper-item data-url="demo/paper-datatable/sorting.html" data-keywords='["sorting", "sortable", "demo"]'>
 								<iron-icon icon="explore"></iron-icon><span>Sorting & Type system</span>
 							</paper-item>
-							<paper-item data-url="resize-behavior.html" data-keywords='["resize", "demo"]'>
+							<paper-item data-url="demo/paper-datatable/resize-behavior.html" data-keywords='["resize", "demo"]'>
 								<iron-icon icon="explore"></iron-icon><span>Resize behaviors</span>
 							</paper-item>
-							<paper-item data-url="light.html" data-keywords='["table", "css", "light", "lightweight"]'>
+							<paper-item data-url="demo/miscellaneous/light.html" data-keywords='["table", "css", "light", "lightweight"]'>
 								<iron-icon icon="explore"></iron-icon><span>CSS only MD <span><code>&lt;table&gt;</code></span>
 							</paper-item>
-							<paper-item data-url="dynamic-columns.html" data-keywords='["adding", "removing", "columns", "demo"]'>
+							<paper-item data-url="demo/paper-datatable/dynamic-columns.html" data-keywords='["adding", "removing", "columns", "demo"]'>
 								<iron-icon icon="build"></iron-icon><span>Dynamic columns</span>
 							</paper-item>
-							<paper-item data-url="filter.html" data-keywords='["filter", "demo", "search"]'>
+							<paper-item data-url="demo/paper-datatable/filter.html" data-keywords='["filter", "demo", "search"]'>
 								<iron-icon icon="build"></iron-icon><span>Simple filter</span>
 							</paper-item>
-							<paper-item data-url="paper-datatable.html" data-keywords='["data binding", "binding", "editable", "demo", "item", "value"]'>
+							<paper-item data-url="demo/paper-datatable/playground.html" data-keywords='["data binding", "binding", "editable", "demo", "item", "value"]'>
 								<iron-icon icon="build"></iron-icon><span>Complex <code>&lt;datatable&gt;</code> element</span>
 							</paper-item>
-							<paper-item data-url="paper-datatable-card.html" data-keywords='["editable", "demo", "card", "pagination", "datasource", "data-source", "data source"]'>
+							<paper-item data-url="demo/paper-datatable-card/playground.html" data-keywords='["editable", "demo", "card", "pagination", "datasource", "data-source", "data source"]'>
 								<iron-icon icon="build"></iron-icon><span><code>&lt;datatable-card&gt;</code> element</span>
 							</paper-item>
-							<paper-item data-url="icons.html" data-keywords='["icons"]'>
+							<paper-item data-url="demo/miscellaneous/icons.html" data-keywords='["icons"]'>
 								<iron-icon icon="build"></iron-icon><span>Icons</span>
 							</paper-item>
 						</paper-menu>
 					</paper-submenu>
 					<hr style="border-bottom-color:rgba(240,240,240);border-top:0px;" data-keywords='[""]'>
-					<paper-item data-url="api.html?datatable" data-keywords='["api", "reference", "datatable", "columns", "editable", "column", "filter"]'>
+					<paper-item data-url="docs/api.html?datatable" data-keywords='["api", "reference", "datatable", "columns", "editable", "column", "filter"]'>
 						<iron-icon icon="book"></iron-icon><span><code>&lt;datatable&gt;</code> API</span>
 					</paper-item>
-					<paper-item data-url="api.html?datatable-column" data-keywords='["api", "reference", "column", "columns", "editable", "styling", "style", "dialog", "edit", "icon"]'>
+					<paper-item data-url="docs/api.html?datatable-column" data-keywords='["api", "reference", "column", "columns", "editable", "styling", "style", "dialog", "edit", "icon"]'>
 						<iron-icon icon="book"></iron-icon><span><code>&lt;datatable-column&gt;</code> API</span>
 					</paper-item>
-					<paper-item data-url="api.html?datatable-card" data-keywords='["api", "reference", "card", "pagination", "search", "data source", "data-source", "data", "source", "page", "selection"]'>
+					<paper-item data-url="docs/api.html?datatable-card" data-keywords='["api", "reference", "card", "pagination", "search", "data source", "data-source", "data", "source", "page", "selection"]'>
 						<iron-icon icon="book"></iron-icon><span><code>&lt;datatable-card&gt;</code> API</span>
 					</paper-item>
 				</paper-menu>
@@ -194,7 +194,7 @@
 				currentUrl: {
 					type: String,
 					value: function(){
-						return location.pathname.split("/").pop() + (location.search.length ? '?' + location.search.replace('?','') : '');
+						return location.href.replace(this.resolveUrl('.'),'');// + (location.search.length ? '?' + location.search.replace('?','') : '');
 					}
 				},
 				searchTerm: {
@@ -212,7 +212,7 @@
 			},
 			navigate: function(event, item){
 				if(item.selected){
-					location.href = item.selected;
+					location.href = this.resolveUrl(item.selected);
 				}
 			},
 			search: function(){
