@@ -4192,8 +4192,8 @@ keys.push(c.getKey(items[i]));
 }
 var self = this;
 if (this._filterFn) {
-keys = keys.filter(function (a) {
-return self._filterFn(c.getItem(a));
+keys = keys.filter(function (a, i) {
+return self._filterFn(c.getItem(a), i);
 });
 }
 if (this._sortFn) {
