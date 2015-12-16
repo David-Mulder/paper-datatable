@@ -19,17 +19,45 @@
 	<body>
 		<demo-menu>
 			<template is="dom-bind" id="app">
+				<style is="custom-style">
+					h2 {
+						@apply(--paper-font-title);
+						font-size: 18px !important;
+						font-variant: small-caps;
+					}
+					pre{
+						/* display:block;word-wrap: break-word;background:rgb(245,245,245);padding:5px; */
+						overflow: auto;
+						margin: 10px -15px;
+						padding: 15px;
+						background: rgb(250,250,250);
+						border-top: 1px solid rgb(230, 230, 230);
+						border-bottom: 1px solid rgb(230, 230, 230);
+					}
+					.noEvents{
+						margin: 10px;
+						text-align: center;
+						font-variant: small-caps;
+						color: rgba(0,0,0,.8);
+					}
+				</style>
 				<paper-drawer-panel right-drawer>
-					<div drawer style="overflow:auto;">
-						<h2 style="font-family:Roboto;padding-left:15px;">Event log</h2>
-						<template is="dom-repeat" items="{{eventLog}}" sort="{{inverse}}">
-							<div style="padding:3px 15px;border-bottom:1px solid rgb(230, 230, 230);margin:10px 0px;">
-								<strong>{{item.type}}</strong> on <code>&lt;paper-{{item.on}}&gt;</code><br>
-								<pre style="display:block;word-wrap: break-word;background:rgb(245,245,245);padding:5px;">{{item.message}}</pre>
-								<i>{{item.error}}</i>
+					<paper-header-panel drawer style="overflow-y:auto;overflow-x:hidden;border-left: 1px solid rgb(230, 230, 230);" mode="waterfall">
+						<paper-toolbar><h2 style="margin-left:0px;" class="title">Event log</h2></paper-toolbar>
+
+						<div class="content fit">
+							<template is="dom-repeat" items="{{eventLog}}" sort="{{inverse}}">
+								<div style="padding:3px 15px;margin:10px 0px;padding-bottom:10px;border-bottom: 1px dotted rgb(230, 230, 230);">
+									<strong>{{item.type}}</strong> on <code>&lt;paper-{{item.on}}&gt;</code><br>
+									<pre>{{item.message}}</pre>
+									<i>{{item.error}}</i>
+								</div>
+							</template>
+							<div class="noEvents">
+								No events logged yet.
 							</div>
-						</template>
-					</div>
+						</div>
+					</paper-header-panel>
 					<div main style="padding:30px;">
 						<paper-datatable-card id="card" header="Dangerously delicious" number-of-items="49">
 							<div toolbar-main>
@@ -106,7 +134,7 @@
 					app.splice('eventLog', 0, 1);
 				}
 			};
-			document.addEventListener('WebComponentsReady', function(){
+			document.addEventListener('WebComponentsReady', function(ev){
 				app.$.card.addEventListener('page-changed', log.bind(app, 'datatable-card'));
 				app.$.card.addEventListener('page-size-changed', log.bind(app, 'datatable-card'));
 				app.$.datatable.addEventListener('sort', log.bind(app, 'datatable'));
