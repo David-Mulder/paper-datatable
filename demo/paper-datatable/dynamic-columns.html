@@ -4,17 +4,17 @@
 
 		<title>Adding, removing and toggling columns</title>
 
-		<script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 		<script>
 			window.Polymer = window.Polymer || {};
 			window.Polymer.dom = 'shadow';
 		</script>
-		<link rel="import" href="../../polymer/polymer.html">
-		<link rel="import" href="../../paper-card/paper-card.html">
-		<link rel="import" href="../../paper-button/paper-button.html">
-		<link rel="import" href="../paper-datatable-card.html">
-		<link rel="import" href="../paper-datatable.html">
-		<link rel="import" href="./demo-menu.html">
+		<link rel="import" href="../../../polymer/polymer.html">
+		<link rel="import" href="../../../paper-card/paper-card.html">
+		<link rel="import" href="../../../paper-button/paper-button.html">
+		<link rel="import" href="../../paper-datatable-card.html">
+		<link rel="import" href="../../paper-datatable.html">
+		<link rel="import" href="../demo-menu.html">
 
 		<style is="custom-style">
 
@@ -50,6 +50,7 @@
 						align-items:center;
 						background: #3F51B5;
 						color:white;
+						margin-bottom: 10px;
 					}
 				</style>
 
@@ -68,7 +69,7 @@
 
 				<paper-card heading="Actions" id="actions">
 					<div style="padding:0px 20px 20px 20px;">
-						<paper-button raised on-tap="doInsert" style="">
+						<paper-button raised on-tap="doInsert">
 							<iron-icon icon="add"></iron-icon>
 							&nbsp;Insert column
 						</paper-button>

@@ -29,7 +29,7 @@ if(localStorage.getItem('users') !== null){
 			}
 		}
 	}
-	httpRequest.open('GET', 'data/userData.js');
+	httpRequest.open('GET', '../data/userData.js');
 	httpRequest.send();
 }
 
