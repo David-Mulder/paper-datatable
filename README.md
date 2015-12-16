@@ -2,10 +2,10 @@
 
 A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). Let's call this a pretty solid beta.
 
- - Documentation can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/
- - Demos can be found here: http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/
+ - Documentation can be found [here](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/docs.html?installation)
+ - Demos can be found [here](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card/full-implementation.html)
 
-[![http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png)](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/complex-paper-datatable-card.html)
+[![http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png)](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card/full-implementation.htmll)
 
 ## Features
 
@@ -42,12 +42,7 @@ The element can be installed using bower using
 
 ## Usage
 
-Honestly, the best thing you can do right now is simply check out [the demos](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/). Either way, there are two main elements in this component:
-
- - `<paper-datatable>` generates the basic datatable
- - `<paper-datatable-card>` wraps the `<paper-datatable>` and simplifies the creation of features like pagination, etc.
-
-And you can find the full documentation [here](http://david-mulder.github.io/paper-datatable/components/paper-datatable/)
+Check out the [getting started guide](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/docs.html?getting-started).
 
 ### `<paper-datatable>` example
 

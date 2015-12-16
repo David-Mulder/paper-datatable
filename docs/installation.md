@@ -1,7 +1,8 @@
 Paper Datatable
 ===
-A [material design implementation of a data table](https://www.google.com/design/spec/components/data-tables.html). It 
-can be found on GitHub over [here](http://github.com/David-Mulder/paper-datatable).
+An implementation of [material design data tables](https://www.google.com/design/spec/components/data-tables.html)
+for [modern web browsers](?browser-support). It can be found on GitHub over 
+[here](http://github.com/David-Mulder/paper-datatable).
 
 Installation
 ===
