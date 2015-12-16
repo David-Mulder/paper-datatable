@@ -468,6 +468,8 @@ A [material design implementation of a data table](https://www.google.com/design
 					 *
 					 * For a demo please see [here](demo/filter.html).
 					 *
+					 * IMPORTANT: This is a property, not a method you should call directly.
+					 *
 					 * @attribute filter
 					 * @type Function
 					 */
@@ -540,10 +542,17 @@ A [material design implementation of a data table](https://www.google.com/design
 					this._internalSort(this.get('_currentlySortedColumn'));
 				},
 
+				/**
+				 * If you have been changing data on the `data` property outside of the official Polymer functions
+				 * calling this function *may* get you the updates you want.
+				 */
 				reload: function(){
 					this._setRowKeys();
 				},
 
+				/**
+				 * Hardcore reset of the entire element. Sets `data` to `[]` and resets all cells.
+				 */
 				reset: function(){
 					this.set('data', []);
 					this._reset();
@@ -607,7 +616,7 @@ A [material design implementation of a data table](https://www.google.com/design
 									//}
 
 									if(cell.dataColumn.template && !cell.dataColumn.dialog){
-										var instance = cell.dataColumn.createCellInstance(
+										var instance = cell.dataColumn._createCellInstance(
 												rowData,
 												row.dataset.key
 										);
@@ -678,6 +687,10 @@ A [material design implementation of a data table](https://www.google.com/design
 					}
 				},
 
+				/**
+				 * Triggered by clicking the top left checkmark. If all are checked it will deselect all checked items.
+				 * If some or none are checked it will select all items
+				 */
 				toggleAll: function(){
 					var triggeredEvent = this.fire('toggle-all', {}, {cancelable: true});
 
@@ -693,6 +706,12 @@ A [material design implementation of a data table](https://www.google.com/design
 					}
 				},
 
+				/**
+				 * Select the specified item. Ignore the `notify` parameter.
+				 *
+				 * @param item
+				 * @param Boolean [notify=false] whether to trigger a `selection-changed` event.
+				 */
 				select: function(item, notify){
 					notify = typeof notify === 'undefined' ? true : notify;
 
@@ -708,6 +727,12 @@ A [material design implementation of a data table](https://www.google.com/design
 					}
 				},
 
+				/**
+				 * Deselect the specified item. Ignore the `notify` parameter.
+				 *
+				 * @param item
+				 * @param Boolean [notify=false] whether to trigger a `selection-changed` event.
+				 */
 				deselect: function(item, notify){
 					notify = typeof notify === 'undefined' ? true : notify;
 
@@ -721,7 +746,9 @@ A [material design implementation of a data table](https://www.google.com/design
 						this.set('selectedKey', undefined);
 					}
 				},
-
+				/**
+				 * Deselect all currently selected items. Ignore the `notify` parameter.
+				 */
 				deselectAll: function(notify){
 					if(this.multiSelection) {
 						this.selectedItems.forEach(function(item){
@@ -811,6 +838,10 @@ A [material design implementation of a data table](https://www.google.com/design
 					}
 				},
 
+				/**
+				 * Sort the specified column, where `column` is a reference to the actual `<paper-datatable-column>`
+				 * element.
+				 */
 				sort: function(column){
 					this.async(function(){
 
@@ -923,7 +954,7 @@ A [material design implementation of a data table](https://www.google.com/design
 						delete oldCell.instance;
 					}
 					this.$.dialog.positionedRelativeTo = cell;
-					var instance = column.createCellInstance(
+					var instance = column._createCellInstance(
 							row,
 							rowKey
 					);
@@ -966,6 +997,8 @@ A [material design implementation of a data table](https://www.google.com/design
 
 				/**
 				 * Method that can be overwritten to apply a custom style to specific rows.
+				 *
+				 * IMPORTANT: This is a property, not a method you should call directly.
 				 */
 				customRowStyle: function(rowItem){
 

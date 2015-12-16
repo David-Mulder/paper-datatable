@@ -346,8 +346,8 @@ A [material design implementation of the tables within cards spec](https://www.g
 						//this.retrieveVisibleData();
 					}
 				},
-				/*
-					Call this function to trigger reloading of the current page
+				/**
+				 * Call this function to trigger reloading of the current page
 				 */
 				retrieveVisibleData: function(){
 
@@ -434,46 +434,29 @@ A [material design implementation of the tables within cards spec](https://www.g
 				_getRangeEnd: function(){
 					return Math.min((this.page)*this.pageSize, this.numberOfItems);
 				},
+				/**
+				 * Navigate to the next page
+				 */
 				nextPage: function(){
 					this.set("page", this.page+1);
 				},
+				/**
+				 * Navigate to the previous page
+				 */
 				prevPage: function(){
 					this.set("page", this.page-1);
 				},
+				/**
+				 * Navigate to the first page
+				 */
 				firstPage: function(){
 					this.set("page", 1);
 				},
+				/**
+				 * Navigate to the last page
+				 */
 				lastPage: function(){
 					this.set("page", Math.ceil(this.numberOfItems / this.pageSize));
-				},
-				/**
-				 * DO NOT USE
-				 */
-				addNew: function(){
-					console.warn('This feature is temporarily deprecated.');
-					/*
-					//1. check we ain't adding one already
-					if(this._datatable._getIndexById('__new__') > -1){
-						console.warn('It\'s only possible to add one item at a time.');
-						return;
-					}
-					//1. goto last page
-					//this.page = Math.floor(this.dataSource.length / this.pageSize) + 1;
-					//2. wait for data to load
-					//... :/
-					//3. generate default
-					var item = {};
-					this._datatable._columns.forEach(function(column){
-						if(column.default){
-							item[column.property] = JSON.parse(JSON.stringify(column.default));
-						}else{
-							item[column.property] = undefined;
-						}
-					});
-					item[this._datatable.idProperty] = '__new__';
-					//4. push default to visible data
-					this._datatable.push('data', item);
-					*/
 				},
 				_prevPageDisabled: function(){
 					return this.page == 1;
@@ -539,11 +522,18 @@ A [material design implementation of the tables within cards spec](https://www.g
 						}
 					}
 				},
+				/**
+				 * Deselect all items
+				 */
 				deselectAll: function(){
 					this._datatable.deselectAll(false);
 					this.splice('selectedIds', 0, this.selectedIds.length);
 					this._setSelectedToolbarVisible();
 				},
+				/**
+				 * Select the item with the specified id
+				 * @param id
+				 */
 				select: function(id){
 					this.push('selectedIds', id);
 					this._setSelectedKeysOnDatatable();

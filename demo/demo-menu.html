@@ -57,8 +57,12 @@
 			margin-left: 0px;
 		}
 		.title{
-			margin-left:7px !important;
-
+			margin-left: 10px !important;
+			font-size: 18px !important;
+		}
+		.title.small{
+			font-variant: small-caps;
+			font-size: 16px !important;
 		}
 		.search paper-input{
 			--paper-input-container-color: white;
@@ -80,7 +84,7 @@
 						&lt;paper-datatable&gt;
 					</div>
 				</paper-toolbar>
-				<paper-menu selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
+				<paper-menu id="menu" selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
 					<paper-item data-url="docs.html?getting-started" data-keywords='["editable", "edit", "columns", "tutorial", "docs"]'>
 						<iron-icon icon="book"></iron-icon>Getting started</span>
 					</paper-item>
@@ -119,29 +123,29 @@
 							<iron-icon icon="menu"></iron-icon><span>Miscellaneous demo's</span>
 						</paper-item>
 						<paper-menu class="menu-content" selected="{{currentUrl}}" attr-for-selected="data-url" on-iron-activate="navigate">
-							<paper-item data-url="filter.html" data-keywords='["filter", "demo", "search"]'>
-								<iron-icon icon="explore"></iron-icon><span>Simple filter</span>
-							</paper-item>
 							<paper-item data-url="bindings.html" data-keywords='["data binding", "binding", "selected", "selectedItem", "editable", "demo", "item", "value"]'>
-								<iron-icon icon="build"></iron-icon><span>The magic of data bindings</span>
+								<iron-icon icon="explore"></iron-icon><span>The magic of data bindings</span>
 							</paper-item>
 							<paper-item data-url="sorting.html" data-keywords='["sorting", "sortable", "demo"]'>
-								<iron-icon icon="build"></iron-icon><span>Sorting & Type system</span>
+								<iron-icon icon="explore"></iron-icon><span>Sorting & Type system</span>
+							</paper-item>
+							<paper-item data-url="resize-behavior.html" data-keywords='["resize", "demo"]'>
+								<iron-icon icon="explore"></iron-icon><span>Resize behaviors</span>
+							</paper-item>
+							<paper-item data-url="light.html" data-keywords='["table", "css", "light", "lightweight"]'>
+								<iron-icon icon="explore"></iron-icon><span>CSS only MD <span><code>&lt;table&gt;</code></span>
 							</paper-item>
 							<paper-item data-url="dynamic-columns.html" data-keywords='["adding", "removing", "columns", "demo"]'>
 								<iron-icon icon="build"></iron-icon><span>Dynamic columns</span>
 							</paper-item>
-							<paper-item data-url="resize-behavior.html" data-keywords='["resize", "demo"]'>
-								<iron-icon icon="build"></iron-icon><span>Resize behaviors</span>
+							<paper-item data-url="filter.html" data-keywords='["filter", "demo", "search"]'>
+								<iron-icon icon="build"></iron-icon><span>Simple filter</span>
 							</paper-item>
 							<paper-item data-url="paper-datatable.html" data-keywords='["data binding", "binding", "editable", "demo", "item", "value"]'>
 								<iron-icon icon="build"></iron-icon><span>Complex <code>&lt;datatable&gt;</code> element</span>
 							</paper-item>
 							<paper-item data-url="paper-datatable-card.html" data-keywords='["editable", "demo", "card", "pagination", "datasource", "data-source", "data source"]'>
 								<iron-icon icon="build"></iron-icon><span><code>&lt;datatable-card&gt;</code> element</span>
-							</paper-item>
-							<paper-item data-url="icons.html" data-keywords='["table", "css", "light", "lightweight"]'>
-								<iron-icon icon="build"></iron-icon><span>CSS only MD <span><code>&lt;table&gt;</code></span>
 							</paper-item>
 							<paper-item data-url="icons.html" data-keywords='["icons"]'>
 								<iron-icon icon="build"></iron-icon><span>Icons</span>
@@ -170,7 +174,7 @@
 			-->
 			<paper-header-panel main>
 				<paper-toolbar>
-					<div class="title"></div>
+					<div class="title small">{{title}}</div>
 					<div class="search">
 						<paper-input value="{{searchTerm}}" no-label-float autofocus autosave="paper-datatable">
 							<iron-icon icon="search" prefix style="padding-right: 0px"></iron-icon>
@@ -204,6 +208,7 @@
 					return prev.concat(JSON.parse(cur.dataset.keywords));
 				}, []);
 				this.allSubKeywords = JSON.stringify(items);
+				this.title = document.title;
 			},
 			navigate: function(event, item){
 				if(item.selected){
@@ -230,13 +235,19 @@
 					}
 				}.bind(this));
 
+				this.$.submenu.opened = true;
 				if(this.searchTerm.length > 0){
-					this.$.submenu.opened = true;
+
 					if(results.length === 0){
 						this.$.noresults.removeAttribute("hidden");
 					}
 				}else{
-					this.$.submenu.opened = false;
+
+					//Polymer.dom(this.$.submenu).querySelector("paper-menu").selectedItem doesn't work due to asyncness issues :'(
+					this.$.submenu.opened = Polymer.dom(this.$.submenu).querySelectorAll('paper-menu paper-item').some(function(submenuItem){
+						return submenuItem.dataset.url == this.currentUrl;
+					}.bind(this));
+
 				}
 			}
 		});

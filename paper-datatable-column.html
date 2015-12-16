@@ -178,6 +178,8 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					/**
 					 * Can be overwritten to manually format the value in a non-editable state
 					 *
+					 * IMPORTANT: This is a property, not a method you should call directly.
+					 *
 					 * @attribute formatValue
 					 * @type Function
 					 * @default see code
@@ -186,6 +188,8 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					/**
 					 * Can be overwritten to manually sort the datatable if internal sorting is used. This is a normal
 					 * function following the Javascript sort API.
+					 *
+					 * IMPORTANT: This is a property, not a method you should call directly.
 					 *
 					 * @attribute sort
 					 * @type Function
@@ -281,7 +285,7 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 
 				},
 
-				createCellInstance: function(model, notificationKey){
+				_createCellInstance: function(model, notificationKey){
 					if(typeof model[this.property] == 'undefined' && typeof this.default !== 'undefined'){
 						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
 					}else{
