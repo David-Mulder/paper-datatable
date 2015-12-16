@@ -17,7 +17,7 @@
 
 	</head>
 	<body>
-		<demo-menu>
+
 			<template is="dom-bind" id="app">
 				<style is="custom-style">
 					h2 {
@@ -42,10 +42,10 @@
 					}
 				</style>
 				<paper-drawer-panel right-drawer>
-					<paper-header-panel drawer style="overflow-y:auto;overflow-x:hidden;border-left: 1px solid rgb(230, 230, 230);" mode="waterfall">
+					<paper-header-panel drawer style="overflow-y:auto;overflow-x:hidden;" mode="waterfall">
 						<paper-toolbar><h2 style="margin-left:0px;" class="title">Event log</h2></paper-toolbar>
 
-						<div class="content fit">
+						<div class="content fit" style="border-left: 1px solid rgb(230, 230, 230);">
 							<template is="dom-repeat" items="{{eventLog}}" sort="{{inverse}}">
 								<div style="padding:3px 15px;margin:10px 0px;padding-bottom:10px;border-bottom: 1px dotted rgb(230, 230, 230);">
 									<strong>{{item.type}}</strong> on <code>&lt;paper-{{item.on}}&gt;</code><br>
@@ -58,29 +58,30 @@
 							</div>
 						</div>
 					</paper-header-panel>
-					<div main style="padding:30px;">
-						<paper-datatable-card id="card" header="Dangerously delicious" number-of-items="49">
-							<div toolbar-main>
-							</div>
-							<div toolbar-select>
-								<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
-							</div>
-							<paper-datatable id="datatable" data="{{data}}" selectable multi-selection>
-								<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable>
-								</paper-datatable-column>
-								<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
-								<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
-							</paper-datatable>
-						</paper-datatable-card>
-						<p>
-							Note: This demo attempts to showcase as many events as possible. It should be understood however that a single demo can not show all events as some
-							events are mutually exclusive.
-						</p>
-					</div>
+					<demo-menu main>
+						<div style="padding:30px;">
+							<paper-datatable-card id="card" header="Dangerously delicious" number-of-items="49">
+								<div toolbar-main>
+								</div>
+								<div toolbar-select>
+									<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+								</div>
+								<paper-datatable id="datatable" data="{{data}}" selectable multi-selection>
+									<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable>
+									</paper-datatable-column>
+									<paper-datatable-column header="Calories" property="calories" type="Number" align="right" sortable tooltip="The total amount of food energy in the given serving size." cell-style="font-weight:bold;"></paper-datatable-column>
+									<paper-datatable-column header="Fat (g)" property="fat" type="Number" align="right" format-value="[[toFixedOne]]" sortable tooltip="The total amount of fat in the given serving size."></paper-datatable-column>
+								</paper-datatable>
+							</paper-datatable-card>
+							<p>
+								Note: This demo attempts to showcase as many events as possible. It should be understood however that a single demo can not show all events as some
+								events are mutually exclusive.
+							</p>
+						</div>
+					</demo-menu>
 				</paper-drawer-panel>
 			</template>
 
-		</demo-menu>
 
 		<script>
 			var app = document.querySelector('#app');
