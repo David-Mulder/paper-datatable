@@ -84,7 +84,11 @@
 			h1:hover .hash{
 				color: rgba(0,0,0,.4);
 			}
-
+			paper-card a{
+				color: #00bcd4;
+				text-decoration: none;
+				font-weight: 500;
+			}
 		</style>
 
 	</head>
@@ -111,6 +115,7 @@
 
 
 	<script>
+
 		var app = document.querySelector('#app');
 
 		var httpRequest = new XMLHttpRequest();
@@ -141,6 +146,7 @@
 			}
 		};
 		var page = location.search.replace('?', '');
+		document.title = page.replace(/-/g, ' ');
 		httpRequest.open('GET', '../docs/'+page+'.md');
 		httpRequest.send();
 
