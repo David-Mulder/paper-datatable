@@ -44,28 +44,6 @@ The element can be installed using bower using
 
 Check out the [getting started guide](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/docs.html?getting-started).
 
-### `<paper-datatable>` example
-
-```html
-<paper-datatable data="{{data}}">
-  <!-- a plaintext sortable column -->
-  <paper-datatable-column header="Title" property="title" sortable></paper-datatable-column>
-  <!-- an editable column -->
-  <paper-datatable-column header="Author" property="title" editable></paper-datatable-column>
-  <!-- a custom column -->
-  <paper-datatable-column header="Page" property="page" editable>
-	<template>
-	  <!--
-		this template is used for every cell in this column, you have access to:
-		 - `{{value}}`: The value of the current property (`data.n.page`)
-		 - `{{item}}`: The value of the current item (`data.n`)
-	  -->
-	  <paper-input value="{{value}}">
-	</template>
-  </paper-datatable-column>
-</paper-datatable>
-```
-
 ## License
 
 This program is free software: you can redistribute it and/or modify
