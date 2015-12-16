@@ -11,7 +11,7 @@
 		<link rel="import" href="../../prism-element/prism-highlighter.html">
 		<link rel="import" href="../paper-datatable-card.html">
 		<link rel="import" href="../paper-datatable.html">
-		<link rel="import" href="../documentation-menu.html">
+		<link rel="import" href="documentation-menu.html">
 		<link rel="import" href="../paper-datatable-styles.html">
 
 		<style is="custom-style">
@@ -146,7 +146,11 @@
 			}
 		};
 		var page = location.search.replace('?', '');
-		document.title = page.replace(/-/g, ' ');
+		var hashToTitle = function(hash){
+			var normalWords = ['with'];
+			return hash.split('-').map((word) => normalWords.indexOf(word) == -1 ? word.substr(0,1).toUpperCase() + word.substr(1, word.length -1) : word).join(' ');
+		}
+		document.title = hashToTitle(page);
 		httpRequest.open('GET', '../docs/'+page+'.md');
 		httpRequest.send();
 
