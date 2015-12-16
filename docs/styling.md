@@ -12,6 +12,21 @@ Which would make the header `green` and the content in each cell in the column `
 
 Tip: Check the `theming.html` demo for a live demonstration.
 
+Styling content inside `<template>`'s
+---
+Sometimes you need to style content inside of a cell when using `<template>`'s. There are 3 ways to achieve this:
+
+ - Inline styling. 
+   - Advantage: It's pretty clear what you're doing. 
+   - Disadvantages: *If* you need the same style in multiple columns you end up with duplicated styles and you can't 
+     style Polymer specific styles.
+ - `paper-datatable-class-n` are a set of classes with matching mixins to style specific classes inside cells. 
+   - Advantage: You can apply the same style to multiple different elements in different columns.
+   - Disadvantages: It's hard to read and it only works in Shadow DOM
+ - [Cross scope styling](https://www.polymer-project.org/1.0/docs/devguide/styling.html#xscope-styling). Stuff like `/deep/`
+   - Advantage: It works really well.
+   - Disadvantage: It's deprecated.
+
 <paper-datatable>
 ===
 

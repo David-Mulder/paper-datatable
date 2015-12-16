@@ -35,6 +35,8 @@ whether you wish to use the full `<paper-datatable-card>` element. The `<paper-d
   - Use the `<paper-datatable>` if your table is going to show a fixed number of rows.
   - Use the `<paper-datatable-card>` if your table has a dynamic number of rows. 
 
+And it's also a cool idea to check [the different `resize-behavior`s](resize-behavior.html) and pick one you like.
+
 Editable columns
 ===
 There are two ways to define editable columns, the easiest way is to just set the `editable` attribute like
