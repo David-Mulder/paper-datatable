@@ -5,7 +5,7 @@ A [material design implementation of a data table](https://www.google.com/design
  - Documentation can be found [here](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/docs.html?installation)
  - Demos can be found [here](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card/full-implementation.html)
 
-[![http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png)](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card/full-implementation.htmll)
+[![http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/screenshot.png)](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card/full-implementation.html)
 
 ## Features
 
