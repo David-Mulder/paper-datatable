@@ -2,7 +2,7 @@ Events
 ===
 All properties with a `notifies` label in the API references will trigger a `propertyName-changed` event. Beyond that the
 element also exposes a few custom events which are documented here. One of the best ways to find events is
-simply be exploring the [event explorer](events.html).
+simply be exploring the [event explorer](../demo/events.html).
 
 `<paper-datatable>` and `<paper-datatable-column>`
 ===
