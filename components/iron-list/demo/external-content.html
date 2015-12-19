@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <style is="custom-style">
     :root {
-      --dark-primary-color:       #F57C00;
+      --dark-primary-color: #F57C00;
     }
 
     paper-scroll-header-panel {
@@ -47,20 +47,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     paper-toolbar {
       background-color: var(--dark-primary-color);
-    }
-
-    paper-toolbar.tall .title {
-      font-size: 40px;
-      margin-left: 60px;
-
-      -webkit-transform-origin: left center;
-      transform-origin: left center;
-      overflow: visible;
+      --paper-toolbar-title: {
+        font-size: 40px;
+        margin-left: 60px;
+        -webkit-transform-origin: left center;
+        transform-origin: left center;
+        overflow: visible;
+      };
     }
 
     .middle-container {
       height: 100%;
+      @apply(--layout-center);
+      @apply(--layout-horizontal);
       /*margin-left: 60px;*/
+    }
+
+    .bottom-container {
+      @apply(--layout-center);
+      @apply(--layout-horizontal);
     }
 
     .bottom {
@@ -102,13 +107,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       color: gray;
     }
 
+    .spacer {
+      @apply(--layout-flex);
+    }
+
     /* Small */
     @media (max-width: 600px) {
       paper-toolbar.tall .title {
         font-size: 20px;
       }
     }
-    
+
     .index {
       width: 30px;
     }
@@ -128,18 +137,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       loading="{{loading}}"
       last-response="{{people}}">
     </iron-ajax>
-    <paper-scroll-header-panel class="fit" condenses keep-condensed-header>
+    <paper-scroll-header-panel condenses keep-condensed-header>
       <paper-toolbar class="tall">
         <paper-icon-button icon="arrow-back"></paper-icon-button>
-        <div class="flex"></div>
+        <div class="spacer"></div>
         <paper-icon-button icon="search"></paper-icon-button>
         <paper-icon-button icon="refresh" on-tap="refreshData"></paper-icon-button>
         <paper-icon-button icon="more-vert"></paper-icon-button>
 
-        <div class="middle middle-container center horizontal layout">
+        <div class="middle middle-container">
           <div class="title">iron-list &amp; filltext.com</div>
         </div>
-        <div class="bottom bottom-container center horizontal layout">
+        <div class="bottom bottom-container">
           <div class="bottom-title">
             <span class="length">Rows: <span>{{people.length}}</span></span>
             <paper-spinner active="{{loading}}"></paper-spinner>

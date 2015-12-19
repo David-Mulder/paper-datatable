@@ -1,6 +1,6 @@
 {
   "name": "paper-elements",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "homepage": "https://github.com/PolymerElements/paper-elements",
   "authors": [
     "The Polymer Authors"
@@ -58,14 +58,13 @@
     "paper-tooltip": "PolymerElements/paper-tooltip#^1.0.0"
   },
   "main": "paper-elements.html",
-  "_release": "1.0.6",
+  "_release": "1.0.7",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.6",
-    "commit": "607836cfe7efa104e7a8a5794a245b55d46669c0"
+    "tag": "v1.0.7",
+    "commit": "718dc9fb0c1ba6bd8baeb38d2bcb96d35cd350db"
   },
   "_source": "git://github.com/PolymerElements/paper-elements.git",
   "_target": "~1.0.6",
-  "_originalSource": "PolymerElements/paper-elements",
-  "_direct": true
+  "_originalSource": "PolymerElements/paper-elements"
 }

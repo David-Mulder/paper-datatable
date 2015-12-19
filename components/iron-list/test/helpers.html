@@ -80,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // IE 10 & 11 doesn't render propertly :(
     var badPixels = 0;
     while (y < listHeight) {
-      item = document.elementFromPoint(listRect.left + 1, y);
+      item = document.elementFromPoint(listRect.left + 100, y);
       if (item.parentNode && !item.parentNode._templateInstance) {
         badPixels++;
       }

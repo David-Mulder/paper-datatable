@@ -16,10 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
 
-  <link rel="import" href="../../test-fixture/test-fixture.html">
-  <link rel="import" href="../../paper-styles/paper-styles.html">
   <link rel="import" href="helpers.html">
   <link rel="import" href="x-list.html">
 
@@ -55,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var lastItem = getLastItemFromList(list);
           var lastItemHeight = lastItem.offsetHeight;
           var expectedFinalItem = container.listHeight/lastItemHeight;
-          
+
           assert.equal(list.offsetHeight, container.listHeight);
           assert.equal(lastItemHeight, 2);
           assert.equal(getLastItemFromList(list).textContent, expectedFinalItem);
@@ -71,7 +68,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         container = fixture('trivialListSmall');
         list = container.list;
         list.items = buildDataSet(200);
-
       });
 
       test('increase pool size after resizing the list', function(done) {
@@ -81,7 +77,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var lastItem = getLastItemFromList(list);
             var lastItemHeight = lastItem.offsetHeight;
             var expectedFinalItem = container.listHeight/lastItemHeight;
-            
+
             assert.equal(list.offsetHeight, container.listHeight);
             assert.equal(lastItemHeight, 2);
             assert.equal(getLastItemFromList(list).textContent, expectedFinalItem);

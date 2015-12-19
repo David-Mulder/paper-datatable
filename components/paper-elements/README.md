@@ -28,10 +28,15 @@ _Nothing on the super short-term list_
 * `paper-bottom-sheet` - a [material design bottom sheet](https://www.google.com/design/spec/components/bottom-sheets.html) this can easily be created with `neon-animation` ([example](https://googlewebcomponents.github.io/places-app/))
 * `paper date and time pickers` - [material design date and time pickers](https://www.google.com/design/spec/components/pickers.html#)
 * `paper steppers` - [material design steppers](https://www.google.com/design/spec/components/steppers.html#)
+* `paper cascading menu` - the desktop cascading version of the [material design dropdown menus](https://www.google.com/design/spec/components/menus.html#menus-usage)
 
 **Longer term**
 * `paper-chip` - a [material design chip](http://www.google.com/design/spec/components/chips.html)
 * `paper-data-table` - a [material design data table](http://www.google.com/design/spec/components/data-tables.html). This one is very complex, and tentatively planned for the mid- to distant-future (i.e. months not weeks)
+
+### Third-Party elements
+_Elements not built directly by the Polymer core team, but which are of notably high quality and fill current gaps in the element set._
+* [`paper-datatable`](https://github.com/David-Mulder/paper-datatable) by [David-Mulder](https://github.com/David-Mulder/) - a material design data table for displaying tabular data, sorting by columns, and more.
 
 ### Elements not planned, notably
 _Elements we're not planning on building as part of this product line, but that one might be wondering about_

@@ -31,6 +31,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../iron-list.html">
 
   <style is="custom-style">
+    body {
+      @apply(--layout-fullbleed);
+    }
 
     paper-scroll-header-panel {
       @apply(--layout-fit);
@@ -98,18 +101,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       color: gray;
     }
 
+    .spacer {
+      @apply(--layout-flex);
+    }
+
   </style>
 
 </head>
-<body class="fullbleed" unresolved>
+<body unresolved>
 
   <template is="dom-bind">
     <iron-ajax url="data/contacts.json" last-response="{{data}}" auto></iron-ajax>
 
-    <paper-scroll-header-panel class="fit" condenses keep-condensed-header>
+    <paper-scroll-header-panel condenses keep-condensed-header>
       <paper-toolbar class="tall">
         <paper-icon-button icon="arrow-back" alt="Back"></paper-icon-button>
-        <div class="flex"></div>
+        <div class="spacer"></div>
         <paper-icon-button icon="search" alt="Search"></paper-icon-button>
         <paper-icon-button icon="more-vert" alt="More options"></paper-icon-button>
         <div class="bottom title">iron-list</div>

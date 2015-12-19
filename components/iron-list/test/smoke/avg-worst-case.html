@@ -22,11 +22,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
 
   <link rel="import" href="../../../polymer/polymer.html">
-  <link rel="import" href="../../../paper-styles/paper-styles.html">
   <link rel="import" href="../../iron-list.html">
 
   <style is="custom-style">
-
+    body {
+      @apply(--layout-fullbleed);
+    }
+    
     iron-list {
       width: 500px;
       height: 400px;
@@ -36,35 +38,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     .item {
       background-color: green;
-      border-bottom: 1px solid white; 
+      border-bottom: 1px solid white;
     }
 
   </style>
 
 </head>
-<body  class="fullbleed" unresolved>
+<body unresolved>
 
   <template is="dom-bind">
-    
-    <h1>The physical avarage is not useful in this situations</h1>
+
+    <h1>The physical average is not useful in this situations</h1>
     <p>The list is correct if it can render all the items without empty spaces.</p>
     <iron-list id="list" items="[791, 671]" as="item" style="width: 300px; height: 300px;">
       <template>
-        <div class="item" style$="[[_getStyle(item)]]"><span>[[index]]</span> height: <span>[[item]]</span> 
+        <div class="item" style$="[[_getStyle(item)]]"><span>[[index]]</span> height: <span>[[item]]</span>
         </div>
       </template>
     </iron-list>
 
     <iron-list id="list2" items="[791, 671]" as="item" style="width: 710px; height: 453px;">
       <template>
-        <div class="item" style$="[[_getStyle(item)]]"><span>[[index]]</span> height: <span>[[item]]</span> 
+        <div class="item" style$="[[_getStyle(item)]]"><span>[[index]]</span> height: <span>[[item]]</span>
         </div>
       </template>
     </iron-list>
 
     <iron-list items="[512, 256, 128, 64, 16, 16, 16, 16, 16, 16, 8, 4]" as="item" style="height: 256px;">
       <template>
-        <div class="item" style$="[[_getStyle(item)]]"><span>[[index]]</span> height: <span>[[item]]</span> 
+        <div class="item" style$="[[_getStyle(item)]]"><span>[[index]]</span> height: <span>[[item]]</span>
         </div>
       </template>
     </iron-list>

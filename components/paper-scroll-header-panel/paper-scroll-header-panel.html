@@ -544,7 +544,7 @@ Custom property | Description | Default
       var y = Math.max(0, (this.noReveal) ? scrollTop : this._y + deltaScrollTop);
 
       if (y > this._headerMaxDelta) {
-        y = this._headerMaxDelta + 1;
+        y = this._headerMaxDelta;
 
         if (this.keepCondensedHeader) {
           this._setHeaderState(ctx.HEADER_STATE_CONDENSED);
