@@ -27,9 +27,10 @@
 			#selectionToolbar{
 				display: none;
 				background: var(--paper-datatable-selection-toolbar-color, --paper-pink-50);
+				@apply(--paper-datatable-selection-toolbar);
 				padding:0px 12px 0px 24px;
 			}
-			#selectionToolbar .selectionHeader{
+			#selectionToolbar .selectionHeader, #selectionToolbar .toolbar ::content paper-icon-button{
 				color: var(--paper-datatable-selection-toolbar-text-color, --accent-color);
 			}
 			#selectionToolbar[data-visible]{

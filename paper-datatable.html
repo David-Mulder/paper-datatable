@@ -203,12 +203,12 @@
 				width: 100%;
 			}
 			paper-checkbox{
-				--paper-checkbox-unchecked-color: rgba(0,0,0,.54);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-checkbox-color, --primary-text-color);
 				@apply(--paper-datatable-checkbox);
 			}
 			th paper-checkbox{
 				@apply(--paper-datatable-header-checkbox);
-				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, rgba(0,0,0,.54));
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, --primary-text-color);
 			}
 			.partialSelectionContainer{
 				width:18px;
