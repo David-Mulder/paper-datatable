@@ -335,7 +335,7 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 
 				_cast: function(value){
 					if(typeof value === 'undefined'){
-						if(this.default){
+						if(typeof this.default !== 'undefined'){
 							value = JSON.parse(JSON.stringify(this.default));
 						}else{
 							value = '';
