@@ -37,6 +37,7 @@ Sometimes you need to style content inside of a cell when using `<template>`'s. 
  `--paper-datatable-row-hover-color` | color of hovered row | `--paper-grey-200`
  `--paper-datatable-checkbox-color` | checkbox color | `--primary-text-color`
  `--paper-datatable-header-checkbox-color` | checkbox color | `--primary-text-color`
+ `--paper-datatable-icon-color` | icon color of editable icon | `rgba(0,0,0,.54)`
 
 Mixins
 ---
@@ -62,9 +63,12 @@ Variables
  Custom property | Description | Default
  ----------------|-------------|----------
  `--paper-datatable-divider-color` | divider color is used to draw the bottom line | --divider-color
- `--paper-datatable-selection-toolbar-color` | color of selected toolbar, should be 50 of the secondary color | `--paper-pink-50`
- `--paper-datatable-selection-toolbar-text-color` | text color of text and icons on selection toolbar | `--accent-color`
- `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar | 
+ `--paper-datatable-selection-toolbar-color` | color of selection toolbar, should be 50 of the secondary color | `--paper-pink-50`
+ `--paper-datatable-selection-toolbar-text-color` | color of text on selection toolbar | `--accent-color`
+ `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar |
+ `--paper-datatable-top-toolbar-text-color` | color of text in the top toolbar | `rgba(0,0,0,.54)`
+ `--paper-datatable-top-toolbar-icon-color` | color of icons in the top toolbar | ``
+ `--paper-datatable-selection-toolbar-icon-color` | color of icons on selection toolbar | 
 
 Mixins
 ---
@@ -74,3 +78,4 @@ Mixins
  `--paper-datatable-card` | applied to the main card
  `--paper-datatable-navigation-bar` | applied to the bottom bar containing the navigation
  `--paper-datatable-selection-toolbar` | applied to the selection toolbar
+ `--paper-datatable-top-toolbar` | Applied to the general area above the data table

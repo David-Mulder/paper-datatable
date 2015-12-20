@@ -49,6 +49,9 @@
 				color: rgba(255, 255, 255, var(--dark-primary-opacity));
 				--paper-input-container-input-color: rgba(255, 255, 255, var(--dark-primary-opacity));
 				--paper-datatable-navigation-bar-text-color: rgba(255, 255, 255, var(--dark-primary-opacity));
+
+				--paper-datatable-top-toolbar-text-color: rgba(255, 255, 255, var(--dark-primary-opacity));
+
 			}
 
 			paper-datatable{
@@ -84,10 +87,12 @@
 				};
 
 				--paper-datatable-edit-dialog-color: #303030;
+
 				--paper-datatable-edit-dialog: {
 					border: 1px solid rgba(255, 255, 255, .2);
 					box-sizing: border-box;
 				}
+
 			}
 
 
@@ -100,10 +105,10 @@
 
 				<paper-datatable-card header="Dangerously delicious">
 					<div toolbar-main>
-						<paper-icon-button icon="more-vert" on-tap="delete"></paper-icon-button>
+						<paper-icon-button icon="more-vert"></paper-icon-button>
 					</div>
 					<div toolbar-select>
-						<paper-icon-button icon="delete" on-tap="delete"></paper-icon-button>
+						<paper-icon-button icon="delete"></paper-icon-button>
 					</div>
 					<paper-datatable data="{{data}}" selectable multi-selection custom-row-style="{{generateRowCss}}" progress="{{progressBarVisble}}" sort-property="calories" sort-direction="asc">
 						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" style="width:99%;" sortable editable dialog edit-icon>
