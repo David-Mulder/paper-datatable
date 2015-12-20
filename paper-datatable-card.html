@@ -106,7 +106,13 @@
 				</div>
 				<div id="selectionToolbar" class="horizontal center layout fit" data-visible$="[[_selectedToolbarVisible]]">
 					<div class="flex selectionHeader">
-						<span>[[_numberselectedIds]]</span> item selected
+						<div hidden="{{!_singleSelectToolbarVisible}}">
+							<span>[[_numberselectedIds]]</span> [[labelItemSelected]]
+						</div>
+
+						<div hidden="{{!_multiSelectToolbarVisible}}">
+							<span>[[_numberselectedIds]]</span> [[labelItemsSelected]]
+						</div>
 					</div>
 					<div class="toolbar" data-visible$="{{_singleSelectToolbarVisible}}">
 						<content select="*[toolbar-select-single]"></content>
@@ -124,7 +130,7 @@
 			</div>
 			<div class="horizontal center layout" id="bottomBlock">
 				<div class="flex"></div>
-				<span>Rows per page:</span>
+				<span>[[labelRowsPerPage]]</span>
 				<paper-dropdown-menu no-label-float style="width: 68px;">
 					<paper-menu class="dropdown-content" selected="{{pageSize}}" attr-for-selected="value">
 						<template is="dom-repeat" items="{{pageSizeOptions}}">
@@ -133,7 +139,7 @@
 					</paper-menu>
 				</paper-dropdown-menu>
 				<span>
-					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, numberOfItems)]]</span> of&nbsp;<span>[[numberOfItems]]</span>
+					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, numberOfItems)]]</span> [[labelOfPages]]&nbsp;<span>[[numberOfItems]]</span>
 				</span>
 				<paper-icon-button icon="datatable:first-page" on-tap="firstPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
 				<paper-icon-button icon="datatable:prev-page" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
@@ -168,6 +174,42 @@
 					 * @type Object
 					 */
 					header: String,
+					/**
+					 * @attribute String
+					 * @default 'Rows per page:'
+					 * @type String
+					 */
+					labelRowsPerPage: {
+						type: String,
+						value: 'Rows per page:'
+					},
+					/**
+					 * @attribute String
+					 * @default 'Rows per page:'
+					 * @type String
+					 */
+					labelItemSelected: {
+						type: String,
+						value: 'item selected'
+					},
+					/**
+					 * @attribute String
+					 * @default 'Rows per page:'
+					 * @type String
+					 */
+					labelItemsSelected: {
+						type: String,
+						value: 'items selected'
+					},
+					/**
+					 * @attribute String
+					 * @default 'Label number "of" pages'
+					 * @type String
+					 */
+					labelOfPages: {
+						type: String,
+						value: 'of'
+					},
 					/**
 					 * See general documentation.
 					 *
@@ -264,7 +306,7 @@
 					_selectedToolbarVisible: Boolean,
 					_singleSelectToolbarVisible: Boolean,
 					_multiSelectToolbarVisible: Boolean,
-					_numberselectedIds: Number
+					_numberselectedIds: Number,
 				},
 				ready: function(){
 					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
@@ -475,6 +517,7 @@
 					this._singleSelectToolbarVisible = this.selectedIds.length == 1;
 					this._multiSelectToolbarVisible = this.selectedIds.length > 1;
 					this._numberselectedIds = this.selectedIds.length;
+
 					this._datatable._partialSelection = this.selectedIds.length > 0;
 				},
 				_setSelectedIds: function(ev){
