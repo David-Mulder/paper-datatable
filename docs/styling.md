@@ -65,7 +65,8 @@ Variables
  `--paper-datatable-divider-color` | divider color is used to draw the bottom line | --divider-color
  `--paper-datatable-selection-toolbar-color` | color of selected toolbar, should be 50 of the secondary color | `--paper-pink-50`
  `--paper-datatable-selection-toolbar-text-color` | text color of text and icons on selection toolbar | `--accent-color`
- `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar | 
+ `--paper-datatable-navigation-bar-text-color` | color of text in navigation bar |
+ `--paper-datatable-top-toolbar-text-color` | color of text in the top toolbar | 
 
 Mixins
 ---
@@ -75,3 +76,4 @@ Mixins
  `--paper-datatable-card` | applied to the main card
  `--paper-datatable-navigation-bar` | applied to the bottom bar containing the navigation
  `--paper-datatable-selection-toolbar` | applied to the selection toolbar
+ `--paper-datatable-top-toolbar` | Applied to the general area above the data table

@@ -54,10 +54,15 @@
 				height:64px;
 				padding:0px 6px 0px 24px;
 				position:relative;
+				@apply(--paper-datatable-top-toolbar);
 			}
 			#topBlock .header{
 				font-size:20px;
 				@apply(--paper-font-common-base);
+				color: var(--paper-datatable-top-toolbar-text-color);
+			}
+			#topBlock ::content paper-icon-button{
+				color: var(--paper-datatable-top-toolbar-text-color);
 			}
 			#topBlock .selectionHeader{
 				font-size:16px;
