@@ -203,12 +203,14 @@
 				width: 100%;
 			}
 			paper-checkbox{
-				--paper-checkbox-unchecked-color: var(--paper-datatable-checkbox-color, --primary-text-color);
+				--paper-checkbox-unchecked-color: var(--paper-datatable-checkbox-border-color, --primary-text-color);
+				--paper-checkbox-checked-color: var(--paper-datatable-checkbox-color, --accent-color);
 				@apply(--paper-datatable-checkbox);
 			}
 			th paper-checkbox{
+				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-border-color, --primary-text-color);
+				--paper-checkbox-checked-color: var(--paper-datatable-header-checkbox-color, --accent-color);
 				@apply(--paper-datatable-header-checkbox);
-				--paper-checkbox-unchecked-color: var(--paper-datatable-header-checkbox-color, --primary-text-color);
 			}
 			.partialSelectionContainer{
 				width:18px;

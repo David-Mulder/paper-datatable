@@ -35,8 +35,8 @@ Sometimes you need to style content inside of a cell when using `<template>`'s. 
  `--paper-datatable-divider-color` | divider color between rows | `--divider-color`
  `--paper-datatable-row-selection-color` | divider color between rows | `--paper-grey-100`
  `--paper-datatable-row-hover-color` | color of hovered row | `--paper-grey-200`
- `--paper-datatable-checkbox-color` | checkbox color | `--primary-text-color`
- `--paper-datatable-header-checkbox-color` | checkbox color | `--primary-text-color`
+ `--paper-datatable-checkbox-border-color` | checkbox color | `--primary-text-color`
+ `--paper-datatable-header-checkbox-border-color` | checkbox color | `--primary-text-color`
  `--paper-datatable-icon-color` | icon color of editable icon | `rgba(0,0,0,.54)`
 
 Mixins
