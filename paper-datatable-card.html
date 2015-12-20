@@ -56,13 +56,13 @@
 				@apply(--paper-font-common-base);
 				color: var(--paper-datatable-top-toolbar-text-color);
 			}
-			#selectionToolbar > ::content paper-icon-button, .toolbar > ::content paper-icon-button{
+			#selectionToolbar > ::content paper-icon-button, .toolbar > ::content paper-icon-button,
 			#selectionToolbar > ::content paper-icon, .toolbar > ::content paper-icon,
 			#selectionToolbar > ::content iron-icon, .toolbar > ::content iron-icon{
 				color: var(--paper-datatable-selection-toolbar-icon-color, rgba(0,0,0,.54));
 			}
-			#toolbar-main > ::content paper-icon-button, #toolbar-main > ::content paper-icon, #toolbar-main > ::content iron-icon{
-				color: var(--paper-datatable-top-toolbar-text-color);
+			#toolbar-main ::content paper-icon-button, #toolbar-main ::content paper-icon, #toolbar-main ::content iron-icon{
+				color: var(--paper-datatable-top-toolbar-icon-color);
 			}
 			#topBlock .selectionHeader{
 				font-size:16px;
@@ -147,14 +147,14 @@
 		(function () {
 			'use strict';
 
-/*
-A [material design implementation of the tables within cards spec](https://www.google.com/design/spec/components/data-tables.html#data-tables-tables-within-cards).
+			/*
+			 A [material design implementation of the tables within cards spec](https://www.google.com/design/spec/components/data-tables.html#data-tables-tables-within-cards).
 
 
-@element paper-datatable-card
-@demo demo/users-card.html Polished demo
-@demo demo/paper-datatable-card.html Complex demo
-*/
+			 @element paper-datatable-card
+			 @demo demo/users-card.html Polished demo
+			 @demo demo/paper-datatable-card.html Complex demo
+			 */
 
 			Polymer({
 
