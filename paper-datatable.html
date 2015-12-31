@@ -600,7 +600,7 @@ A [material design implementation of a data table](https://www.google.com/design
 								if(isEmpty || isWrongRow || isWrongColumn){
 									cell.removeAttribute('data-empty');
 									var prop = cell.dataColumn.property;
-									var data = rowData[prop];
+                  var data = cell.dataColumn._getValueByProperty(rowData);
 
 									cell.setAttribute('data-row-key', row.dataset.key);
 									cell.dataBoundColumn = cell.dataColumn;
@@ -667,8 +667,9 @@ A [material design implementation of a data table](https://www.google.com/design
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
 							var prop = cell.dataColumn.property;
+              var propertyPath = prop.split('.');
 
-							if(prop == path[0]){
+							if(prop == path.join(".")){
 								if(cell.instance){
 									var localPath = path.slice();
 									localPath.shift();
@@ -677,7 +678,7 @@ A [material design implementation of a data table](https://www.google.com/design
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}
 								if(!cell.instance || cell.instanceType == 'dialog'){
-									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(this.get([object, rowKey, prop]));
+									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(this.get([object, rowKey].concat(propertyPath)));
 								}
 							}
 							if(cell.instance){
@@ -893,8 +894,8 @@ A [material design implementation of a data table](https://www.google.com/design
 								a = b;
 								b = c;
 							}
-							var valA = this._getByKey(a)[column.property];
-							var valB = this._getByKey(b)[column.property];
+							var valA = column._getValueByProperty(this._getByKey(a));
+							var valB = column._getValueByProperty(this._getByKey(b));
 							return column._sort(valA, valB);
 						}.bind(this));
 						this.set("_rowKeys", JSON.parse(JSON.stringify(this._rowKeys)));

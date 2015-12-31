@@ -286,10 +286,12 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_createCellInstance: function(model, notificationKey){
-					if(typeof model[this.property] == 'undefined' && typeof this.default !== 'undefined'){
+					var val = this._getValueByProperty(model);
+
+					if(typeof val == 'undefined' && typeof this.default !== 'undefined'){
 						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
 					}else{
-						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
+						var instance = this.stamp({item: model, column:this, value: val, _dataKey: notificationKey});
 					}
 					return instance;
 				},
@@ -363,6 +365,15 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					}
 				},
 
+				_getValueByProperty: function(dataObj){
+					var propertyPath = this.property.split('.');
+					var val = dataObj;
+					for (var i = 0; i < propertyPath.length && typeof val != 'undefined'; i++) {
+						val = val[propertyPath[i]];
+					}
+					return val;
+				},
+
 				_forwardParentProp: function(prop, value){
 					console.warn('_forwardParentProp',arguments);
 				},
@@ -373,8 +384,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				_forwardInstanceProp: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
+					var propertyPath = this.property.split('.');
+
 					if(item == 'value'){
-						var parentPath = ['data', templateInstance.get('_dataKey'), this.property];
+						var parentPath = ['data', templateInstance.get('_dataKey')].concat(propertyPath);
 						value = this._cast(value);
 						//console.log('_forwardInstanceProp',arguments);
 						//console.log('set', parentPath, 'to', value);
@@ -387,8 +400,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				_forwardInstancePath: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
+					var propertyPath = this.property.split('.');
+
 					if(item == 'value'){
-						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path);
+						var parentPath = ['data', templateInstance.get('_dataKey')].concat(propertyPath[0]).concat(path);
 						if(path.length == 0){
 							value = this._cast(value);
 						}
