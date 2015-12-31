@@ -600,7 +600,7 @@ A [material design implementation of a data table](https://www.google.com/design
 								if(isEmpty || isWrongRow || isWrongColumn){
 									cell.removeAttribute('data-empty');
 									var prop = cell.dataColumn.property;
-                  var data = cell.dataColumn._getValueByProperty(rowData);
+									var data = cell.dataColumn._getValueByProperty(rowData);
 
 									cell.setAttribute('data-row-key', row.dataset.key);
 									cell.dataBoundColumn = cell.dataColumn;
@@ -667,7 +667,7 @@ A [material design implementation of a data table](https://www.google.com/design
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
 							var prop = cell.dataColumn.property;
-              var propertyPath = prop.split('.');
+							var propertyPath = prop.split('.');
 
 							if(prop == path.join(".")){
 								if(cell.instance){
