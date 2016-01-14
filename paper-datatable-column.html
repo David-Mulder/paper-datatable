@@ -39,7 +39,11 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					 * @type String
 					 * @required
 					 */
-					header: String,
+					header: {
+						type: String,
+						notify: true,
+						observer: '_headerChanged'
+					},
 					/**
 					 * The property to be used from `data` for this column
 					 *
@@ -434,8 +438,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					}else if(type.toLowerCase() == 'number'){
 						return 'number';
 					}
-				}
-
+				},
+				_headerChanged: function(header) {
+					this.fire('header-changed');
+				},
 
 			});
 		})();
