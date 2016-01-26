@@ -510,13 +510,15 @@ A [material design implementation of a data table](https://www.google.com/design
 
 				_queryAndSetColumns: function(){
 					var columns = this.queryAllEffectiveChildren('paper-datatable-column');
-					columns.forEach((column) => {
+					columns.forEach((column, index) => {
 						if(!column.beenAttached.state.ready){
 							column.parentNodeRef = this;
 							this.async(function(){
 								column._registerEvilFunctions();
 								column.beenAttached.ready();
 							});
+							column.index = index;
+							this.listen(column, 'header-changed', '_updateHeaderColumn');
 						}
 					});
 					this.set('_columns', columns.filter((column) => !column.inactive));
@@ -1098,7 +1100,11 @@ A [material design implementation of a data table](https://www.google.com/design
 
 						}
 					}
-				}
+				},
+				_updateHeaderColumn: function(event){
+					var column = Polymer.dom(event).localTarget;
+					this.notifyPath(`_columns.${column.index}.header`, this._columns[column.index].header);
+				},
 
 			});
 		})();
