@@ -264,7 +264,11 @@
 					_selectedToolbarVisible: Boolean,
 					_singleSelectToolbarVisible: Boolean,
 					_multiSelectToolbarVisible: Boolean,
-					_numberselectedIds: Number
+					_numberselectedIds: Number,
+					selectedToolbarDisabled: {
+						type: Boolean,
+						value: false
+					}
 				},
 				ready: function(){
 					this._datatable = Polymer.dom(this).querySelector("paper-datatable");
@@ -471,11 +475,13 @@
 					return this.page * this.pageSize >= this.numberOfItems;
 				},
 				_setSelectedToolbarVisible: function(){
-					this._selectedToolbarVisible = this.selectedIds.length > 0;
-					this._singleSelectToolbarVisible = this.selectedIds.length == 1;
-					this._multiSelectToolbarVisible = this.selectedIds.length > 1;
-					this._numberselectedIds = this.selectedIds.length;
-					this._datatable._partialSelection = this.selectedIds.length > 0;
+					if (!this.selectedToolbarDisabled) {
+						this._selectedToolbarVisible = this.selectedIds.length > 0;
+						this._singleSelectToolbarVisible = this.selectedIds.length == 1;
+						this._multiSelectToolbarVisible = this.selectedIds.length > 1;
+						this._numberselectedIds = this.selectedIds.length;
+						this._datatable._partialSelection = this.selectedIds.length > 0;
+					}
 				},
 				_setSelectedIds: function(ev){
 					if(ev.detail.selected){
