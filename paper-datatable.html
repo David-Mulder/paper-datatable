@@ -601,6 +601,9 @@ A [material design implementation of a data table](https://www.google.com/design
 									cell.removeAttribute('data-empty');
 									var prop = cell.dataColumn.property;
 									var data = rowData[prop];
+									if (!data && prop) {
+										prop.split('.').forEach(key => data = data ? data[key] : rowData[key]);
+									}
 
 									cell.setAttribute('data-row-key', row.dataset.key);
 									cell.dataBoundColumn = cell.dataColumn;

@@ -58,6 +58,16 @@
 				</paper-card>
 
 				<paper-card>
+					<paper-datatable data="{{data}}" selectable>
+						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
+						<paper-datatable-column header="Object a" property="complexObj.a" tooltip="The total amount of..." sortable>
+						</paper-datatable-column>
+						<paper-datatable-column header="Object b" property="complexObj.b" tooltip="The total amount of..." sortable>
+						</paper-datatable-column>
+					</paper-datatable>
+				</paper-card>
+
+				<paper-card>
 					<paper-datatable data="{{data}}" selectable multi-selection>
 						<paper-datatable-column header="Dessert (100g serving)" property="title" type="String" tooltip="Some title" sortable>	</paper-datatable-column>
 						<paper-datatable-column header="Calories" property="calories" type="Number" tooltip="The total amount of..." sortable>
@@ -75,6 +85,18 @@
 							</template>
 						</paper-datatable-column>
 						<paper-datatable-column header="Array" property="arr" type="Array" tooltip="The total amount of..." sortable>
+							<template>
+								<template is="dom-repeat" items="{{value}}" as="valueItem">
+									<paper-input value="{{valueItem}}"></paper-input>
+								</template>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Object Single element" property="complexObj.b" tooltip="The total amount of..." sortable>
+							<template>
+								<paper-input value="{{value}}"></paper-input>
+							</template>
+						</paper-datatable-column>
+						<paper-datatable-column header="Very Complexe Object" property="veryComplexObj.a.x" tooltip="The total amount of..." sortable>
 							<template>
 								<template is="dom-repeat" items="{{value}}" as="valueItem">
 									<paper-input value="{{valueItem}}"></paper-input>
@@ -109,9 +131,9 @@
 				return this.get(path);
 			};
 			app.data = [
-				{title: 'Ice cream', yummy: true, calories: 2000, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447315235838)},
-				{title: 'Dessert', yummy: true, calories: 3000, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447155235838)},
-				{title: 'Cake', yummy: false, calories: 4000, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447355135838)}
+				{title: 'Ice cream', yummy: true, calories: 2000, veryComplexObj: {a: {x: ['b', 'c']}}, complexObj: {a: 'b', b: 'd'}, arr: [2,3,4], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447315235838)},
+				{title: 'Dessert', yummy: true, calories: 3000, veryComplexObj: {a: {x: ['b', 'c']}}, complexObj: {a: 'bb', b: 'dd'}, arr: [5,6], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447155235838)},
+				{title: 'Cake', yummy: false, calories: 4000, veryComplexObj: {a: {x: ['b', 'c']}}, complexObj: {a: 'cc', b: 'gg'}, arr: [7,8], complexArr: [{title:'b'}, {title:'c'}], created: new Date(1447355135838)}
 			];
 			app.log = function(ev){
 				console.info('event', ev.type, 'on', ev.target, 'with detail', ev.detail);
