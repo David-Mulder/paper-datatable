@@ -117,7 +117,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					 * @type Boolean
 					 * @default false
 					 */
-					editable: Boolean,
+					editable: {
+						type: Boolean,
+						observer: '_initTemplate'
+					},
 					/**
 					 * If `type` is an `Array` and the array consists of `Object`s it's a common need
 					 * to display a single property of every object (in non-editable mode).
@@ -283,6 +286,14 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					}
 
 
+				},
+
+				_initTemplate: function(){
+					if( this.editable ){
+						this.ready();
+					} else {
+						this.template = false;
+					}
 				},
 
 				_createCellInstance: function(model, notificationKey){
