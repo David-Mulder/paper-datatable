@@ -289,7 +289,11 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_initTemplate: function(){
-					this.ready();
+					if( this.editable ){
+						this.ready();
+					} else {
+						this.template = false;
+					}
 				},
 
 				_createCellInstance: function(model, notificationKey){
