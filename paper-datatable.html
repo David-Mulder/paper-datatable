@@ -629,7 +629,7 @@ A [material design implementation of a data table](https://www.google.com/design
 									}else{
 										if(cell.instance)
 											delete cell.instance;
-										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
+										cell.querySelector('span').textContent = cell.dataColumn._formatValue(data)
 										//cell.textContent = data;
 									}
 								}
@@ -677,7 +677,7 @@ A [material design implementation of a data table](https://www.google.com/design
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}
 								if(!cell.instance || cell.instanceType == 'dialog'){
-									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(this.get([object, rowKey, prop]));
+									cell.querySelector('span').textContent = this._columns[i]._formatValue(this.get([object, rowKey, prop]));
 								}
 							}
 							if(cell.instance){
