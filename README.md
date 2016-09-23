@@ -24,8 +24,8 @@ A [material design implementation of a data table](https://www.google.com/design
 				<paper-input value="{{value}}">
 			</template>
 		</paper-datatable-column>
- - Extremely simple to set up ([simple demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/simple.html))
- - Pretty good styling support ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/theming.html))
+ - Extremely simple to set up ([simple demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable/))
+ - Pretty good styling support ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/miscellaneous/theming.html))
  - Pagination and external data sources ([demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/users-card.html))
  - Supporting both inline editing and in Material Design dialogs.
  - ~~Add new items on the fly ([unpolished demo](http://david-mulder.github.io/paper-datatable/components/paper-datatable/demo/paper-datatable-card.html))~~
