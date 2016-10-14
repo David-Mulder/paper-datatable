@@ -248,7 +248,15 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					 *
 					 * @type Number in px or String
 					 */
-					width: Object
+					width: Object,
+
+					/**
+					 * `accessor` a function for accessing the row value 
+					 * example: function(rowData) {return rowdata.value.count;}
+					 */
+					 accessor: {
+					 	type: Function
+					 }
 				},
 				behaviors: [
 					Polymer.Templatizer
