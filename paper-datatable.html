@@ -606,6 +606,9 @@ A [material design implementation of a data table](https://www.google.com/design
 									cell.setAttribute('data-row-key', row.dataset.key);
 									cell.dataBoundColumn = dataColumn;
 
+									// we add the column key as an attribute for easier css rules (e.g. ::content [my-prop] {background : red;})
+									cell.setAttribute(prop, '');
+
 									if(dataColumn.cellStyle.length > 0){
 										cell.setAttribute('style', dataColumn.cellStyle);
 									}else{
