@@ -18,7 +18,7 @@
 				position: relative;
 			}
 			:host([resize-behavior='overflow']) #container{
-				overflow: auto;
+				/*overflow: auto;*/
 			}
 			:host([resize-behavior='dynamic-columns']) #container{
 				overflow: auto;
@@ -249,12 +249,14 @@
 							</th>
 						</template>
 						<template id="columnRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_columnsRendered">
-							<th class="column" data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
-								<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
-								<span id="title">{{column.header}}</span>
-								<template is="dom-if" if="[[column.tooltip]]">
-									<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
-								</template>
+							<th class$="column [[column.cls]]" data-sortable$="[[column.sortable]]" data-column="[[column]]" on-tap="_handleSort" style$="{{column._styleString}}">
+								<div>
+									<iron-icon icon="datatable:sort-desc-md" class="sort"></iron-icon>
+									<span id="title">{{column.header}}</span>
+									<template is="dom-if" if="[[column.tooltip]]">
+										<paper-tooltip offset="-10" fit-to-visible-bounds>{{column.tooltip}}</paper-tooltip>
+									</template>
+								</div>
 							</th>
 						</template>
 					</tr>
@@ -285,7 +287,7 @@
 									</td>
 								</template>
 								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
-									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+									<td data-empty class$="bound-cell [[column.cls]]"" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
 											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
@@ -302,7 +304,7 @@
 									</td>
 								</template>
 								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
-									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+									<td data-empty class$="bound-cell [[column.cls]]" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
 										<div>
 											<span></span>
 											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
@@ -1093,6 +1095,9 @@ A [material design implementation of a data table](https://www.google.com/design
 							ths.forEach((th) => {
 								if(th.dataColumn){
 									var column = th.dataColumn;
+
+									th.setAttribute(column.property, '');
+									
 									if(th.scrollWidth > th.offsetWidth){
 										column.set('tooltip', column.header);
 									}else{
