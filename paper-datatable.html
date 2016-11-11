@@ -891,14 +891,15 @@ A [material design implementation of a data table](https://www.google.com/design
 
 				_internalSort: function(column){
 					if(this._internalSortEnabled) {
+						var accessor = column.accessor;
 						this._rowKeys.sort(function(a, b){
 							if(column.sortDirection == 'desc'){
 								var c = a;
 								a = b;
 								b = c;
 							}
-							var valA = this._getByKey(a)[column.property];
-							var valB = this._getByKey(b)[column.property];
+							var valA = accessor ? accessor(this._getByKey(a),column.property): this._getByKey(a)[column.property];
+							var valB = accessor ? accessor(this._getByKey(b),column.property): this._getByKey(b)[column.property];
 							return column._sort(valA, valB);
 						}.bind(this));
 						this.set("_rowKeys", JSON.parse(JSON.stringify(this._rowKeys)));
