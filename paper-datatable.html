@@ -673,8 +673,9 @@ A [material design implementation of a data table](https://www.google.com/design
 						for(var i=0; i<cells.length;i++){
 							var cell = cells[i];
 							var prop = cell.dataColumn.property;
+							var accessor = cell.dataColumn.accessor;
 
-							if(prop == path[0]){
+							if(prop == path[0] || (accessor && accessor.path && accessor.path[0] === path[0])){
 								if(cell.instance){
 									var localPath = path.slice();
 									localPath.shift();
@@ -683,7 +684,7 @@ A [material design implementation of a data table](https://www.google.com/design
 									cell.instance.notifyPath(instanceValuePath, change.value);
 								}
 								if(!cell.instance || cell.instanceType == 'dialog'){
-									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(this.get([object, rowKey, prop]));
+									cell.querySelector('span').innerHTML = this._columns[i]._formatValue(accessor ? accessor(this.get([object, rowKey]), prop): this.get([object, rowKey, prop]));
 								}
 							}
 							if(cell.instance){
