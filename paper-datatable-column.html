@@ -140,6 +140,14 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 						type: String,
 						value: ''
 					},
+
+					/**
+					 * `cls` the class to add to th
+					 */
+					 cls: {
+					 	type: String,
+					 	value: ''
+					 },
 					/**
 					 * Convenience attribute to align the header and cell content (e.g. 'center')
 					 *
@@ -248,7 +256,15 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					 *
 					 * @type Number in px or String
 					 */
-					width: Object
+					width: Object,
+
+					/**
+					 * `accessor` a function for accessing the row value 
+					 * example: function(rowData) {return rowdata.value.count;}
+					 */
+					 accessor: {
+					 	type: Function
+					 }
 				},
 				behaviors: [
 					Polymer.Templatizer
@@ -334,7 +350,7 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_cast: function(value){
-					if(typeof value === 'undefined'){
+					if(typeof value === 'undefined' || value === null){
 						if(typeof this.default !== 'undefined'){
 							value = JSON.parse(JSON.stringify(this.default));
 						}else{
@@ -345,7 +361,7 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 					if(this.type.toLowerCase() == 'string'){
 						return value.toString();
 					}else if(this.type.toLowerCase() == 'number'){
-						return parseFloat(value);
+						return parseFloat(value) || '';
 					}else if(this.type.toLowerCase() == 'boolean'){
 						return value ? true : false;
 					}else if(this.type.toLowerCase() == 'date'){
