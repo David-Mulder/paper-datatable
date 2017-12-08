@@ -46,6 +46,8 @@ Mixins
  ------|-------------
  `--paper-datatable-column-header` | column header style applied to text headers
  `--paper-datatable-cell` | applied to all data cells
+ `--paper-datatable-header-checkbox-size` | size of all selectable header checkboxe
+ `--paper-datatable-checkbox-size` | size of all selectable checkboxes
  `--paper-datatable-cell-last` | applied to the last cell of each row (used to increase the `padding-right` if you overwrite it in `--paper-datatable-cell`)
  `--paper-datatable-column-header-sorted` | applied to the sort icon
  `--paper-datatable-column-header-sort-icon-hover` | applied to the sort icon when hovered
