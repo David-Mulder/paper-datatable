@@ -10,8 +10,6 @@
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 
-
-<script src="weakCache.js"></script>
 <dom-module id="paper-datatable-card">
 	<template>
 		<style>
@@ -345,10 +343,8 @@
 					if(this.dataSource) {
 						ev.preventDefault();
 						this.firstPage();
-						console.log(ev.detail);
 						this._sortProperty = ev.detail.sort.property;
 						this._sortDirection = ev.detail.sort.direction;
-
 						//this.retrieveVisibleData();
 					}
 				},
@@ -356,12 +352,9 @@
 				 * Call this function to trigger reloading of the current page
 				 */
 				retrieveVisibleData: function(){
-
 					this.debounce("visibleData", function(){
 						this._disableSave = true;
-
 						var processItems = function(items){
-
 							this._datatable.deselectAll(false);
 							this._datatable.splice('data', 0, this._datatable.data.length);
 
@@ -391,39 +384,14 @@
 						if('queryForIds' in this.dataSource){
 							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
 								var items = [];
-								var i = 0;
 								var done = function(){
-									i++;
-									if(i == 2){
-										var sortedItems = ids.map((id) => items.find((item) => item[this.idProperty] == id));
-										processItems(sortedItems);
-									}
+									processItems(items);			
 								}.bind(this);
+								this.dataSource.getByIds(ids, queryArgs[0],queryArgs[1], queryArgs[2]).then(function(newItems){
 
-								var idsInCache = ids.filter((id) => this._cache.has(id));
-								if(idsInCache.length){
-									var cacheItems = [];
-									idsInCache.forEach(function(id){
-										cacheItems.push(this._cache.get(id));
-									}.bind(this));
-									items = items.concat(cacheItems);
+									items = items.concat(newItems);
 									done();
-								}else{
-									done();
-								}
-
-								var idsNotInCache = ids.filter((id) => !this._cache.has(id));
-								if(idsNotInCache.length){
-									this.dataSource.getByIds(idsNotInCache).then(function(newItems){
-										items = items.concat(newItems);
-										done();
-									});
-								}else{
-									done();
-								}
-
-
-
+								});
 							}.bind(this));
 
 						}else{
@@ -545,10 +513,7 @@
 					this._setSelectedKeysOnDatatable();
 					this._setSelectedToolbarVisible();
 				}
-
 			});
-
 		})();
 	</script>
-
 </dom-module>
