@@ -388,7 +388,6 @@
 									processItems(items);			
 								}.bind(this);
 								this.dataSource.getByIds(ids, queryArgs[0],queryArgs[1], queryArgs[2]).then(function(newItems){
-
 									items = items.concat(newItems);
 									done();
 								});
