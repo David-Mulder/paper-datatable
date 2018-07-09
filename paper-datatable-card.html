@@ -123,7 +123,7 @@
 			<div class="horizontal center layout" id="bottomBlock">
 				<div class="flex"></div>
 				<span>Rows per page:</span>
-				<paper-dropdown-menu no-label-float style="width: 68px;">
+				<paper-dropdown-menu vertical-align="bottom" no-label-float style="width: 68px;">
 					<paper-menu class="dropdown-content" selected="{{pageSize}}" attr-for-selected="value">
 						<template is="dom-repeat" items="{{pageSizeOptions}}">
 							<paper-item value="{{item}}">{{item}}</paper-item>
@@ -364,13 +364,6 @@
 							this._datatable.set('progress', false);
 
 							this._disableSave = false;
-
-							// no rush, so let's do it next tick
-							this.async(function(){
-								items.forEach(function(item){
-									this._cache.set(item[this.idProperty], item);
-								}.bind(this));
-							});
 
 						}.bind(this);
 

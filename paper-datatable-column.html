@@ -286,14 +286,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_createCellInstance: function(model, notificationKey){
-					try {
-						if(!model[this.property] && typeof this.default !== 'undefined'){
-							var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
-						}else{
-							var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
-						}
-					} catch(e) {
-						// This is to handle the undefined error which comes when searching the data for the first time.
+					if(!model[this.property] && typeof this.default !== 'undefined'){
+						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
+					}else{
+						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
 					}
 					
 					return instance;
