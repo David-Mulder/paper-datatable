@@ -7,7 +7,6 @@
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 
 <dom-module id="paper-datatable-card">
@@ -316,7 +315,6 @@
 									var setPromise = this.dataSource.set(dataClone, property, value);
 								}
 
-								this._datatable.set('progress', true);
 								setPromise.then(function (successOrId) {
 									if (typeof successOrId === 'boolean') {
 										if (successOrId !== true) {
@@ -327,13 +325,10 @@
 										//var index = this._datatable._getIndexById('__new__');
 										//this._datatable.set(['data', index, this._datatable.idProperty], successOrId);
 									}
-									this._datatable.set('progress', false);
 								}.bind(this), function (err) {
 									throw new Error('failure');
-									this._datatable.set('progress', false);
 								}.bind(this)).catch(function () {
 									console.warn('saving failed');
-									this._datatable.set('progress', false);
 								}.bind(this));
 							}, 1000);
 						}
@@ -361,7 +356,6 @@
 							var args = ['data'].concat(items);
 							this._datatable.push.apply(this._datatable,args);
 							this._setSelectedKeysOnDatatable();
-							this._datatable.set('progress', false);
 
 							this._disableSave = false;
 
@@ -371,8 +365,6 @@
 							property: this._sortProperty,
 							direction: this._sortDirection
 						}, this.page, this.pageSize];
-
-						this._datatable.set('progress', true);
 
 						if('queryForIds' in this.dataSource){
 							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
@@ -476,9 +468,7 @@
 								this.deselectAll();
 							}else{
 								this.deselectAll();
-								this._datatable.set('progress', true);
 								this.dataSource.queryForIds(undefined, 1, this.dataSource.length).then(function(ids){
-									this._datatable.set('progress', undefined);
 									this.push.apply(this, ['selectedIds'].concat(ids));
 									this._setSelectedKeysOnDatatable();
 									this._setSelectedToolbarVisible();

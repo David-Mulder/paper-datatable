@@ -183,25 +183,6 @@
 				@apply(--paper-datatable-class-5);
 			}
 
-			/* progress: */
-			table tr.progress {
-
-			}
-			table tr.progress th paper-progress{
-				height: 0px;
-				transition: linear .2s height;
-			}
-			table tr.progress[data-progress] th paper-progress{
-				height: 3px;
-			}
-			table tr.progress th{
-				padding: 0px;
-				height: 1px;
-				border-bottom:0px;
-			}
-			table tr.progress th paper-progress{
-				width: 100%;
-			}
 			paper-checkbox{
 				--paper-checkbox-unchecked-color: var(--paper-datatable-checkbox-border-color, --primary-text-color);
 				--paper-checkbox-checked-color: var(--paper-datatable-checkbox-color, --accent-color);
@@ -257,11 +238,6 @@
 								</template>
 							</th>
 						</template>
-					</tr>
-					<tr class="progress" data-progress$="[[progress]]">
-						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
-							<paper-progress indeterminate></paper-progress>
-						</th>
 					</tr>
 					<tr hidden$="[[!_noItemsVisible(_rowKeys.splices)]]">
 						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]" style="text-align:center;">
@@ -432,19 +408,6 @@ A [material design implementation of a data table](https://www.google.com/design
 					},
 					_cellInstances: {
 						type: Object
-					},
-					/**
-					 * Whether to show the progress bar. As the progress bar is often not used in standalone
-					 * `<paper-datatable>'s the `<paper-progress>` element isn't included by default and needs to be
-					 * manually imported.
-					 *
-					 * @attribute progress
-					 * @type Boolean
-					 * @default false
-					 */
-					progress: {
-						type: Boolean,
-						value: false
 					},
 					/**
 					 * Overflow, fixed or 'dynamic-columns'
