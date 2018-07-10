@@ -287,11 +287,19 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 
 				_createCellInstance: function(model, notificationKey){
 					if(!model[this.property] && typeof this.default !== 'undefined'){
+<<<<<<< Updated upstream
 						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
+=======
+						var instance = this.stamp({item: model, rowindex:model.rowindex, column:this, value: this.default, _dataKey: notificationKey});
+>>>>>>> Stashed changes
 					}else{
-						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
+						var instance = this.stamp({item: model, rowindex:model.rowindex, column:this, value: model[this.property], _dataKey: notificationKey});
 					}
+<<<<<<< Updated upstream
 					
+=======
+
+>>>>>>> Stashed changes
 					return instance;
 				},
 
@@ -365,15 +373,17 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_forwardParentProp: function(prop, value){
-					console.warn('_forwardParentProp',arguments);
+					if(prop == "rowindex"){
+						// Passed row index.
+					}else{
+						console.warn('_forwardParentProp',arguments);
+					}
 				},
 				_forwardParentPath: function(prop, value){
 					console.warn('_forwardParentPath',arguments);
 				},
 
 				_forwardInstanceProp: function(templateInstance, prop, value){
-					var path = prop.split('.');
-					var item = path.shift();
 					if(item == 'value'){
 						var parentPath = ['data', templateInstance.get('_dataKey'), this.property];
 						value = this._cast(value);
@@ -386,8 +396,16 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_forwardInstancePath: function(templateInstance, prop, value){
+					console.log("inside prop", prop);
+					console.log("inside path", path);
 					var path = prop.split('.');
 					var item = path.shift();
+
+					console.log("inside prop", prop);
+					console.log("inside path", path);
+
+
+					console.log("current", item);
 					if(item == 'value'){
 						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path);
 						if(path.length == 0){

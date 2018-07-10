@@ -545,8 +545,8 @@ A [material design implementation of a data table](https://www.google.com/design
 						for(var rowI=0; rowI<rows.length; rowI++){
 							var row = rows[rowI];
 							//find the data that belongs with the row
-							var rowData = this.get(['data',row.dataset.key]);
-
+							var rowData = this.get(['data', row.dataset.key]);
+							rowData["rowindex"] = row.dataset.key;
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
 
 							cells.forEach((cell) => {
