@@ -287,19 +287,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 
 				_createCellInstance: function(model, notificationKey){
 					if(!model[this.property] && typeof this.default !== 'undefined'){
-<<<<<<< Updated upstream
-						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
-=======
 						var instance = this.stamp({item: model, rowindex:model.rowindex, column:this, value: this.default, _dataKey: notificationKey});
->>>>>>> Stashed changes
 					}else{
 						var instance = this.stamp({item: model, rowindex:model.rowindex, column:this, value: model[this.property], _dataKey: notificationKey});
 					}
-<<<<<<< Updated upstream
-					
-=======
-
->>>>>>> Stashed changes
 					return instance;
 				},
 
