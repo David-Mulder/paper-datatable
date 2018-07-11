@@ -606,7 +606,6 @@ A [material design implementation of a data table](https://www.google.com/design
 						}
 					}
 					var path = change.path.split('.');
-					//console.log('_notifyPathOnInstances', path, change);
 					if(path.length >= 3){
 						var object = path.shift();
 						var rowKey = path.shift();
@@ -920,7 +919,6 @@ A [material design implementation of a data table](https://www.google.com/design
 					Polymer.dom(this.$.dialog).innerHTML = '';
 					Polymer.dom(this.$.dialog).appendChild(instance.root);
 					this.$.dialog.findFocus();
-					//console.log(cell.getBoundingClientRect());
 				},
 
 				_getKeyByItem: function(item){
