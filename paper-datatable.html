@@ -246,12 +246,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
+					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData" index-as="rowIndex">
 						<!--
 						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
+							<tr data-key$="{{rowKey}}" data-args$="[[rowIndex]]" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
 								<template is="dom-if" if="{{selectable}}">
 									<td on-tap="_cellTapped">
 										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
@@ -271,7 +271,7 @@
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-								<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
+								<tr data-key$="{{rowKey}}" data-args$="[[rowIndex]]" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
 									<template is="dom-if" if="{{selectable}}">
 										<td on-tap="_cellTapped">
 											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
@@ -546,7 +546,7 @@ A [material design implementation of a data table](https://www.google.com/design
 							var row = rows[rowI];
 							//find the data that belongs with the row
 							var rowData = this.get(['data', row.dataset.key]);
-							rowData["rowindex"] = row.dataset.key;
+							rowData["rowindex"] = row.getAttribute("data-args");
 							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
 
 							cells.forEach((cell) => {
