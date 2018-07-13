@@ -372,8 +372,8 @@
 								var done = function(){
 									processItems(items);			
 								}.bind(this);
-								this.dataSource.getByIds(ids, queryArgs[0],queryArgs[1], queryArgs[2]).then(([newItems, totalRecords]) => {
-									this.set("numberOfItems", totalRecords)
+								this.dataSource.getByIds(ids, queryArgs[0],queryArgs[1], queryArgs[2]).then(([newItems, noOfRecords]) => {
+									this.set("numberOfItems", noOfRecords)
 									items = items.concat(newItems);
 									done();
 								});
