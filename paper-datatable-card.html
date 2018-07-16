@@ -182,7 +182,8 @@
 					pageSize: {
 						type: Number,
 						value: 10,
-						notify: true
+						notify: true,
+						reflectToAttribute: true
 					},
 					/**
 					 * Possible number of items per page
@@ -206,7 +207,8 @@
 					page: {
 						type: Number,
 						value: 1,
-						notify: true
+						notify: true,
+						reflectToAttribute: true
 					},
 					_disableSave: {
 						type: Boolean,
@@ -278,8 +280,12 @@
 				observers: [
 					'retrieveVisibleData(dataSource, pageSize, page, _datatable, _sortDirection, _sortProperty)',
 					'_setNumberOfItems(dataSource.length)',
-					'_createCache(dataSource.queryForIds)'
+					'_createCache(dataSource.queryForIds)',
+					'_resetPage(pageSize)'
 				],
+				_resetPage: function(pageSize){
+					this.set("page", 1);
+				},
 				_createCache: function(){
 					this._cacheUsed = true;
 					this._cache = new WeakCache(100);
@@ -365,6 +371,8 @@
 							property: this._sortProperty,
 							direction: this._sortDirection
 						}, this.page, this.pageSize];
+
+						console.log("Query Args -> ", queryArgs);
 
 						if('queryForIds' in this.dataSource){
 							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
