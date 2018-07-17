@@ -372,8 +372,6 @@
 							direction: this._sortDirection
 						}, this.page, this.pageSize];
 
-						console.log("Query Args -> ", queryArgs);
-
 						if('queryForIds' in this.dataSource){
 							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
 								var items = [];
