@@ -246,7 +246,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData" index-as="rowIndex">
+					<template initial-count="25" id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData" index-as="rowIndex">
 						<!--
 						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
