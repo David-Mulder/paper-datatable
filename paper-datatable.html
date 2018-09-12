@@ -246,7 +246,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<template initial-count="25" id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData" index-as="rowIndex">
+					<template initial-count="{{pageSize}}" id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData" index-as="rowIndex">
 						<!--
 						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
@@ -440,7 +440,12 @@ A [material design implementation of a data table](https://www.google.com/design
 					 */
 					filter: {
 						type: Function
-					}
+					},
+					pageSize: {
+						type: Number,
+						value: 25,
+						notify: true
+					},
 				},
 
 				behaviors: [
