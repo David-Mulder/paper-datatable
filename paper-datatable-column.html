@@ -286,10 +286,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_createCellInstance: function(model, notificationKey){
-					if(typeof model[this.property] == 'undefined' && typeof this.default !== 'undefined'){
-						var instance = this.stamp({item: model, column:this, value: this.default, _dataKey: notificationKey});
+					if(!model[this.property] && typeof this.default !== 'undefined'){
+						var instance = this.stamp({item: model, rowindex:model.rowindex, column:this, value: this.default, _dataKey: notificationKey});
 					}else{
-						var instance = this.stamp({item: model, column:this, value: model[this.property], _dataKey: notificationKey});
+						var instance = this.stamp({item: model, rowindex:model.rowindex, column:this, value: model[this.property], _dataKey: notificationKey});
 					}
 					return instance;
 				},
@@ -364,20 +364,20 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				},
 
 				_forwardParentProp: function(prop, value){
-					console.warn('_forwardParentProp',arguments);
+					if(prop == "rowindex"){
+						// Passed row index.
+					}else{
+						console.warn('_forwardParentProp',arguments);
+					}
 				},
 				_forwardParentPath: function(prop, value){
 					console.warn('_forwardParentPath',arguments);
 				},
 
 				_forwardInstanceProp: function(templateInstance, prop, value){
-					var path = prop.split('.');
-					var item = path.shift();
 					if(item == 'value'){
 						var parentPath = ['data', templateInstance.get('_dataKey'), this.property];
 						value = this._cast(value);
-						//console.log('_forwardInstanceProp',arguments);
-						//console.log('set', parentPath, 'to', value);
 						this.parentNodeRef.set(parentPath, value);
 					}else if(item == 'item'){
 						console.warn('_forwardInstanceProp',arguments);
@@ -387,19 +387,15 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
 				_forwardInstancePath: function(templateInstance, prop, value){
 					var path = prop.split('.');
 					var item = path.shift();
+
 					if(item == 'value'){
 						var parentPath = ['data', templateInstance.get('_dataKey'), this.property].concat(path);
 						if(path.length == 0){
 							value = this._cast(value);
 						}
-						//console.log(parentPath, path.join('.'), value)
-						//console.log('_forwardInstancePath',arguments);
 					}else if(item == 'item'){
 						var parentPath = ['data', templateInstance.get('_dataKey')].concat(path);
-						//console.log(parentPath, value);
-						//console.log('_forwardInstancePath',arguments);
 					}
-					//console.log('set', parentPath, 'to', value);
 					this.parentNodeRef.set(parentPath, value);
 				},
 				_requeryColumnList: function(){

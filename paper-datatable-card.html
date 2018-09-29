@@ -7,11 +7,8 @@
 <link rel="import" href="../paper-menu/paper-menu.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 
-
-<script src="weakCache.js"></script>
 <dom-module id="paper-datatable-card">
 	<template>
 		<style>
@@ -125,7 +122,7 @@
 			<div class="horizontal center layout" id="bottomBlock">
 				<div class="flex"></div>
 				<span>Rows per page:</span>
-				<paper-dropdown-menu no-label-float style="width: 68px;">
+				<paper-dropdown-menu vertical-align="bottom" no-label-float style="width: 68px;">
 					<paper-menu class="dropdown-content" selected="{{pageSize}}" attr-for-selected="value">
 						<template is="dom-repeat" items="{{pageSizeOptions}}">
 							<paper-item value="{{item}}">{{item}}</paper-item>
@@ -133,7 +130,7 @@
 					</paper-menu>
 				</paper-dropdown-menu>
 				<span>
-					<span>[[_getRangeStart(page, pageSize)]]</span>-<span>[[_getRangeEnd(page, pageSize, numberOfItems)]]</span> of&nbsp;<span>[[numberOfItems]]</span>
+					<span>[[_getRangeStart(page, pageSize, numberOfItems)]]</span>-<span>[[_getRangeEnd(page, pageSize, numberOfItems)]]</span> of&nbsp;<span>{{numberOfItems}}</span>
 				</span>
 				<paper-icon-button icon="datatable:first-page" on-tap="firstPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
 				<paper-icon-button icon="datatable:prev-page" on-tap="prevPage" disabled="[[_prevPageDisabled(page)]]"></paper-icon-button>
@@ -185,7 +182,8 @@
 					pageSize: {
 						type: Number,
 						value: 10,
-						notify: true
+						notify: true,
+						reflectToAttribute: true
 					},
 					/**
 					 * Possible number of items per page
@@ -209,7 +207,8 @@
 					page: {
 						type: Number,
 						value: 1,
-						notify: true
+						notify: true,
+						reflectToAttribute: true
 					},
 					_disableSave: {
 						type: Boolean,
@@ -281,8 +280,12 @@
 				observers: [
 					'retrieveVisibleData(dataSource, pageSize, page, _datatable, _sortDirection, _sortProperty)',
 					'_setNumberOfItems(dataSource.length)',
-					'_createCache(dataSource.queryForIds)'
+					'_createCache(dataSource.queryForIds)',
+					'_resetPage(pageSize)'
 				],
+				_resetPage: function(pageSize){
+					this.set("page", 1);
+				},
 				_createCache: function(){
 					this._cacheUsed = true;
 					this._cache = new WeakCache(100);
@@ -318,7 +321,6 @@
 									var setPromise = this.dataSource.set(dataClone, property, value);
 								}
 
-								this._datatable.set('progress', true);
 								setPromise.then(function (successOrId) {
 									if (typeof successOrId === 'boolean') {
 										if (successOrId !== true) {
@@ -329,13 +331,10 @@
 										//var index = this._datatable._getIndexById('__new__');
 										//this._datatable.set(['data', index, this._datatable.idProperty], successOrId);
 									}
-									this._datatable.set('progress', false);
 								}.bind(this), function (err) {
 									throw new Error('failure');
-									this._datatable.set('progress', false);
 								}.bind(this)).catch(function () {
 									console.warn('saving failed');
-									this._datatable.set('progress', false);
 								}.bind(this));
 							}, 1000);
 						}
@@ -345,10 +344,8 @@
 					if(this.dataSource) {
 						ev.preventDefault();
 						this.firstPage();
-						console.log(ev.detail);
 						this._sortProperty = ev.detail.sort.property;
 						this._sortDirection = ev.detail.sort.direction;
-
 						//this.retrieveVisibleData();
 					}
 				},
@@ -356,28 +353,17 @@
 				 * Call this function to trigger reloading of the current page
 				 */
 				retrieveVisibleData: function(){
-
 					this.debounce("visibleData", function(){
 						this._disableSave = true;
-
 						var processItems = function(items){
-
 							this._datatable.deselectAll(false);
 							this._datatable.splice('data', 0, this._datatable.data.length);
 
 							var args = ['data'].concat(items);
 							this._datatable.push.apply(this._datatable,args);
 							this._setSelectedKeysOnDatatable();
-							this._datatable.set('progress', false);
 
 							this._disableSave = false;
-
-							// no rush, so let's do it next tick
-							this.async(function(){
-								items.forEach(function(item){
-									this._cache.set(item[this.idProperty], item);
-								}.bind(this));
-							});
 
 						}.bind(this);
 
@@ -386,44 +372,17 @@
 							direction: this._sortDirection
 						}, this.page, this.pageSize];
 
-						this._datatable.set('progress', true);
-
 						if('queryForIds' in this.dataSource){
 							this.dataSource.queryForIds.apply(this.dataSource, queryArgs).then(function(ids){
 								var items = [];
-								var i = 0;
 								var done = function(){
-									i++;
-									if(i == 2){
-										var sortedItems = ids.map((id) => items.find((item) => item[this.idProperty] == id));
-										processItems(sortedItems);
-									}
+									processItems(items);			
 								}.bind(this);
-
-								var idsInCache = ids.filter((id) => this._cache.has(id));
-								if(idsInCache.length){
-									var cacheItems = [];
-									idsInCache.forEach(function(id){
-										cacheItems.push(this._cache.get(id));
-									}.bind(this));
-									items = items.concat(cacheItems);
+								this.dataSource.getByIds(ids, queryArgs[0],queryArgs[1], queryArgs[2]).then(([newItems, noOfRecords]) => {
+									this.set("numberOfItems", noOfRecords)
+									items = items.concat(newItems);
 									done();
-								}else{
-									done();
-								}
-
-								var idsNotInCache = ids.filter((id) => !this._cache.has(id));
-								if(idsNotInCache.length){
-									this.dataSource.getByIds(idsNotInCache).then(function(newItems){
-										items = items.concat(newItems);
-										done();
-									});
-								}else{
-									done();
-								}
-
-
-
+								});
 							}.bind(this));
 
 						}else{
@@ -435,7 +394,8 @@
 
 				},
 				_getRangeStart: function(){
-					return (this.page-1)*this.pageSize;
+					return this.numberOfItems < Math.min((this.page-1)*this.pageSize) ?
+					 	0 : Math.min((this.page-1)*this.pageSize);
 				},
 				_getRangeEnd: function(){
 					return Math.min((this.page)*this.pageSize, this.numberOfItems);
@@ -508,7 +468,7 @@
 				},
 				_setNumberOfItems: function(){
 					this.set('numberOfItems', this.dataSource.length);
-				},
+				},		
 				_toggleAll: function(ev){
 					if(this.dataSource){
 						if('queryForIds' in  this.dataSource){
@@ -516,9 +476,7 @@
 								this.deselectAll();
 							}else{
 								this.deselectAll();
-								this._datatable.set('progress', true);
 								this.dataSource.queryForIds(undefined, 1, this.dataSource.length).then(function(ids){
-									this._datatable.set('progress', undefined);
 									this.push.apply(this, ['selectedIds'].concat(ids));
 									this._setSelectedKeysOnDatatable();
 									this._setSelectedToolbarVisible();
@@ -545,10 +503,7 @@
 					this._setSelectedKeysOnDatatable();
 					this._setSelectedToolbarVisible();
 				}
-
 			});
-
 		})();
 	</script>
-
 </dom-module>

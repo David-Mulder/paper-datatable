@@ -183,25 +183,6 @@
 				@apply(--paper-datatable-class-5);
 			}
 
-			/* progress: */
-			table tr.progress {
-
-			}
-			table tr.progress th paper-progress{
-				height: 0px;
-				transition: linear .2s height;
-			}
-			table tr.progress[data-progress] th paper-progress{
-				height: 3px;
-			}
-			table tr.progress th{
-				padding: 0px;
-				height: 1px;
-				border-bottom:0px;
-			}
-			table tr.progress th paper-progress{
-				width: 100%;
-			}
 			paper-checkbox{
 				--paper-checkbox-unchecked-color: var(--paper-datatable-checkbox-border-color, --primary-text-color);
 				--paper-checkbox-checked-color: var(--paper-datatable-checkbox-color, --accent-color);
@@ -258,11 +239,6 @@
 							</th>
 						</template>
 					</tr>
-					<tr class="progress" data-progress$="[[progress]]">
-						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]">
-							<paper-progress indeterminate></paper-progress>
-						</th>
-					</tr>
 					<tr hidden$="[[!_noItemsVisible(_rowKeys.splices)]]">
 						<th colspan$="[[_numberOfColumnsPlusOne(_columns.splices)]]" style="text-align:center;">
 							<content select="[no-results]"></content>
@@ -270,12 +246,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<template id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData">
+					<template initial-count="{{pageSize}}" id="rowRepeat" is="dom-repeat" items="[[_rowKeys]]" as="rowKey" on-dom-change="_restructureData" index-as="rowIndex">
 						<!--
 						 duplication due to https://github.com/David-Mulder/paper-datatable/issues/3 ...
 						-->
 						<template is="dom-if" if="{{multiSelection}}">
-							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
+							<tr data-key$="{{rowKey}}" data-args$="[[rowIndex]]" data-selected$="[[_isRowSelected(rowKey, selectedKeys.splices)]]" style$="{{_customRowStyle(rowKey)}}">
 								<template is="dom-if" if="{{selectable}}">
 									<td on-tap="_cellTapped">
 										<!-- a somewhat specific 'hack' for <paper-datatable-card> :/ -->
@@ -295,21 +271,21 @@
 							</tr>
 						</template>
 						<template is="dom-if" if="{{!multiSelection}}">
-							<tr data-key$="{{rowKey}}" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
-								<template is="dom-if" if="{{selectable}}">
-									<td on-tap="_cellTapped">
-										<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
-									</td>
-								</template>
-								<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
-									<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
-										<div>
-											<span></span>
-											<iron-icon icon="datatable:editable" class="editable"></iron-icon>
-										</div>
-									</td>
-								</template>
-							</tr>
+								<tr data-key$="{{rowKey}}" data-args$="[[rowIndex]]" data-selected$="[[_isRowSelected(rowKey, selectedKey)]]" style$="{{_customRowStyle(rowKey)}}">
+									<template is="dom-if" if="{{selectable}}">
+										<td on-tap="_cellTapped">
+											<paper-checkbox checked="[[_isRowSelected(rowKey, selectedKey)]]" on-change="_setSelection"></paper-checkbox>
+										</td>
+									</template>
+									<template id="cellRepeat" is="dom-repeat" items="{{_columns}}" as="column" on-dom-change="_restructureData">
+										<td data-empty class="bound-cell" data-column="{{column}}" data-editable$="{{column.editable}}" data-edit-icon$="{{column.editIcon}}" on-tap="_cellTapped">
+											<div>
+												<span></span>
+												<iron-icon icon="datatable:editable" class="editable"></iron-icon>
+											</div>
+										</td>
+									</template>
+								</tr>
 						</template>
 					</template>
 				</tbody>
@@ -434,19 +410,6 @@ A [material design implementation of a data table](https://www.google.com/design
 						type: Object
 					},
 					/**
-					 * Whether to show the progress bar. As the progress bar is often not used in standalone
-					 * `<paper-datatable>'s the `<paper-progress>` element isn't included by default and needs to be
-					 * manually imported.
-					 *
-					 * @attribute progress
-					 * @type Boolean
-					 * @default false
-					 */
-					progress: {
-						type: Boolean,
-						value: false
-					},
-					/**
 					 * Overflow, fixed or 'dynamic-columns'
 					 *
 					 * @attribute resizeBehavior
@@ -477,7 +440,12 @@ A [material design implementation of a data table](https://www.google.com/design
 					 */
 					filter: {
 						type: Function
-					}
+					},
+					pageSize: {
+						type: Number,
+						value: 25,
+						notify: true
+					},
 				},
 
 				behaviors: [
@@ -575,7 +543,6 @@ A [material design implementation of a data table](https://www.google.com/design
 				},
 
 				_restructureData: function(){
-
 					this.debounce('restructure data', function(){
 
 						var rows = Polymer.dom(this.root).querySelectorAll('tbody tr');
@@ -583,58 +550,53 @@ A [material design implementation of a data table](https://www.google.com/design
 						for(var rowI=0; rowI<rows.length; rowI++){
 							var row = rows[rowI];
 							//find the data that belongs with the row
-							var rowData = this.get(['data',row.dataset.key]);
+							var rowData = this.get(['data', row.dataset.key]);
+							if (rowData != undefined) {
+								rowData["rowindex"] = row.getAttribute("data-args");
+								var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
 
-							var cells = Polymer.dom(row).querySelectorAll('.bound-cell');
+								cells.forEach((cell) => {
+									var isEmpty = cell.hasAttribute('data-empty');
+									var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
+									var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
+									if(isEmpty || isWrongRow || isWrongColumn){
+										cell.removeAttribute('data-empty');
+										var prop = cell.dataColumn.property;
+										var data = rowData[prop];
 
-							cells.forEach((cell) => {
+										cell.setAttribute('data-row-key', row.dataset.key);
+										cell.dataBoundColumn = cell.dataColumn;
 
-								if(!cell.dataColumn){
-									console.log(cell);
-								}
+										if(cell.dataColumn.cellStyle.length > 0){
+											cell.setAttribute('style', cell.dataColumn.cellStyle);
+										}else{
+											cell.setAttribute('style', '');
+										}
+										if(cell.style['text-align'] == '' && cell.dataColumn.align){
+											cell.style['text-align'] = cell.dataColumn.align;
+										}
+										//if(cell.style['min-width'] == '' && cell.dataColumn.width){
+										//	cell.style['min-width'] = cell.dataColumn.width;
+										//}
 
-								var isEmpty = cell.hasAttribute('data-empty');
-								var isWrongRow = cell.getAttribute('data-row-key') !== row.dataset.key;
-								var isWrongColumn = cell.dataColumn !== cell.dataBoundColumn;
-
-								if(isEmpty || isWrongRow || isWrongColumn){
-									cell.removeAttribute('data-empty');
-									var prop = cell.dataColumn.property;
-									var data = rowData[prop];
-
-									cell.setAttribute('data-row-key', row.dataset.key);
-									cell.dataBoundColumn = cell.dataColumn;
-
-									if(cell.dataColumn.cellStyle.length > 0){
-										cell.setAttribute('style', cell.dataColumn.cellStyle);
-									}else{
-										cell.setAttribute('style', '');
+										if(cell.dataColumn.template && !cell.dataColumn.dialog){
+											var instance = cell.dataColumn._createCellInstance(
+													rowData,
+													row.dataset.key
+											);
+											cell.instance = instance;
+											cell.instanceType = 'inline';
+											cell.querySelector('span').innerHTML = '';
+											cell.querySelector('span').appendChild(instance.root);
+										}else{
+											if(cell.instance)
+												delete cell.instance;
+											cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
+											//cell.textContent = data;
+										}
 									}
-									if(cell.style['text-align'] == '' && cell.dataColumn.align){
-										cell.style['text-align'] = cell.dataColumn.align;
-									}
-									//if(cell.style['min-width'] == '' && cell.dataColumn.width){
-									//	cell.style['min-width'] = cell.dataColumn.width;
-									//}
-
-									if(cell.dataColumn.template && !cell.dataColumn.dialog){
-										var instance = cell.dataColumn._createCellInstance(
-												rowData,
-												row.dataset.key
-										);
-										cell.instance = instance;
-										cell.instanceType = 'inline';
-										cell.querySelector('span').innerHTML = '';
-										cell.querySelector('span').appendChild(instance.root);
-									}else{
-										if(cell.instance)
-											delete cell.instance;
-										cell.querySelector('span').innerHTML = cell.dataColumn._formatValue(data)
-										//cell.textContent = data;
-									}
-								}
-							});
-
+								});
+							}
 						}
 					});
 
@@ -650,7 +612,6 @@ A [material design implementation of a data table](https://www.google.com/design
 						}
 					}
 					var path = change.path.split('.');
-					//console.log('_notifyPathOnInstances', path, change);
 					if(path.length >= 3){
 						var object = path.shift();
 						var rowKey = path.shift();
@@ -659,7 +620,6 @@ A [material design implementation of a data table](https://www.google.com/design
 
 						if(!row){
 							console.error('critical failure');
-							console.log('key', rowKey);
 							return false;
 						}
 
@@ -965,7 +925,6 @@ A [material design implementation of a data table](https://www.google.com/design
 					Polymer.dom(this.$.dialog).innerHTML = '';
 					Polymer.dom(this.$.dialog).appendChild(instance.root);
 					this.$.dialog.findFocus();
-					//console.log(cell.getBoundingClientRect());
 				},
 
 				_getKeyByItem: function(item){
