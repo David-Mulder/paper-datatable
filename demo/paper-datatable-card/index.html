@@ -2,12 +2,13 @@
 <html>
 	<head>
 		<title>Simple `paper-datatable-card`</title>
-		<script src="../../../webcomponentsjs/webcomponents-lite.js"></script>
-		<link rel="import" href="../../../polymer/polymer.html">
+		<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+		<script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+		<link rel="import" href="../../bower_components/polymer/polymer.html">
 		<link rel="import" href="../../paper-datatable-card.html">
 		<link rel="import" href="../../paper-datatable.html">
 		<link rel="import" href="../../docs/documentation-menu.html">
-
 	</head>
 	<body>
 
@@ -83,7 +84,8 @@
 								}
 							}
 						};
-						httpRequest.open('GET', 'http://api.randomuser.me/?nat=US&results='+pageSize);
+						// httpRequest.open('GET', 'http://api.randomuser.me/?nat=US&results='+pageSize);
+						httpRequest.open('GET', '/api/?nat=US&results='+pageSize);
 						httpRequest.send();
 					});
 				},
