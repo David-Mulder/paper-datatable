@@ -44,6 +44,13 @@ The element can be installed using bower using
 
 Check out the [getting started guide](http://david-mulder.github.io/paper-datatable/components/paper-datatable/docs/docs.html?getting-started).
 
+## Run the demo
+use any static html file server to serve the demo.
+I was using https://github.com/yhjhoo/serve-go to run
+```shell
+serve-go -proxy "/api/,https://api.randomuser.me" -port 8888
+```
+
 ## License
 
 This program is free software: you can redistribute it and/or modify
